@@ -42,7 +42,7 @@ const toggleMobileMenu = () => {
             :key="link.id"
             @click="handleNavClick(link.id)"
             :class="cn(
-              'text-sm font-medium transition-colors duration-200 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1',
+              'text-base font-medium transition-colors duration-200 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1',
               isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
             )"
           >

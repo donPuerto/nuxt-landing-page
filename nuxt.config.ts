@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   ssr: true,
-  css: ['~/assets/css/font.css', '~/assets/css/tailwind.css'],
+  css: ['~/assets/css/tailwind.css'],
   modules: ['@nuxtjs/color-mode', '@nuxt/image', 'nuxt-security'],
   components: [
     { path: '~/components', pathPrefix: false, extensions: ['.vue'] },

@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<CardProps>(), {
 
 const cardClass = computed(() =>
   cn(
-    'bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md dark:hover:border-blue-500/50 transition-shadow duration-200 p-6',
+    'bg-white dark:bg-gray-900 rounded-xl border border-gray-300 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 p-6',
     props.class
   )
 );

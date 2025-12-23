@@ -18,10 +18,10 @@ useHead({
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 font-jakarta">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Our Services
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-inter">
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Comprehensive AI and automation solutions tailored to your business needs
             </p>
           </div>
@@ -37,8 +37,8 @@ useHead({
                   </svg>
                 </div>
                 <div class="flex-1">
-                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 font-jakarta">{{ service.title }}</h3>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 font-inter">{{ service.description }}</p>
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ service.title }}</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">{{ service.description }}</p>
                 </div>
               </div>
             </Card>
@@ -52,10 +52,10 @@ useHead({
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 font-jakarta">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               What Our Clients Say
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-inter">
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Real results from businesses we've helped transform
             </p>
           </div>
@@ -69,10 +69,10 @@ useHead({
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
-              <p class="text-gray-700 dark:text-gray-300 mb-4 italic text-sm font-inter">"{{ testimonial.quote }}"</p>
+              <p class="text-gray-700 dark:text-gray-300 mb-4 italic text-sm">"{{ testimonial.quote }}"</p>
               <div class="mt-auto">
-                <p class="font-semibold text-gray-900 dark:text-white text-sm font-jakarta">{{ testimonial.name }}</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400 font-inter">{{ testimonial.role }}, {{ testimonial.company }}</p>
+                <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ testimonial.name }}</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{{ testimonial.role }}, {{ testimonial.company }}</p>
               </div>
             </Card>
           </FadeIn>
@@ -88,7 +88,7 @@ useHead({
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Trusted By
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-inter">
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Leading companies that rely on our automation solutions
             </p>
           </div>
@@ -101,7 +101,7 @@ useHead({
               :key="index"
               class="flex items-center justify-center p-6 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-500 transition-colors duration-200"
             >
-              <span class="text-base font-semibold text-gray-700 dark:text-gray-300 font-jakarta">{{ client }}</span>
+              <span class="text-base font-semibold text-gray-700 dark:text-gray-300">{{ client }}</span>
             </div>
           </div>
         </FadeIn>
@@ -113,10 +113,10 @@ useHead({
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 font-jakarta">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Let's Work Together
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-inter">
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Ready to transform your business? Get in touch with us today and let's discuss your project.
             </p>
           </div>
@@ -124,43 +124,6 @@ useHead({
 
         <FadeIn direction="up" :delay="200">
           <ContactForm />
-        </FadeIn>
-
-        <FadeIn direction="up" :delay="300">
-          <div class="mt-12 pt-12 border-t border-gray-200 dark:border-gray-800">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-4">
-                  <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 class="font-semibold text-gray-900 dark:text-white text-sm font-jakarta mb-2">Email</h3>
-                <a href="mailto:don.puerto.1003@gmail.com" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm font-inter">
-                  don.puerto.1003@gmail.com
-                </a>
-              </div>
-              <div>
-                <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-4">
-                  <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
-                <h3 class="font-semibold text-gray-900 dark:text-white text-sm font-jakarta mb-2">Phone</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm font-inter">0976 093 8376</p>
-              </div>
-              <div>
-                <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-4">
-                  <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <h3 class="font-semibold text-gray-900 dark:text-white text-sm font-jakarta mb-2">Location</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm font-inter">Davao City, Philippines</p>
-              </div>
-            </div>
-          </div>
         </FadeIn>
       </Container>
     </Section>

@@ -2,23 +2,23 @@
 <script setup lang="ts">
 const { scrollTo } = useSmoothScroll();
 
-const currentYear = new Date().getFullYear();
+const currentYear = 2025;
 </script>
 
 <template>
-  <footer class="bg-gray-900 dark:bg-gray-950 text-gray-300 dark:text-gray-400 border-t border-gray-800 dark:border-gray-900">
+  <footer class="bg-white text-gray-800 border-t border-gray-200 dark:bg-gray-950 dark:text-gray-300 dark:border-gray-900 transition-colors duration-200">
     <!-- Main Footer Content -->
     <Container class="py-16">
       <div class="space-y-12">
         <!-- Top Section: Connect with me -->
         <div class="text-center">
-          <h2 class="text-3xl font-bold font-jakarta text-white dark:text-gray-200 mb-8">Connect with me</h2>
+          <h2 class="text-3xl md:text-4xl font-bold text-white dark:text-gray-200 mb-8">Connect with me</h2>
           <div class="flex justify-center gap-6">
             <a
               href="https://www.linkedin.com/in/arlindo-puerto-58a26295/"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-700 dark:border-gray-800 text-gray-400 hover:text-blue-400 dark:hover:text-blue-300 hover:border-blue-400 dark:hover:border-blue-300 transition-colors duration-200"
+              class="inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-300 hover:border-blue-500 dark:hover:border-blue-400 transition-colors duration-200 shadow-sm"
               aria-label="LinkedIn"
             >
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@ const currentYear = new Date().getFullYear();
             </a>
             <a
               href="mailto:don.puerto.1003@gmail.com"
-              class="inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-700 dark:border-gray-800 text-gray-400 hover:text-blue-400 dark:hover:text-blue-300 hover:border-blue-400 dark:hover:border-blue-300 transition-colors duration-200"
+              class="inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-300 hover:border-blue-500 dark:hover:border-blue-400 transition-colors duration-200 shadow-sm"
               aria-label="Email"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,60 +38,35 @@ const currentYear = new Date().getFullYear();
         </div>
 
         <!-- Divider -->
-        <div class="border-t border-gray-800 dark:border-gray-900"></div>
+        <div class="border-t border-gray-300 dark:border-gray-800 shadow-sm"></div>
 
-        <!-- Bottom Section: Copyright, Contact, Links -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        <!-- Bottom Section: Copyright & Contact -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center text-center md:text-left">
           <!-- Left: Copyright -->
-          <div class="text-left">
-            <p class="text-xs text-gray-500 dark:text-gray-600 flex items-center gap-2">
-              <Logo size="sm" variant="square" />
+          <div>
+            <p class="text-sm md:text-base font-medium text-gray-700 dark:text-gray-200 flex items-center justify-center md:justify-start gap-3">
+              <ClientOnly>
+                <Logo size="sm" variant="square" />
+              </ClientOnly>
               <span>&copy; {{ currentYear }} DP. All rights reserved.</span>
             </p>
           </div>
 
-          <!-- Center: Navigation -->
-          <div class="text-center">
-            <nav class="flex flex-wrap justify-center gap-4">
-              <button
-                @click="scrollTo('home')"
-                class="text-xs text-gray-400 hover:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200"
-              >
-                Home
-              </button>
-              <span class="text-gray-700 dark:text-gray-800">•</span>
-              <button
-                @click="scrollTo('services')"
-                class="text-xs text-gray-400 hover:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200"
-              >
-                Services
-              </button>
-              <span class="text-gray-700 dark:text-gray-800">•</span>
-              <button
-                @click="scrollTo('contact')"
-                class="text-xs text-gray-400 hover:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200"
-              >
-                Contact
-              </button>
-            </nav>
-          </div>
-
-          <!-- Right: Contact Info -->
-          <div class="text-right space-y-1">
-            <p class="text-xs text-gray-400 flex items-center justify-end gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Right: Contact Details -->
+          <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <a href="mailto:don.puerto.1003@gmail.com" class="hover:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                don.puerto.1003@gmail.com
-              </a>
-            </p>
-            <p class="text-xs text-gray-400 flex items-center justify-end gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a href="mailto:don.puerto.1003@gmail.com" class="hover:text-blue-500 dark:hover:text-blue-300 transition-colors">don.puerto.1003@gmail.com</a>
+            </div>
+            <span class="text-gray-400 dark:text-gray-600">|</span>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              <span>+63 971 528 2836</span>
-            </p>
+              <span>0976 093 8376</span>
+            </div>
           </div>
         </div>
       </div>

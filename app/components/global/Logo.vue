@@ -28,10 +28,9 @@ const squareSizeClasses = {
 <template>
   <!-- Square variant (DP in bordered square) -->
   <div 
-    v-if="variant === 'square'" 
     :class="cn(
       'inline-flex items-center justify-center border-2 border-blue-600 rounded-lg font-bold text-blue-600 bg-transparent dark:border-blue-400 dark:text-blue-400',
-      squareSizeClasses[size],
+      variant === 'square' ? squareSizeClasses[size] : 'hidden',
       props.class
     )"
   >
@@ -40,10 +39,9 @@ const squareSizeClasses = {
   
   <!-- Full variant (DP Don Puerto) -->
   <div 
-    v-else
     :class="cn(
       'flex items-center gap-2 font-bold text-gray-900 dark:text-white',
-      sizeClasses[size],
+      variant === 'full' ? sizeClasses[size] : 'hidden',
       props.class
     )"
   >

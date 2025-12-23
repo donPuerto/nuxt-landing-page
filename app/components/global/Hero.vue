@@ -11,7 +11,7 @@ const { scrollTo } = useSmoothScroll();
           Transform Your Business with
           <span class="text-blue-600 dark:text-blue-400"> AI-Powered Automation</span>
         </h1>
-        <p class="text-lg md:text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed font-inter">
+        <p class="text-lg md:text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
           We help businesses streamline operations, reduce costs, and scale faster through intelligent automation solutions and cutting-edge AI integration.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
