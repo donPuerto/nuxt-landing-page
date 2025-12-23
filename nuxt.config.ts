@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     N8N_WEBHOOK_URL: '',
+    N8N_WEBHOOK_SECRET: '',
   },
   colorMode: {
     preference: 'dark', // Default to dark mode

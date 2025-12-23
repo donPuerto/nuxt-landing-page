@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
     // Get n8n webhook URL from environment
     const config = useRuntimeConfig();
     const webhookUrl = config.N8N_WEBHOOK_URL;
+    const webhookSecret = config.N8N_WEBHOOK_SECRET;
 
     if (!webhookUrl) {
       console.error('N8N_WEBHOOK_URL is not configured');
@@ -52,7 +53,8 @@ export default defineEventHandler(async (event) => {
     const response = await $fetch(webhookUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...(webhookSecret && { 'x-webhook-secret': webhookSecret })
       },
       body: {
         name: name.trim(),

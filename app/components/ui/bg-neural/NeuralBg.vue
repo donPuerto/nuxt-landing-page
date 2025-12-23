@@ -283,7 +283,9 @@ watch(
 );
 
 onMounted(() => {
+  console.log('NeuralBg mounted, initializing OGL...');
   if (initOGL()) {
+    console.log('OGL initialized successfully');
     resizeCanvas();
     render();
 
@@ -291,6 +293,8 @@ onMounted(() => {
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("touchmove", handleTouchMove);
     window.addEventListener("click", handleClick);
+  } else {
+    console.error('Failed to initialize OGL');
   }
 });
 
