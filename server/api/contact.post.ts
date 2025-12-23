@@ -41,6 +41,12 @@ export default defineEventHandler(async (event) => {
     const webhookUrl = config.N8N_WEBHOOK_URL;
     const webhookSecret = config.N8N_WEBHOOK_SECRET;
 
+    // Debug: ensure server sees runtime config (only logs on server)
+    console.info('[contact] received payload for', email);
+    if (!webhookUrl) {
+      console.error('[contact] missing N8N_WEBHOOK_URL in runtimeConfig');
+    }
+
     if (!webhookUrl) {
       console.error('N8N_WEBHOOK_URL is not configured');
       return {
@@ -66,8 +72,8 @@ export default defineEventHandler(async (event) => {
 
     // Relay n8n's message when available
     const ok = typeof n8nResponse?.ok === 'boolean' ? n8nResponse.ok : true;
-    const message = n8nResponse?.message || 'Message sent successfully';
-    return { ok, message };
+    const responseMessage = n8nResponse?.message || 'Message sent successfully';
+    return { ok, message: responseMessage };
   } catch (error) {
     console.error('Error forwarding contact form to n8n:', error);
     return {

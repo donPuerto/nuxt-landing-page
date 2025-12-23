@@ -39,7 +39,7 @@ export function useForm() {
     error.value = '';
 
     try {
-      const response = await $fetch('/api/contact', {
+      const response = await $fetch<{ ok: boolean; message?: string }>("/api/contact", {
         method: 'POST',
         body: {
           name: name.value,

@@ -1,5 +1,4 @@
 import tailwindcss from '@tailwindcss/vite'
-import { resolve } from 'node:path'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -32,10 +31,7 @@ export default defineNuxtConfig({
     css: { devSourcemap: false },
     build: { sourcemap: false },
     resolve: {
-      alias: {
-        '@nuxt/nitro-server/dist/runtime/utils/cache-driver': resolve('./server/utils/cache-driver.js'),
-        '@nuxt/nitro-server/dist/runtime/utils/cache-driver.js': resolve('./server/utils/cache-driver.js'),
-      },
+      alias: {},
     },
     optimizeDeps: {
       exclude: ['@nuxt/nitro-server'],
