@@ -7,7 +7,7 @@ const { name, email, message, loading, success, error, submit } = useForm();
   <div class="max-w-2xl mx-auto">
     <form @submit.prevent="submit" class="space-y-6">
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="name" class="block text-sm font-medium font-inter text-gray-700 dark:text-gray-300 mb-2">
           Name <span class="text-red-500">*</span>
         </label>
         <Input
@@ -21,7 +21,7 @@ const { name, email, message, loading, success, error, submit } = useForm();
       </div>
 
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="email" class="block text-sm font-medium font-inter text-gray-700 dark:text-gray-300 mb-2">
           Email <span class="text-red-500">*</span>
         </label>
         <Input
@@ -35,7 +35,7 @@ const { name, email, message, loading, success, error, submit } = useForm();
       </div>
 
       <div>
-        <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="message" class="block text-sm font-medium font-inter text-gray-700 dark:text-gray-300 mb-2">
           Message <span class="text-red-500">*</span>
         </label>
         <Textarea

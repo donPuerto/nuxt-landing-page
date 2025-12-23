@@ -50,15 +50,15 @@ watch(() => colorMode.value, (newVal) => {
     <div
       v-for="ripple in ripples"
       :key="ripple.id"
-      class="absolute rounded-full bg-blue-500/30 dark:bg-blue-400/30 pointer-events-none"
+      class="absolute rounded-full border-2 border-blue-500/60 dark:border-blue-400/60 pointer-events-none"
       :style="{
         left: ripple.x + 'px',
         top: ripple.y + 'px',
-        width: '8px',
-        height: '8px',
-        marginLeft: '-4px',
-        marginTop: '-4px',
-        animation: 'ripple 0.6s ease-out'
+        width: '6px',
+        height: '6px',
+        marginLeft: '-3px',
+        marginTop: '-3px',
+        animation: 'ripple 0.8s ease-out forwards'
       }"
     />
 
@@ -95,14 +95,19 @@ watch(() => colorMode.value, (newVal) => {
 <style scoped>
 @keyframes ripple {
   0% {
-    width: 8px;
-    height: 8px;
-    opacity: 0.8;
+    width: 6px;
+    height: 6px;
+    opacity: 1;
+    border-color: rgb(59, 130, 246, 0.8);
+  }
+  50% {
+    opacity: 0.6;
   }
   100% {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     opacity: 0;
+    border-color: rgb(59, 130, 246, 0);
   }
 }
 </style>
