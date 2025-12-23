@@ -12,15 +12,18 @@ export default defineNuxtConfig({
   plugins: [
      
   ],
+  runtimeConfig: {
+    N8N_WEBHOOK_URL: '',
+  },
   colorMode: {
-    preference: 'system', // Default preference
-    fallback: 'light',    // Fallback when system preference isn't available
+    preference: 'dark', // Default to dark mode
+    fallback: 'dark',    // Fallback to dark
     globalName: '__NUXT_COLOR_MODE__',
     componentName: 'ColorScheme',
     classPrefix: '',
-    classSuffix: '',      // Important for Tailwind dark mode
-    dataValue: '',        // Use class-based dark mode instead of data attribute
-    storage: 'sessionStorage', // Match theme manager's sessionStorage
+    classSuffix: '-mode',
+    dataValue: 'theme',
+    storage: 'localStorage',
     storageKey: 'nuxt-color-mode'
   },
    vite: {
