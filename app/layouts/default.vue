@@ -12,6 +12,7 @@
     <Navbar />
     <main class="flex-1 relative z-10">
       <slot />
+      <ToastContainer />
     </main>
     <Footer />
     <BackToTop />

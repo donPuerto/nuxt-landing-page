@@ -38,13 +38,13 @@ export default defineEventHandler(async (event) => {
 
     // Get n8n webhook URL from environment
     const config = useRuntimeConfig();
-    const webhookUrl = config.N8N_WEBHOOK_URL;
-    const webhookSecret = config.N8N_WEBHOOK_SECRET;
+    const webhookUrl = config.n8nWebhookUrl || config.public?.n8nWebhookUrl;
+    const webhookSecret = config.n8nWebhookSecret || config.public?.n8nWebhookSecret;
 
     // Debug: ensure server sees runtime config (only logs on server)
     console.info('[contact] received payload for', email);
     if (!webhookUrl) {
-      console.error('[contact] missing N8N_WEBHOOK_URL in runtimeConfig');
+      console.error('[contact] missing N8N_WEBHOOK_URL (runtimeConfig)');
     }
 
     if (!webhookUrl) {

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import tailwindcss from '@tailwindcss/vite'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -13,8 +14,8 @@ export default defineNuxtConfig({
      
   ],
   runtimeConfig: {
-    N8N_WEBHOOK_URL: '',
-    N8N_WEBHOOK_SECRET: '',
+    n8nWebhookUrl: process.env.NUXT_N8N_WEBHOOK_URL || '',
+    n8nWebhookSecret: process.env.NUXT_N8N_WEBHOOK_SECRET || '',
   },
   colorMode: {
     preference: 'dark', // Default to dark mode
@@ -42,5 +43,17 @@ export default defineNuxtConfig({
     externals: {
       inline: ['@nuxt/nitro-server'],
     },
+    experimental: {
+      // Disable strict CSP in development
+    }
+  },
+  routeRules: {
+    '/**': {
+      headers: {
+        'Content-Security-Policy': process.env.NODE_ENV === 'development' 
+          ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;"
+          : "script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;"
+      }
+    }
   },
 })
