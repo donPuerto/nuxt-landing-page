@@ -49,8 +49,8 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // Forward to n8n webhook
-    const response = await $fetch(webhookUrl, {
+    // Forward to n8n webhook and capture its response
+    const n8nResponse: any = await $fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,10 +64,10 @@ export default defineEventHandler(async (event) => {
       }
     });
 
-    return {
-      ok: true,
-      message: 'Message sent successfully'
-    };
+    // Relay n8n's message when available
+    const ok = typeof n8nResponse?.ok === 'boolean' ? n8nResponse.ok : true;
+    const message = n8nResponse?.message || 'Message sent successfully';
+    return { ok, message };
   } catch (error) {
     console.error('Error forwarding contact form to n8n:', error);
     return {

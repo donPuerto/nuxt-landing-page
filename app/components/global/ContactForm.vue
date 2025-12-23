@@ -1,10 +1,49 @@
 <!-- app/components/global/ContactForm.vue -->
 <script setup lang="ts">
-const { name, email, message, loading, success, error, submit } = useForm();
+import { cn } from '~/lib/utils';
+const { name, email, message, loading, success, error, serverMessage, submit } = useForm();
 </script>
 
 <template>
   <div class="max-w-5xl mx-auto">
+    <!-- Top-right Toast -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 translate-y-2"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-2"
+    >
+      <div v-if="success || error" class="fixed top-4 right-4 z-50 w-full max-w-sm">
+        <div
+          :class="cn(
+            'w-full rounded-lg border shadow-lg p-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur flex items-start gap-3',
+            success ? 'border-green-200 dark:border-green-800' : 'border-red-200 dark:border-red-800'
+          )"
+          :role="success ? 'status' : 'alert'"
+          aria-live="polite"
+        >
+          <svg v-if="success" class="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          <svg v-else class="w-5 h-5 text-red-600 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+          <div>
+            <p class="text-sm font-medium" :class="success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'">
+              {{ success ? (serverMessage || 'Message sent successfully!') : 'Submission failed' }}
+            </p>
+            <p v-if="success" class="text-sm mt-1" :class="success ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'">
+              Thank you for reaching out.
+            </p>
+            <p v-else class="text-sm mt-1 text-red-700 dark:text-red-300">
+              {{ error }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </Transition>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
       <!-- Info Column -->
       <div class="space-y-4 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
@@ -111,7 +150,7 @@ const { name, email, message, loading, success, error, submit } = useForm();
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <div>
-              <p class="text-sm font-medium text-green-800">Message sent successfully!</p>
+              <p class="text-sm font-medium text-green-800">{{ serverMessage || 'Message sent successfully!' }}</p>
               <p class="text-sm text-green-700 mt-1">Thank you for reaching out. Our team will follow up with you shortly.</p>
             </div>
           </div>

@@ -1,11 +1,12 @@
 // app/composables/useForm.ts
 export function useForm() {
-  const name = ref('John Doe');
-  const email = ref('john.doe@example.com');
-  const message = ref('Hi! I\'m interested in learning more about your automation services and how they can help scale my business.');
+  const name = ref('');
+  const email = ref('');
+  const message = ref('');
   const loading = ref(false);
   const success = ref(false);
   const error = ref('');
+  const serverMessage = ref('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -49,6 +50,7 @@ export function useForm() {
 
       if (response.ok) {
         success.value = true;
+        serverMessage.value = response.message || 'Message sent successfully';
         name.value = '';
         email.value = '';
         message.value = '';
@@ -56,13 +58,20 @@ export function useForm() {
         // Auto-hide success message after 5 seconds
         setTimeout(() => {
           success.value = false;
+          serverMessage.value = '';
         }, 5000);
       } else {
         error.value = response.message || 'Failed to send message. Please try again.';
+        setTimeout(() => {
+          error.value = '';
+        }, 5000);
       }
     } catch (err) {
       console.error('Contact form error:', err);
       error.value = 'Failed to send message. Please try again.';
+      setTimeout(() => {
+        error.value = '';
+      }, 5000);
     } finally {
       loading.value = false;
     }
@@ -84,6 +93,7 @@ export function useForm() {
     loading,
     success,
     error,
+    serverMessage,
     submit,
     reset
   };
