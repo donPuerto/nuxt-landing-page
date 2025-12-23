@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from '~/lib/utils'
-import { useToast } from '#imports'
+import { useToast } from '~/composables/useToast'
 
 const { toasts, remove } = useToast()
 
