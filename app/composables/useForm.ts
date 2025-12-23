@@ -1,8 +1,8 @@
 // app/composables/useForm.ts
 export function useForm() {
-  const name = ref('');
-  const email = ref('');
-  const message = ref('');
+  const name = ref('John Doe');
+  const email = ref('john.doe@example.com');
+  const message = ref('Hi! I\'m interested in learning more about your automation services and how they can help scale my business.');
   const loading = ref(false);
   const success = ref(false);
   const error = ref('');
@@ -61,6 +61,7 @@ export function useForm() {
         error.value = response.message || 'Failed to send message. Please try again.';
       }
     } catch (err) {
+      console.error('Contact form error:', err);
       error.value = 'Failed to send message. Please try again.';
     } finally {
       loading.value = false;

@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import { resolve } from 'node:path'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -27,22 +28,23 @@ export default defineNuxtConfig({
     storage: 'localStorage',
     storageKey: 'nuxt-color-mode'
   },
-   vite: {
-     plugins: [
-      tailwindcss(),
-    ],
-   },
-  //  nitro: {
-  //   prerender: {
-  //       autoSubfolderIndex: false
-  //     },
-  //     preset: "cloudflare_module",
-  //     cloudflare: {
-  //         deployConfig: true,
-  //         nodeCompat: true
-  //       },
-  //     externals: {
-  //       inline: ['@nuxt/nitro-server']
-  //     }
-  // },
+  vite: {
+    css: { devSourcemap: false },
+    build: { sourcemap: false },
+    resolve: {
+      alias: {
+        '@nuxt/nitro-server/dist/runtime/utils/cache-driver': resolve('./server/utils/cache-driver.js'),
+        '@nuxt/nitro-server/dist/runtime/utils/cache-driver.js': resolve('./server/utils/cache-driver.js'),
+      },
+    },
+    optimizeDeps: {
+      exclude: ['@nuxt/nitro-server'],
+    },
+    plugins: [tailwindcss()],
+  },
+  nitro: {
+    externals: {
+      inline: ['@nuxt/nitro-server'],
+    },
+  },
 })
