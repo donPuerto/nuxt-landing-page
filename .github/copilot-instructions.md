@@ -1,4 +1,4 @@
-Copilot Instructions (Nuxt 4 + Tailwind CSS v4)
+Copilot Instructions (Nuxt 4 + Tailwind CSS v4 + Inspira UI)
 1) Project stack
 
 Framework: Nuxt 4
@@ -7,11 +7,17 @@ Language: TypeScript
 
 Styling: Tailwind CSS v4 (Vite plugin; do not add PostCSS unless required)
 
-UI: Pure Tailwind CSS (no shadcn, no component libraries)
+UI:
 
-Automation / AI: Inspira UI (used only in automation workflows, not frontend UI)
+Tailwind CSS for layout and styling
+
+Inspira UI for component-based UI where appropriate
+
+❌ Do NOT use shadcn UI
 
 Automation platform: n8n
+
+AI / Automation logic: Handled via n8n workflows (AI nodes, email, messaging)
 
 2) Coding defaults
 
@@ -19,19 +25,66 @@ Vue SFCs must use: <script setup lang="ts">
 
 Prefer Composition API patterns.
 
-Follow Nuxt conventions: app/pages/, layouts/, components/, composables/, server/.
+Follow Nuxt conventions:
+
+app/pages/
+
+layouts/
+
+components/
+
+composables/
+
+server/
 
 Use Nuxt auto-imports where appropriate; use explicit imports if unclear.
 
-Keep components clean and reusable; extract repeated Tailwind blocks into components.
+Keep components clean and reusable.
 
-3) UI & Tailwind conventions
+Extract repeated Tailwind blocks into reusable components.
 
-Build all UI using Tailwind utility classes only.
+3) Tailwind utility requirement (MANDATORY)
 
-No external UI component libraries.
+This project must use the shared Tailwind utility for class merging.
 
-Use semantic HTML (header, main, section, footer).
+Utility location
+
+lib/utils.ts (or equivalent shared utility folder)
+
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export type ObjectValues<T> = T[keyof T];
+
+Usage rules
+
+Always use cn() when:
+
+Conditionally applying Tailwind classes
+
+Merging class strings
+
+Accepting a class prop in components
+
+Do not concatenate class strings manually.
+
+Components should accept class?: string when appropriate and merge it via cn().
+
+4) UI & Tailwind conventions
+
+UI may be built using:
+
+Custom Tailwind-based components
+
+Inspira UI components
+
+Do not use shadcn UI components.
+
+Use semantic HTML (header, main, section, footer) unless an Inspira component replaces it.
 
 Maintain professional spacing and typography:
 
@@ -41,39 +94,49 @@ Containers: max-w-7xl mx-auto px-6
 
 Accessibility is required:
 
-Every form field must have a <label>
+Labels for form inputs
 
-Proper input types (email, text)
+Correct input types
 
 Visible focus states
 
-4) Nuxt patterns
+5) Nuxt patterns
 
 This project is a single-page landing page:
 
 Use app/pages/index.vue only
 
-Section-based layout with anchor scrolling (no multi-page routing)
+Section-based layout with anchor scrolling
 
-Use layouts/default.vue for shared structure (header/footer).
+No multi-page routing
 
-Backend calls must go through server/api/ (never call n8n directly from the client).
+Use layouts/default.vue for shared structure (header + footer).
+
+Backend calls must go through server/api/
+
+❌ Never call n8n directly from the client
 
 Use $fetch / useFetch with proper error handling and UI feedback.
 
-5) Architecture overview
+6) Architecture overview
 
 Client: app/
 
 Server: server/
 
-Components: components/ (Tailwind-only)
+Components:
+
+components/ (custom Tailwind components)
+
+Inspira UI components (imported where appropriate)
 
 Shared logic (optional): shared/
 
 Types (optional): types/index.ts
 
-6) Product requirement: One-Page Marketing Agency Landing Page + n8n Automation
+Utilities: lib/utils.ts
+
+7) Product requirement: One-Page Marketing Agency Landing Page + n8n Automation
 Step 1: One-page Landing Page (production-ready)
 
 Create a single-page professional landing page suitable for a real marketing agency.
@@ -96,6 +159,8 @@ Title + short description
 
 Responsive grid layout
 
+May use Inspira UI card components or custom Tailwind components
+
 Contact Us
 
 Form fields:
@@ -106,7 +171,9 @@ Email
 
 Message
 
-Clear submit button and feedback messages
+Clear submit button
+
+Success and error feedback
 
 Quality requirements
 
@@ -114,9 +181,9 @@ Mobile-first, responsive
 
 Clean, professional, agency-style design
 
-Clear visual hierarchy and spacing
+Clear visual hierarchy
 
-No placeholder/demo styling
+No placeholder or demo-only styling
 
 Step 2: Form Integration (Nuxt → n8n)
 
@@ -126,7 +193,7 @@ Implement a Nuxt server endpoint:
 
 server/api/contact.post.ts
 
-Server endpoint must:
+Server endpoint must
 
 Validate required fields
 
@@ -136,11 +203,11 @@ Use environment variable:
 
 N8N_WEBHOOK_URL
 
-UI requirements:
+UI requirements
 
 Loading state while submitting
 
-Success confirmation on completion
+Success confirmation
 
 Error message on failure
 
@@ -154,7 +221,7 @@ Receive form submission data
 
 Normalize and format user information
 
-Trigger an AI agent (via Inspira UI automation) to generate a response
+Trigger AI logic (LLM node or AI agent)
 
 Send an automated reply via email or messaging platform
 
@@ -170,7 +237,7 @@ Inform the user that the team will follow up shortly
 
 Maintain a professional, friendly, human-like tone
 
-7) Development workflow
+8) Development workflow
 
 Dev: npm run dev
 
@@ -180,14 +247,16 @@ Preview: npm run preview
 
 Follow existing ESLint and TypeScript rules
 
-8) Output expectations (Copilot behavior)
+9) Output expectations (Copilot behavior)
 
-Generate complete, working code (no partial snippets).
+Generate complete, working code.
 
-Always specify file paths and show the full updated block.
+Always specify file paths and show full updated blocks.
 
-Prefer minimal, correct changes over broad refactors.
+Prefer minimal, correct changes.
 
-Tailwind only for UI.
+Tailwind + Inspira UI only.
 
 Single-page architecture only.
+
+Always use cn() for class merging.

@@ -14,5 +14,22 @@
     {
       "path": "./.nuxt/tsconfig.node.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "types": [
+      "@nuxt/image",
+      "@types/node"
+    ],
+    "paths": {
+      "~/*": ["./app/*"],
+      "@/*": ["./app/*"],
+      "~~/*": ["./*"],
+      "@@/*": ["./*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".nuxt", ".output"]
 }
