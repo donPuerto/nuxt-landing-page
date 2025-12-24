@@ -26,20 +26,20 @@ const { rippleStore } = useRipple();
     </ClientOnly>
     <BackToTop />
 
-    <!-- Global Ripple Overlay -->
-    <div class="pointer-events-none fixed inset-0 z-50">
+    <!-- Global Ripple Overlay (mask-based to reveal new theme) -->
+    <div class="pointer-events-none fixed inset-0 z-100">
       <div
         v-for="ripple in rippleStore"
         :key="ripple.id"
         class="absolute inset-0"
         :style="{
-          background: ripple.theme === 'light' ? '#ffffff' : '#030712',
-          clipPath: `circle(0px at ${ripple.x}px ${ripple.y}px)`,
-          animation: `ripple-reveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
+          background: ripple.prevTheme === 'light' ? '#ffffff' : '#030712',
+          WebkitMaskImage: `radial-gradient(circle at ${ripple.x}px ${ripple.y}px, transparent 0px, black 0px)`,
+          maskImage: `radial-gradient(circle at ${ripple.x}px ${ripple.y}px, transparent 0px, black 0px)`,
+          animation: `mask-reveal ${ripple.duration ?? 800}ms cubic-bezier(0.4, 0, 0.2, 1) forwards`,
           '--ripple-x': ripple.x + 'px',
           '--ripple-y': ripple.y + 'px',
           '--ripple-size': ripple.size + 'px',
-          boxShadow: `0 0 0 2px ${ripple.theme === 'light' ? '#3b82f6' : '#60a5fa'}`
         } as any"
       />
     </div>
@@ -71,12 +71,39 @@ const { rippleStore } = useRipple();
   animation-delay: 4s;
 }
 
-@keyframes ripple-reveal {
+@keyframes mask-reveal {
   0% {
-    clip-path: circle(0px at var(--ripple-x) var(--ripple-y));
+    -webkit-mask-image: radial-gradient(circle at var(--ripple-x) var(--ripple-y), transparent 0px, black 0px);
+            mask-image: radial-gradient(circle at var(--ripple-x) var(--ripple-y), transparent 0px, black 0px);
   }
   100% {
-    clip-path: circle(var(--ripple-size) at var(--ripple-x) var(--ripple-y));
+    -webkit-mask-image: radial-gradient(circle at var(--ripple-x) var(--ripple-y), transparent var(--ripple-size), black calc(var(--ripple-size) + 1px));
+            mask-image: radial-gradient(circle at var(--ripple-x) var(--ripple-y), transparent var(--ripple-size), black calc(var(--ripple-size) + 1px));
   }
+}
+</style>
+
+<!-- View Transition radial reveal from top-right (global, unscoped) -->
+<style>
+/* Enable transitions on root */
+:root { view-transition-name: root; }
+
+/* Avoid default cross-fade; we'll drive the clip-path */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes vt-ripple {
+  from { clip-path: circle(0% at var(--vt-x, 100%) var(--vt-y, 0%)); }
+  to { clip-path: circle(160% at var(--vt-x, 100%) var(--vt-y, 0%)); }
+}
+
+/* New view expands from top-right; old contracts */
+::view-transition-new(root) {
+  animation: vt-ripple 700ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-old(root) {
+  animation: vt-ripple 700ms cubic-bezier(0.4, 0, 0.2, 1) both reverse;
 }
 </style>

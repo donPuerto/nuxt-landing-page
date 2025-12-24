@@ -9,34 +9,47 @@ const isDark = computed(() => colorMode.value === 'dark');
 const toggleTheme = (event: MouseEvent) => {
   if (!import.meta.client) return;
 
-  const clickX = event.clientX;
-  const clickY = event.clientY;
-  const maxX = Math.max(clickX, window.innerWidth - clickX);
-  const maxY = Math.max(clickY, window.innerHeight - clickY);
+  const prevTheme = colorMode.value === 'dark' ? 'dark' : 'light';
+  const newTheme = prevTheme === 'dark' ? 'light' : 'dark';
+
+  // Prefer native View Transitions API for a true wave reveal
+  const doc: any = document as any;
+  if (doc && typeof doc.startViewTransition === 'function') {
+    // Start position: top-right corner
+    document.documentElement.style.setProperty('--vt-x', '100%');
+    document.documentElement.style.setProperty('--vt-y', '0%');
+
+    doc.startViewTransition(() => {
+      colorMode.preference = newTheme;
+    });
+    return;
+  }
+
+  // Fallback: use mask-based overlay starting from top-right of the viewport
+  const originX = window.innerWidth - 1;
+  const originY = 0;
+  const maxX = Math.max(originX, window.innerWidth - originX);
+  const maxY = Math.max(originY, window.innerHeight - originY);
   const maxDistance = Math.sqrt(maxX * maxX + maxY * maxY);
-  
-  const finalSize = maxDistance * 2.5;
-  
-  // Determine new theme BEFORE toggling
-  const newTheme = colorMode.value === 'dark' ? 'light' : 'dark';
-  
+
+  const finalSize = maxDistance * 1.25;
+  const duration = 800;
+
   const id = Date.now() + Math.random();
   rippleStore.value.push({
     id,
-    x: clickX,
-    y: clickY,
+    x: originX,
+    y: originY,
     size: finalSize,
-    theme: newTheme
+    prevTheme,
+    duration,
   });
 
-  // Delay theme change to let ripple animate
-  setTimeout(() => {
-    colorMode.preference = newTheme;
-  }, 1000);
+  colorMode.preference = newTheme;
 
   setTimeout(() => {
     rippleStore.value = rippleStore.value.filter((r) => r.id !== id);
-  }, 1050);
+  }, duration + 50);
 };
 
 // Watch color mode changes
