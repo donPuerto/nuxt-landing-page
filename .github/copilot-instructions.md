@@ -1,32 +1,72 @@
+Copilot Instructions
+
+Nuxt 4 + Tailwind CSS v4 + Vue shadcn/ui (Primary) + Inspira UI (Secondary)
+
 1. Project Stack
 
 Framework: Nuxt 4
 
 Language: TypeScript
 
-Styling: Tailwind CSS v4
-
-Use the Vite plugin
+Styling: Tailwind CSS v4 (Vite plugin)
 
 ❌ Do not add PostCSS unless explicitly required
 
-UI
+UI Libraries (Priority Order)
 
-Tailwind CSS for layout, spacing, and custom styling
+Vue shadcn/ui (PRIMARY UI SYSTEM)
 
-Vue shadcn/ui for accessible, headless, composable UI primitives
+Must be used for all interactive and form-based components
 
-Inspira UI for higher-level, prebuilt marketing and layout components
+Acts as the default component system for the app
 
-Vue-only UI libraries (❌ no React-based packages)
+Inspira UI (SECONDARY / LAYOUT)
 
-Automation & AI
+Used only for marketing layouts, page sections, and non-interactive composition
 
-Automation platform: n8n
+Custom Tailwind components
 
-AI / Automation logic: Handled via n8n workflows (AI nodes, email, messaging)
+Allowed only when no shadcn or Inspira component exists
 
-2. Coding Defaults
+❌ React-based shadcn is forbidden
+❌ Do not reimplement shadcn components with raw Tailwind
+
+2. Shadcn-First Component Rule (MANDATORY)
+Default Rule
+
+If a Vue shadcn/ui component exists, it MUST be used.
+
+This applies to:
+
+Pages
+
+Components
+
+Forms
+
+Dialogs
+
+UI primitives
+
+Replacement Rule
+
+When building or modifying a page:
+
+❌ Do not create custom Tailwind markup for buttons, inputs, forms, or cards
+
+✅ Replace existing or generated markup with the appropriate Vue shadcn/ui component
+
+Examples
+UI Need	Required Component
+Button	Button
+Input field	Input
+Textarea	Textarea
+Form layout	Form, FormField
+Card	Card
+Modal	Dialog
+Dropdown	DropdownMenu
+Alert / feedback	Alert
+3. Coding Defaults
 
 Vue SFCs must use:
 
@@ -47,21 +87,17 @@ composables/
 
 server/
 
-Use Nuxt auto-imports where appropriate
+Keep components small and reusable
 
-Use explicit imports if anything is unclear
+Do not duplicate logic already handled by shadcn
 
-Keep components clean, small, and reusable
+4. Tailwind Utility Requirement (MANDATORY)
 
-Extract repeated Tailwind patterns into reusable components
-
-3. Tailwind Utility Requirement (MANDATORY)
-
-This project must use the shared Tailwind utility for class merging.
+All Tailwind class merging must use the shared utility.
 
 Utility Location
 
-lib/utils.ts (or equivalent shared utility folder)
+lib/utils.ts
 
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -70,80 +106,70 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export type ObjectValues<T> = T[keyof T];
-
 Usage Rules
 
 Always use cn() when:
 
+Extending or overriding shadcn component styles
+
 Conditionally applying Tailwind classes
 
-Merging class strings
+Accepting a class prop
 
-Accepting a class prop in components
+❌ No manual string concatenation
 
-❌ Do not concatenate class strings manually
-✅ Components should accept class?: string and merge it via cn()
+5. UI Composition Rules
+Pages (app/pages/index.vue)
 
-4. UI & Tailwind Conventions
+Pages must be composed using shadcn components first
 
-UI may be assured using:
+Layout structure may wrap shadcn components with Inspira sections if needed
 
-Vue shadcn/ui components
+Do not write raw HTML inputs, buttons, or forms in pages
 
-Inspira UI components
+Components (components/)
 
-Custom Tailwind-based components
+Shadcn components may be:
 
-Component Selection Guidelines
+Used directly
 
-Use Vue shadcn/ui for:
+Wrapped for customization
 
-Buttons
+Wrappers must:
+
+Forward props
+
+Accept class?: string
+
+Merge styles via cn()
+
+6. Inspira UI Usage Rules
+
+Inspira UI is allowed only for:
+
+Hero sections
+
+Marketing layout blocks
+
+Section composition
+
+Non-interactive visual structure
+
+❌ Do not use Inspira UI for:
 
 Forms
 
 Inputs
 
-Dialogs
+Buttons
 
-Dropdowns
+Modals
 
-Accessible interactive primitives
+Interactive UI elements
 
-Use Inspira UI for:
+7. Nuxt Patterns
 
-Marketing sections
-
-Hero layouts
-
-Cards
-
-Page-level composition
-
-Layout & Semantics
-
-Use semantic HTML (header, main, section, footer) unless replaced by a UI component
-
-Maintain professional spacing and typography:
-
-Sections: py-16 or py-24
-
-Containers: max-w-7xl mx-auto px-6
-
-Accessibility (Required)
-
-Labels for all form inputs
-
-Correct input types
-
-Keyboard navigation support
-
-Visible focus states (do not remove outlines without replacement)
-
-5. Nuxt Patterns
-
-Single-page landing page architecture
+Single-page architecture
 
 Use app/pages/index.vue only
 
@@ -153,168 +179,60 @@ Section-based layout with anchor scrolling
 
 Layout
 
-Use layouts/default.vue for shared structure (header + footer)
+Use layouts/default.vue for header + footer
 
 Server Communication
 
-All backend calls must go through server/api/
+Backend calls must go through server/api/
 
 ❌ Never call n8n directly from the client
 
 Use $fetch / useFetch with:
 
-Proper error handling
-
 Loading states
+
+Error handling
 
 User feedback
 
-6. Architecture Overview
-app/
-  pages/
-    index.vue
-layouts/
-  default.vue
-components/
-  (custom Tailwind, shadcn/ui wrappers, Inspira UI usage)
-composables/
-server/
-  api/
-lib/
-  utils.ts
-shared/        (optional)
-types/
-  index.ts     (optional)
-
-7. Product Requirement
+8. Product Requirement
 One-Page Marketing Agency Landing Page + n8n Automation
-Step 1. One-Page Landing Page (Production-Ready)
+Step 1. Landing Page UI Rules
 
-Create a professional, real-world marketing agency landing page.
+All forms must use shadcn components
 
-Required Sections
-Hero
+CTA buttons must be shadcn Button
 
-Company name
+Contact form fields must be:
 
-Short, value-driven description
+Input
 
-Primary CTA button (scrolls to Contact section)
+Textarea
 
-Services / Offerings
+Form / FormField
 
-3–6 service cards
+Feedback states must use:
 
-Title + short description
+Alert
 
-Responsive grid layout
-
-May use:
-
-Inspira UI cards
-
-Vue shadcn/ui card primitives
-
-Custom Tailwind components
-
-Contact Us
-
-Form fields:
-
-Name
-
-Email
-
-Message
-
-Submit button
-
-Success and error feedback
-
-Quality Requirements
-
-Mobile-first and fully responsive
-
-Clean, professional, agency-style design
-
-Clear visual hierarchy
-
-❌ No placeholder or demo-only styling
-
-Step 2. Form Integration (Nuxt → n8n)
-
-On submit, send { name, email, message } to n8n.
-
-Server Endpoint
-
-server/api/contact.post.ts
-
-The endpoint must:
-
-Validate required fields
-
-Forward data to n8n using $fetch
-
-Use environment variable:
-
-N8N_WEBHOOK_URL
-
-UI Requirements
-
-Loading state while submitting
-
-Success confirmation message
-
-Error message on failure
-
-Basic client-side validation
-
-Step 3. n8n Automation Workflow
-
-The n8n workflow must:
-
-Receive form submission data
-
-Normalize and format user information
-
-Trigger AI logic (LLM node or AI agent)
-
-Send an automated reply via email or messaging platform
-
-Step 4. Automated AI Response Requirements
-
-The AI-generated response must:
-
-Acknowledge receipt of the inquiry
-
-Thank the user for reaching out
-
-Inform the user that the team will follow up shortly
-
-Maintain a professional, friendly, human-like tone
-
-8. Development Workflow
-
-Development: npm run dev
-
-Build: npm run build
-
-Preview: npm run preview
-
-Follow existing ESLint and TypeScript rules
+Toast (if available)
 
 9. Output Expectations (Copilot Behavior)
 
-Generate complete, working code
+Copilot must:
+
+Prefer Vue shadcn/ui components by default
+
+Replace raw Tailwind markup with shadcn equivalents
+
+Generate complete, production-ready code
 
 Always specify file paths
 
-Show full updated blocks
+Show full updated code blocks
 
-Prefer minimal, correct changes
+Make minimal, correct changes
 
-Vue shadcn/ui + Inspira UI + Tailwind only
+Always use cn() when styling shadcn components
 
-Single-page architecture only
-
-Always use cn() for class merging
+Respect single-page architecture

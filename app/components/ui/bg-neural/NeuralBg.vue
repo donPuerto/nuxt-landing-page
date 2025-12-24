@@ -1,7 +1,7 @@
 <template>
   <canvas
     ref="canvasRef"
-    :class="cn('fixed inset-0 size-full pointer-events-none opacity-60', props.class)"
+    :class="cn('fixed inset-0 size-full pointer-events-none opacity-10', props.class)"
   />
 </template>
 
@@ -132,7 +132,6 @@ const fragmentShader = `
 function initOGL() {
   const canvas = canvasRef.value;
   if (!canvas) {
-    console.warn('[NeuralBg] Canvas ref not available');
     return false;
   }
 
@@ -178,10 +177,9 @@ function initOGL() {
     sceneRef.value = scene;
     meshRef.value = mesh;
 
-    console.log('[NeuralBg] OGL initialized successfully');
     return true;
   } catch (error) {
-    console.error('[NeuralBg] Error initializing OGL:', error);
+    console.error('Error initializing OGL:', error);
     return false;
   }
 }
@@ -197,8 +195,6 @@ function resizeCanvas() {
 
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
-
-  console.log('[NeuralBg] Canvas size:', width, 'x', height);
 
   renderer.setSize(width, height);
 
@@ -294,7 +290,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log('[NeuralBg] Component mounted, canvas:', canvasRef.value);
   if (initOGL()) {
     resizeCanvas();
     render();
@@ -303,9 +298,6 @@ onMounted(() => {
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("touchmove", handleTouchMove);
     window.addEventListener("click", handleClick);
-    console.log('[NeuralBg] Event listeners attached and rendering started');
-  } else {
-    console.warn('[NeuralBg] Failed to initialize OGL');
   }
 });
 

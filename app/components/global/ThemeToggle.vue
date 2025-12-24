@@ -1,8 +1,7 @@
 <!-- app/components/global/ThemeToggle.vue -->
 <script setup lang="ts">
 const colorMode = useColorMode();
-const ripples = ref<Array<{ id: number; x: number; y: number; size: number }>>([]);
-let rippleCounter = 0;
+const { rippleStore } = useRipple();
 const mounted = ref(false);
 
 const isDark = computed(() => colorMode.value === 'dark');
@@ -10,26 +9,39 @@ const isDark = computed(() => colorMode.value === 'dark');
 const toggleTheme = (event: MouseEvent) => {
   if (!import.meta.client) return;
 
-  const x = event.clientX;
-  const y = event.clientY;
-  const maxX = Math.max(x, window.innerWidth - x);
-  const maxY = Math.max(y, window.innerHeight - y);
-  const size = 2 * Math.sqrt(maxX * maxX + maxY * maxY);
-  const id = rippleCounter++;
+  const clickX = event.clientX;
+  const clickY = event.clientY;
+  const maxX = Math.max(clickX, window.innerWidth - clickX);
+  const maxY = Math.max(clickY, window.innerHeight - clickY);
+  const maxDistance = Math.sqrt(maxX * maxX + maxY * maxY);
+  
+  const finalSize = maxDistance * 2.5;
+  
+  // Determine new theme BEFORE toggling
+  const newTheme = colorMode.value === 'dark' ? 'light' : 'dark';
+  
+  const id = Date.now() + Math.random();
+  rippleStore.value.push({
+    id,
+    x: clickX,
+    y: clickY,
+    size: finalSize,
+    theme: newTheme
+  });
 
-  ripples.value.push({ id, x, y, size });
+  // Delay theme change to let ripple animate
+  setTimeout(() => {
+    colorMode.preference = newTheme;
+  }, 1000);
 
   setTimeout(() => {
-    ripples.value = ripples.value.filter((r) => r.id !== id);
-  }, 800);
-
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+    rippleStore.value = rippleStore.value.filter((r) => r.id !== id);
+  }, 1050);
 };
 
 // Watch color mode changes
 watch(() => colorMode.value, (newVal) => {
   if (import.meta.client) {
-    // Update document class
     if (newVal === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -77,39 +89,4 @@ onMounted(() => {
       </svg>
     </Transition>
   </button>
-
-  <Teleport to="body">
-    <div class="pointer-events-none fixed inset-0 z-40">
-      <div
-        v-for="ripple in ripples"
-        :key="ripple.id"
-        class="absolute rounded-full bg-blue-400/15 dark:bg-blue-300/20 border border-blue-400/60 dark:border-blue-300/60 backdrop-blur-sm"
-        :style="{
-          left: ripple.x + 'px',
-          top: ripple.y + 'px',
-          width: ripple.size + 'px',
-          height: ripple.size + 'px',
-          marginLeft: -(ripple.size / 2) + 'px',
-          marginTop: -(ripple.size / 2) + 'px',
-          animation: 'ripple-page 0.85s ease-out forwards'
-        }"
-      />
-    </div>
-  </Teleport>
 </template>
-
-<style scoped>
-@keyframes ripple-page {
-  0% {
-    transform: scale(0);
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 0.4;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
-  }
-}
-</style>

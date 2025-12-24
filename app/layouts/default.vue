@@ -1,4 +1,8 @@
 <!-- app/layouts/default.vue -->
+<script setup lang="ts">
+const { rippleStore } = useRipple();
+</script>
+
 <template>
   <div class="min-h-screen flex flex-col relative">
     <ClientOnly>
@@ -19,6 +23,24 @@
     </main>
     <Footer />
     <BackToTop />
+
+    <!-- Global Ripple Overlay -->
+    <div class="pointer-events-none fixed inset-0 z-50">
+      <div
+        v-for="ripple in rippleStore"
+        :key="ripple.id"
+        class="absolute inset-0"
+        :style="{
+          background: ripple.theme === 'light' ? '#ffffff' : '#030712',
+          clipPath: `circle(0px at ${ripple.x}px ${ripple.y}px)`,
+          animation: `ripple-reveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
+          '--ripple-x': ripple.x + 'px',
+          '--ripple-y': ripple.y + 'px',
+          '--ripple-size': ripple.size + 'px',
+          boxShadow: `0 0 0 2px ${ripple.theme === 'light' ? '#3b82f6' : '#60a5fa'}`
+        } as any"
+      />
+    </div>
   </div>
 </template>
 
@@ -45,5 +67,14 @@
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+@keyframes ripple-reveal {
+  0% {
+    clip-path: circle(0px at var(--ripple-x) var(--ripple-y));
+  }
+  100% {
+    clip-path: circle(var(--ripple-size) at var(--ripple-x) var(--ripple-y));
+  }
 }
 </style>
