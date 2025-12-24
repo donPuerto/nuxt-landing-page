@@ -6,13 +6,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
   css: ['~/assets/css/tailwind.css'],
-  modules: ['@nuxtjs/color-mode', '@nuxt/image', 'nuxt-security'],
+  modules: [
+    '@nuxtjs/color-mode',
+    '@nuxt/image',
+    'nuxt-security',
+  ],
   components: [
     { path: '~/components', pathPrefix: false, extensions: ['.vue'] },
   ],
-  plugins: [
-     
-  ],
+  plugins: [],
   runtimeConfig: {
     n8nWebhookUrl: process.env.NUXT_N8N_WEBHOOK_URL || '',
     n8nWebhookSecret: process.env.NUXT_N8N_WEBHOOK_SECRET || '',
@@ -56,4 +58,5 @@ export default defineNuxtConfig({
       }
     }
   },
+  
 })

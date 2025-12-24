@@ -1,13 +1,16 @@
 <!-- app/layouts/default.vue -->
 <template>
-  <div class="min-h-screen flex flex-col bg-white dark:bg-gray-950 relative">
-    <!-- Animated Gradient Background -->
-    <div class="fixed inset-0 -z-10 w-screen h-screen pointer-events-none overflow-hidden">
-      <!-- Gradient blobs for light mode -->
-      <div class="absolute top-0 left-0 w-96 h-96 bg-blue-200 dark:bg-blue-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-      <div class="absolute top-0 right-0 w-96 h-96 bg-purple-200 dark:bg-purple-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-      <div class="absolute -bottom-8 left-20 w-96 h-96 bg-pink-200 dark:bg-pink-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-    </div>
+  <div class="min-h-screen flex flex-col relative">
+    <ClientOnly>
+      <NeuralBg class="fixed inset-0 z-0" />
+      <template #fallback>
+        <div class="fixed inset-0 z-0 w-screen h-screen pointer-events-none overflow-hidden">
+          <div class="absolute top-0 left-0 w-96 h-96 bg-blue-200 dark:bg-blue-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div class="absolute top-0 right-0 w-96 h-96 bg-purple-200 dark:bg-purple-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div class="absolute -bottom-8 left-20 w-96 h-96 bg-pink-200 dark:bg-pink-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+      </template>
+    </ClientOnly>
 
     <Navbar />
     <main class="flex-1 relative z-10">

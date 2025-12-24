@@ -1,3 +1,116 @@
+# Setup Guide (Nuxt 4 Landing Page)
+
+This guide walks through local setup on Windows, environment configuration, and connecting the contact form to n8n.
+
+## Prerequisites
+
+- Node.js 18+ (or 20+)
+- npm (bundled with Node)
+- An n8n instance you can access (cloud or self-hosted)
+
+## 1) Clone and Install
+
+```bash
+git clone <repo-url>
+cd nuxt-landing-page
+npm install
+```
+
+## 2) Environment Variables
+
+Create a `.env` file in the project root with the n8n webhook URL.
+
+```bash
+N8N_WEBHOOK_URL=https://your-n8n-host/webhook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+Notes:
+
+- Do not expose this URL in client code; it is only used server-side by `server/api/contact.post.ts`.
+- All contact submissions are forwarded to this URL with `{ name, email, message }`.
+
+## 3) Run the Dev Server
+
+```bash
+npm run dev
+```
+
+The app should be accessible at `http://localhost:3000`.
+
+## 4) UI Conventions and Tailwind
+
+- Use `<script setup lang="ts">` and Composition API
+- Tailwind CSS v4; do not add PostCSS unless explicitly required
+- Merge class names with the shared `cn()` utility in `app/lib/utils.ts`:
+
+```ts
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+- Accept `class?: string` in reusable components and merge via `cn()`
+- Prefer Vue shadcn/ui for accessible primitives; Inspira UI for marketing sections
+
+## 5) n8n Webhook Setup
+
+In n8n, create a workflow that starts with a Webhook node:
+
+1. Method: `POST`
+2. Path: generate a unique path (e.g., `landing-contact`)
+3. Response: JSON; return `{ success: true }` or an error object
+4. Add nodes to:
+   - Normalize input `{ name, email, message }`
+   - Run AI logic (LLM/agent) to craft a friendly acknowledgement
+   - Send an automated reply via Email or a messaging integration
+
+Copy the *Production* webhook URL into your `.env` as `N8N_WEBHOOK_URL`.
+
+## 6) Verify the Contact Endpoint
+
+With the dev server running and `.env` configured, test the server endpoint:
+
+```bash
+curl -X POST http://localhost:3000/api/contact \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Setup Test","email":"setup@example.com","message":"Hello from setup"}'
+```
+
+You should see a success response if forwarding to n8n worked. If not, check:
+
+- The webhook URL is reachable (VPN/firewall issues?)
+- The n8n workflow is active and listening on the path
+- Nuxt server logs for validation or forwarding errors
+
+## 7) Build and Preview
+
+```bash
+npm run build
+npm run preview
+```
+
+## 8) Architecture Expectations
+
+- Single-page landing page only (`app/pages/index.vue`)
+- Shared layout in `app/layouts/default.vue`
+- All backend calls go through `server/api/*`; never call n8n directly from the client
+- Use the Vite plugin; do not add PostCSS unless necessary
+- Accessibility: labels for inputs, correct types, visible focus outlines
+
+## 9) Customization Tips
+
+- Update service cards and content in `app/pages/index.vue` and related section components
+- Extract repeated Tailwind patterns into small, reusable components
+- Use Nuxt auto-imports where appropriate; explicit imports when unclear
+
+## Troubleshooting
+
+- Missing `N8N_WEBHOOK_URL` → set it in `.env`
+- 500 from `/api/contact` → check server logs and n8n workflow
+- Styling collisions → ensure `cn()` is used for class merging and avoid manual concatenation
 # One-Page Marketing Agency Site - Setup Complete
 
 ## ✅ What Was Created

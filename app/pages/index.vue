@@ -14,7 +14,7 @@ useHead({
     <Hero />
 
     <!-- Services Section -->
-    <Section id="services" class="bg-white dark:bg-gray-950">
+    <Section id="services" class="bg-white/30 dark:bg-gray-950/30 backdrop-blur-sm">
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
@@ -48,7 +48,7 @@ useHead({
     </Section>
 
     <!-- Testimonials Section -->
-    <Section id="testimonials" class="bg-gray-50 dark:bg-gray-900">
+    <Section id="testimonials" class="bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm">
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
@@ -81,7 +81,7 @@ useHead({
     </Section>
 
     <!-- Clients Section -->
-    <Section id="clients" class="bg-white dark:bg-gray-950">
+    <Section id="clients" class="bg-white/30 dark:bg-gray-950/30 backdrop-blur-sm">
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
@@ -109,7 +109,7 @@ useHead({
     </Section>
 
     <!-- Contact Section -->
-    <Section id="contact" class="bg-linear-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+    <Section id="contact" class="bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm">
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">

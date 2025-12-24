@@ -1,7 +1,7 @@
 <template>
   <canvas
     ref="canvasRef"
-    :class="cn('absolute inset-0 size-full pointer-events-none opacity-95', props.class)"
+    :class="cn('fixed inset-0 size-full pointer-events-none opacity-60', props.class)"
   />
 </template>
 
@@ -120,15 +120,21 @@ const fragmentShader = `
 
       // Convert to RGB
       color = hsl2rgb(hsl);
-      color = color * noise;
+      
+      // Amplify and brighten the output
+      color = color * (noise * 1.5 + 0.3);
+      color = mix(vec3(0.1), color, clamp(noise * 2.0, 0.0, 1.0));
 
-      gl_FragColor = vec4(color, noise);
+      gl_FragColor = vec4(color, clamp(noise * 1.2, 0.0, 1.0));
   }
 `;
 
 function initOGL() {
   const canvas = canvasRef.value;
-  if (!canvas) return false;
+  if (!canvas) {
+    console.warn('[NeuralBg] Canvas ref not available');
+    return false;
+  }
 
   try {
     const renderer = new Renderer({
@@ -172,9 +178,10 @@ function initOGL() {
     sceneRef.value = scene;
     meshRef.value = mesh;
 
+    console.log('[NeuralBg] OGL initialized successfully');
     return true;
   } catch (error) {
-    console.error("Error initializing OGL:", error);
+    console.error('[NeuralBg] Error initializing OGL:', error);
     return false;
   }
 }
@@ -190,6 +197,8 @@ function resizeCanvas() {
 
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
+
+  console.log('[NeuralBg] Canvas size:', width, 'x', height);
 
   renderer.setSize(width, height);
 
@@ -244,7 +253,9 @@ function handlePointerMove(e: PointerEvent) {
 }
 
 function handleTouchMove(e: TouchEvent) {
-  updateMousePosition(e.touches[0].clientX, e.touches[0].clientY);
+  if (e.touches[0]) {
+    updateMousePosition(e.touches[0].clientX, e.touches[0].clientY);
+  }
 }
 
 function handleClick(e: MouseEvent) {
@@ -283,9 +294,8 @@ watch(
 );
 
 onMounted(() => {
-  console.log('NeuralBg mounted, initializing OGL...');
+  console.log('[NeuralBg] Component mounted, canvas:', canvasRef.value);
   if (initOGL()) {
-    console.log('OGL initialized successfully');
     resizeCanvas();
     render();
 
@@ -293,8 +303,9 @@ onMounted(() => {
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("touchmove", handleTouchMove);
     window.addEventListener("click", handleClick);
+    console.log('[NeuralBg] Event listeners attached and rendering started');
   } else {
-    console.error('Failed to initialize OGL');
+    console.warn('[NeuralBg] Failed to initialize OGL');
   }
 });
 

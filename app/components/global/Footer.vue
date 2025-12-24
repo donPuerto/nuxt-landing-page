@@ -6,7 +6,7 @@ const currentYear = 2025;
 </script>
 
 <template>
-  <footer class="bg-white text-gray-800 border-t border-gray-200 dark:bg-gray-950 dark:text-gray-300 dark:border-gray-900 transition-colors duration-200">
+  <footer class="bg-white/40 dark:bg-gray-900/40 text-gray-800 border-t border-gray-200 dark:border-gray-900 dark:text-gray-300 transition-colors duration-200 backdrop-blur-sm">
     <!-- Main Footer Content -->
     <Container class="py-16">
       <div class="space-y-12">

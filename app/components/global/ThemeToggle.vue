@@ -1,30 +1,28 @@
 <!-- app/components/global/ThemeToggle.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils';
-
 const colorMode = useColorMode();
-const ripples = ref<Array<{ id: number; x: number; y: number }>>([]);
+const ripples = ref<Array<{ id: number; x: number; y: number; size: number }>>([]);
 let rippleCounter = 0;
 const mounted = ref(false);
 
 const isDark = computed(() => colorMode.value === 'dark');
 
 const toggleTheme = (event: MouseEvent) => {
-  // Create ripple effect
-  const button = event.currentTarget as HTMLElement;
-  const rect = button.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
+  if (!import.meta.client) return;
+
+  const x = event.clientX;
+  const y = event.clientY;
+  const maxX = Math.max(x, window.innerWidth - x);
+  const maxY = Math.max(y, window.innerHeight - y);
+  const size = 2 * Math.sqrt(maxX * maxX + maxY * maxY);
   const id = rippleCounter++;
 
-  ripples.value.push({ id, x, y });
+  ripples.value.push({ id, x, y, size });
 
-  // Remove ripple after animation
   setTimeout(() => {
-    ripples.value = ripples.value.filter(r => r.id !== id);
-  }, 600);
+    ripples.value = ripples.value.filter((r) => r.id !== id);
+  }, 800);
 
-  // Toggle theme
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
 };
 
@@ -51,23 +49,6 @@ onMounted(() => {
     class="relative inline-flex items-center justify-center w-10 h-10 border-2 border-blue-500 dark:border-blue-600 rounded-lg text-blue-500 dark:text-blue-400 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200 overflow-hidden shadow-sm"
     :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
   >
-    <!-- Ripple elements -->
-    <div
-      v-if="mounted"
-      v-for="ripple in ripples"
-      :key="ripple.id"
-      class="absolute rounded-full border-2 border-blue-400/80 dark:border-blue-300/90 bg-blue-400/10 dark:bg-blue-300/15 pointer-events-none"
-      :style="{
-        left: ripple.x + 'px',
-        top: ripple.y + 'px',
-        width: '14px',
-        height: '14px',
-        marginLeft: '-7px',
-        marginTop: '-7px',
-        animation: 'ripple 1.15s ease-out forwards'
-      }"
-    />
-
     <!-- Sun icon (show when dark mode is on - to switch to light) -->
     <Transition
       enter-active-class="transition duration-300 ease-out"
@@ -96,25 +77,39 @@ onMounted(() => {
       </svg>
     </Transition>
   </button>
+
+  <Teleport to="body">
+    <div class="pointer-events-none fixed inset-0 z-40">
+      <div
+        v-for="ripple in ripples"
+        :key="ripple.id"
+        class="absolute rounded-full bg-blue-400/15 dark:bg-blue-300/20 border border-blue-400/60 dark:border-blue-300/60 backdrop-blur-sm"
+        :style="{
+          left: ripple.x + 'px',
+          top: ripple.y + 'px',
+          width: ripple.size + 'px',
+          height: ripple.size + 'px',
+          marginLeft: -(ripple.size / 2) + 'px',
+          marginTop: -(ripple.size / 2) + 'px',
+          animation: 'ripple-page 0.85s ease-out forwards'
+        }"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
-@keyframes ripple {
+@keyframes ripple-page {
   0% {
-    width: 14px;
-    height: 14px;
-    opacity: 1;
-    border-color: rgba(59, 130, 246, 0.95);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    transform: scale(0);
+    opacity: 0.8;
   }
   50% {
-    opacity: 0.9;
+    opacity: 0.4;
   }
   100% {
-    width: 1200px;
-    height: 1200px;
+    transform: scale(1);
     opacity: 0;
-    border-color: rgb(59, 130, 246, 0);
   }
 }
 </style>

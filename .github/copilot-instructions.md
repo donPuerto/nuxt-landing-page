@@ -1,29 +1,39 @@
-Copilot Instructions (Nuxt 4 + Tailwind CSS v4 + Inspira UI)
-1) Project stack
+1. Project Stack
 
 Framework: Nuxt 4
 
 Language: TypeScript
 
-Styling: Tailwind CSS v4 (Vite plugin; do not add PostCSS unless required)
+Styling: Tailwind CSS v4
 
-UI:
+Use the Vite plugin
 
-Tailwind CSS for layout and styling
+❌ Do not add PostCSS unless explicitly required
 
-Inspira UI for component-based UI where appropriate
+UI
 
-❌ Do NOT use shadcn UI
+Tailwind CSS for layout, spacing, and custom styling
+
+Vue shadcn/ui for accessible, headless, composable UI primitives
+
+Inspira UI for higher-level, prebuilt marketing and layout components
+
+Vue-only UI libraries (❌ no React-based packages)
+
+Automation & AI
 
 Automation platform: n8n
 
 AI / Automation logic: Handled via n8n workflows (AI nodes, email, messaging)
 
-2) Coding defaults
+2. Coding Defaults
 
-Vue SFCs must use: <script setup lang="ts">
+Vue SFCs must use:
 
-Prefer Composition API patterns.
+<script setup lang="ts">
+
+
+Prefer Composition API
 
 Follow Nuxt conventions:
 
@@ -37,17 +47,19 @@ composables/
 
 server/
 
-Use Nuxt auto-imports where appropriate; use explicit imports if unclear.
+Use Nuxt auto-imports where appropriate
 
-Keep components clean and reusable.
+Use explicit imports if anything is unclear
 
-Extract repeated Tailwind blocks into reusable components.
+Keep components clean, small, and reusable
 
-3) Tailwind utility requirement (MANDATORY)
+Extract repeated Tailwind patterns into reusable components
+
+3. Tailwind Utility Requirement (MANDATORY)
 
 This project must use the shared Tailwind utility for class merging.
 
-Utility location
+Utility Location
 
 lib/utils.ts (or equivalent shared utility folder)
 
@@ -60,7 +72,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export type ObjectValues<T> = T[keyof T];
 
-Usage rules
+Usage Rules
 
 Always use cn() when:
 
@@ -70,21 +82,48 @@ Merging class strings
 
 Accepting a class prop in components
 
-Do not concatenate class strings manually.
+❌ Do not concatenate class strings manually
+✅ Components should accept class?: string and merge it via cn()
 
-Components should accept class?: string when appropriate and merge it via cn().
+4. UI & Tailwind Conventions
 
-4) UI & Tailwind conventions
+UI may be assured using:
 
-UI may be built using:
-
-Custom Tailwind-based components
+Vue shadcn/ui components
 
 Inspira UI components
 
-Do not use shadcn UI components.
+Custom Tailwind-based components
 
-Use semantic HTML (header, main, section, footer) unless an Inspira component replaces it.
+Component Selection Guidelines
+
+Use Vue shadcn/ui for:
+
+Buttons
+
+Forms
+
+Inputs
+
+Dialogs
+
+Dropdowns
+
+Accessible interactive primitives
+
+Use Inspira UI for:
+
+Marketing sections
+
+Hero layouts
+
+Cards
+
+Page-level composition
+
+Layout & Semantics
+
+Use semantic HTML (header, main, section, footer) unless replaced by a UI component
 
 Maintain professional spacing and typography:
 
@@ -92,62 +131,73 @@ Sections: py-16 or py-24
 
 Containers: max-w-7xl mx-auto px-6
 
-Accessibility is required:
+Accessibility (Required)
 
-Labels for form inputs
+Labels for all form inputs
 
 Correct input types
 
-Visible focus states
+Keyboard navigation support
 
-5) Nuxt patterns
+Visible focus states (do not remove outlines without replacement)
 
-This project is a single-page landing page:
+5. Nuxt Patterns
+
+Single-page landing page architecture
 
 Use app/pages/index.vue only
 
 Section-based layout with anchor scrolling
 
-No multi-page routing
+❌ No multi-page routing
 
-Use layouts/default.vue for shared structure (header + footer).
+Layout
 
-Backend calls must go through server/api/
+Use layouts/default.vue for shared structure (header + footer)
+
+Server Communication
+
+All backend calls must go through server/api/
 
 ❌ Never call n8n directly from the client
 
-Use $fetch / useFetch with proper error handling and UI feedback.
+Use $fetch / useFetch with:
 
-6) Architecture overview
+Proper error handling
 
-Client: app/
+Loading states
 
-Server: server/
+User feedback
 
-Components:
+6. Architecture Overview
+app/
+  pages/
+    index.vue
+layouts/
+  default.vue
+components/
+  (custom Tailwind, shadcn/ui wrappers, Inspira UI usage)
+composables/
+server/
+  api/
+lib/
+  utils.ts
+shared/        (optional)
+types/
+  index.ts     (optional)
 
-components/ (custom Tailwind components)
+7. Product Requirement
+One-Page Marketing Agency Landing Page + n8n Automation
+Step 1. One-Page Landing Page (Production-Ready)
 
-Inspira UI components (imported where appropriate)
+Create a professional, real-world marketing agency landing page.
 
-Shared logic (optional): shared/
-
-Types (optional): types/index.ts
-
-Utilities: lib/utils.ts
-
-7) Product requirement: One-Page Marketing Agency Landing Page + n8n Automation
-Step 1: One-page Landing Page (production-ready)
-
-Create a single-page professional landing page suitable for a real marketing agency.
-
-Required sections
-
+Required Sections
 Hero
 
 Company name
 
-Short value-driven description
+Short, value-driven description
 
 Primary CTA button (scrolls to Contact section)
 
@@ -159,7 +209,13 @@ Title + short description
 
 Responsive grid layout
 
-May use Inspira UI card components or custom Tailwind components
+May use:
+
+Inspira UI cards
+
+Vue shadcn/ui card primitives
+
+Custom Tailwind components
 
 Contact Us
 
@@ -171,49 +227,49 @@ Email
 
 Message
 
-Clear submit button
+Submit button
 
 Success and error feedback
 
-Quality requirements
+Quality Requirements
 
-Mobile-first, responsive
+Mobile-first and fully responsive
 
 Clean, professional, agency-style design
 
 Clear visual hierarchy
 
-No placeholder or demo-only styling
+❌ No placeholder or demo-only styling
 
-Step 2: Form Integration (Nuxt → n8n)
+Step 2. Form Integration (Nuxt → n8n)
 
 On submit, send { name, email, message } to n8n.
 
-Implement a Nuxt server endpoint:
+Server Endpoint
 
 server/api/contact.post.ts
 
-Server endpoint must
+The endpoint must:
 
 Validate required fields
 
-Forward data to n8n via $fetch
+Forward data to n8n using $fetch
 
 Use environment variable:
 
 N8N_WEBHOOK_URL
 
-UI requirements
+UI Requirements
 
 Loading state while submitting
 
-Success confirmation
+Success confirmation message
 
 Error message on failure
 
 Basic client-side validation
 
-Step 3: n8n Automation Workflow
+Step 3. n8n Automation Workflow
 
 The n8n workflow must:
 
@@ -225,7 +281,7 @@ Trigger AI logic (LLM node or AI agent)
 
 Send an automated reply via email or messaging platform
 
-Step 4: Automated AI Response Requirements
+Step 4. Automated AI Response Requirements
 
 The AI-generated response must:
 
@@ -237,9 +293,9 @@ Inform the user that the team will follow up shortly
 
 Maintain a professional, friendly, human-like tone
 
-8) Development workflow
+8. Development Workflow
 
-Dev: npm run dev
+Development: npm run dev
 
 Build: npm run build
 
@@ -247,16 +303,18 @@ Preview: npm run preview
 
 Follow existing ESLint and TypeScript rules
 
-9) Output expectations (Copilot behavior)
+9. Output Expectations (Copilot Behavior)
 
-Generate complete, working code.
+Generate complete, working code
 
-Always specify file paths and show full updated blocks.
+Always specify file paths
 
-Prefer minimal, correct changes.
+Show full updated blocks
 
-Tailwind + Inspira UI only.
+Prefer minimal, correct changes
 
-Single-page architecture only.
+Vue shadcn/ui + Inspira UI + Tailwind only
 
-Always use cn() for class merging.
+Single-page architecture only
+
+Always use cn() for class merging

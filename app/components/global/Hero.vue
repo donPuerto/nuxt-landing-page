@@ -4,7 +4,7 @@ const { scrollTo } = useSmoothScroll();
 </script>
 
 <template>
-  <Section id="home" class="pt-32 pb-16 md:pt-40 md:pb-24 bg-linear-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950">
+  <Section id="home" class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm">
     <Container>
       <FadeIn direction="up" class="text-center max-w-4xl mx-auto">
         <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
