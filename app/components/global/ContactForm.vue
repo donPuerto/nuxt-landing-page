@@ -44,7 +44,7 @@ const onSubmit = handleSubmit(async (values) => {
   <div class="max-w-5xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
       <!-- Info Column -->
-      <div class="space-y-4 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+      <div class="space-y-4 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl py-6 px-6">
         <div class="space-y-1">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Let's Connect</h3>
           <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -90,7 +90,7 @@ const onSubmit = handleSubmit(async (values) => {
       </div>
 
       <!-- Form Column -->
-      <form @submit="onSubmit" class="space-y-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
+      <form @submit="onSubmit" class="space-y-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl py-6 px-6 shadow-sm">
         <!-- Name Field -->
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>

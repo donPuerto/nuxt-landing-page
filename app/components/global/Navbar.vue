@@ -91,7 +91,7 @@ const toggleMobileMenu = () => {
         <div v-if="mobileMenuOpen" class="md:hidden pt-4 pb-2 border-t border-gray-200 dark:border-gray-800 mt-4">
           <div class="flex flex-col gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               v-for="link in navLinks"
               :key="link.id"
               @click="handleNavClick(link.id)"

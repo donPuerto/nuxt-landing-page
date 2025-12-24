@@ -14,11 +14,11 @@ const currentYear = 2025;
       <div class="space-y-12">
         <!-- Top Section: Connect with me -->
         <div class="text-center">
-          <h2 class="text-3xl md:text-4xl font-bold text-white dark:text-gray-200 mb-8">Connect with me</h2>
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">Connect with me</h2>
           <div class="flex justify-center gap-6">
             <Button
-              variant="ghost"
-              size="icon"
+              variant="outline"
+              size="icon-lg"
               as-child
             >
               <a
@@ -33,8 +33,8 @@ const currentYear = 2025;
               </a>
             </Button>
             <Button
-              variant="ghost"
-              size="icon"
+              variant="outline"
+              size="icon-lg"
               as-child
             >
               <a
