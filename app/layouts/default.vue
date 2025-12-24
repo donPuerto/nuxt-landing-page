@@ -101,9 +101,9 @@ const { rippleStore } = useRipple();
 
 /* New view expands from top-right; old contracts */
 ::view-transition-new(root) {
-  animation: vt-ripple 700ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: vt-ripple 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 ::view-transition-old(root) {
-  animation: vt-ripple 700ms cubic-bezier(0.4, 0, 0.2, 1) both reverse;
+  animation: vt-ripple 400ms cubic-bezier(0.4, 0, 0.2, 1) both reverse;
 }
 </style>

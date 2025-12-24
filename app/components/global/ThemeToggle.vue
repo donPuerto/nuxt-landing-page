@@ -33,7 +33,7 @@ const toggleTheme = (event: MouseEvent) => {
   const maxDistance = Math.sqrt(maxX * maxX + maxY * maxY);
 
   const finalSize = maxDistance * 1.25;
-  const duration = 800;
+  const duration = 450;
 
   const id = Date.now() + Math.random();
   rippleStore.value.push({
