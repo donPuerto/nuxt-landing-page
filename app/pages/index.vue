@@ -1,5 +1,7 @@
 <!-- app/pages/index.vue -->
 <script setup lang="ts">
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+
 useHead({
   title: 'DP Don Puerto - AI Automation & Marketing Solutions',
   meta: [

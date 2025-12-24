@@ -1,5 +1,6 @@
 <!-- app/components/global/Navbar.vue -->
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
 import { cn } from '~/lib/utils';
 
 const { activeSection } = useScrollSpy();
@@ -53,7 +54,7 @@ const toggleMobileMenu = () => {
         <!-- CTA Button & Theme Toggle (Desktop) -->
         <div class="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          <Button @click="handleNavClick('contact')" variant="primary" size="md">
+          <Button @click="handleNavClick('contact')">
             Let's Talk
           </Button>
         </div>
@@ -99,7 +100,7 @@ const toggleMobileMenu = () => {
             >
               {{ link.label }}
             </button>
-            <Button @click="handleNavClick('contact')" variant="primary" size="md" class="mt-2">
+            <Button @click="handleNavClick('contact')" class="mt-2">
               Let's Talk
             </Button>
           </div>

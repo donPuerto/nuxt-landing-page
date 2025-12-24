@@ -2,19 +2,24 @@
 import type { ToasterProps } from "vue-sonner"
 import { CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon, XIcon } from "lucide-vue-next"
 import { Toaster as Sonner } from "vue-sonner"
-import { cn } from "@/lib/utils"
 
 const props = defineProps<ToasterProps>()
+const colorMode = useColorMode()
+const theme = computed(() => colorMode.value === 'dark' ? 'dark' : 'light')
 </script>
 
 <template>
   <Sonner
-    :class="cn('toaster group', props.class)"
-    :style="{
-      '--normal-bg': 'var(--popover)',
-      '--normal-text': 'var(--popover-foreground)',
-      '--normal-border': 'var(--border)',
-      '--border-radius': 'var(--radius)',
+    :theme="theme"
+    :toastOptions="{
+      unstyled: false,
+      classNames: {
+        toast: 'shadow-lg border dark:border-gray-700',
+        title: 'dark:text-white',
+        description: 'dark:text-gray-300',
+        success: 'dark:bg-gray-900 dark:border-green-800',
+        error: 'dark:bg-gray-900 dark:border-red-800',
+      },
     }"
     v-bind="props"
   >

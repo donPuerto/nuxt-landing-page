@@ -1,49 +1,47 @@
 <!-- app/components/global/ContactForm.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils';
-const { name, email, message, loading, success, error, serverMessage, submit } = useForm();
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+import { toast } from 'vue-sonner'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
+import { cn } from '~/lib/utils'
+
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(50),
+  email: z.string().email('Invalid email address'),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(500),
+}))
+
+const { handleSubmit, resetForm, isSubmitting } = useForm({
+  validationSchema: formSchema,
+})
+
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const response = await $fetch<{ message?: string }>('/api/contact', {
+      method: 'POST',
+      body: values,
+    })
+
+    toast.success(response?.message || 'Message sent successfully!', {
+      description: 'Thank you for reaching out. Our team will follow up with you shortly.',
+    })
+    
+    resetForm()
+  } catch (err: any) {
+    toast.error('Submission failed', {
+      description: err.data?.message || 'Failed to send message. Please try again.',
+    })
+  }
+})
 </script>
 
 <template>
   <div class="max-w-5xl mx-auto">
-    <!-- Top-right Toast -->
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="opacity-0 translate-y-2"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 translate-y-2"
-    >
-      <div v-if="success || error" class="fixed top-4 right-4 z-50 w-full max-w-sm">
-        <div
-          :class="cn(
-            'w-full rounded-lg border shadow-lg p-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur flex items-start gap-3',
-            success ? 'border-green-200 dark:border-green-800' : 'border-red-200 dark:border-red-800'
-          )"
-          :role="success ? 'status' : 'alert'"
-          aria-live="polite"
-        >
-          <svg v-if="success" class="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-          </svg>
-          <svg v-else class="w-5 h-5 text-red-600 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-          </svg>
-          <div>
-            <p class="text-sm font-medium" :class="success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'">
-              {{ success ? (serverMessage || 'Message sent successfully!') : 'Submission failed' }}
-            </p>
-            <p v-if="success" class="text-sm mt-1" :class="success ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'">
-              Thank you for reaching out.
-            </p>
-            <p v-else class="text-sm mt-1 text-red-700 dark:text-red-300">
-              {{ error }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </Transition>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
       <!-- Info Column -->
       <div class="space-y-4 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
@@ -92,92 +90,65 @@ const { name, email, message, loading, success, error, serverMessage, submit } =
       </div>
 
       <!-- Form Column -->
-      <form @submit.prevent="submit" class="space-y-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Name <span class="text-red-500">*</span>
-          </label>
-          <Input
-            id="name"
-            v-model="name"
-            type="text"
-            placeholder="Your full name"
-            required
-            :disabled="loading"
-          />
-        </div>
+      <form @submit="onSubmit" class="space-y-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
+        <!-- Name Field -->
+        <FormField v-slot="{ componentField }" name="name">
+          <FormItem>
+            <FormLabel>Name <span class="text-red-500">*</span></FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Your full name"
+                :disabled="isSubmitting"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Email <span class="text-red-500">*</span>
-          </label>
-          <Input
-            id="email"
-            v-model="email"
-            type="email"
-            placeholder="your.email@example.com"
-            required
-            :disabled="loading"
-          />
-        </div>
+        <!-- Email Field -->
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>Email <span class="text-red-500">*</span></FormLabel>
+            <FormControl>
+              <Input
+                type="email"
+                placeholder="your.email@example.com"
+                :disabled="isSubmitting"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div>
-          <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Message <span class="text-red-500">*</span>
-          </label>
-          <Textarea
-            id="message"
-            v-model="message"
-            placeholder="Tell us about your project or inquiry..."
-            required
-            :disabled="loading"
-            :rows="6"
-          />
-        </div>
+        <!-- Message Field -->
+        <FormField v-slot="{ componentField }" name="message">
+          <FormItem>
+            <FormLabel>Message <span class="text-red-500">*</span></FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Tell us about your project or inquiry..."
+                :disabled="isSubmitting"
+                :rows="6"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <!-- Success Message -->
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="opacity-0 scale-95"
-        enter-to-class="opacity-100 scale-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="opacity-100 scale-100"
-        leave-to-class="opacity-0 scale-95"
-      >
-        <div v-if="success" class="p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div class="flex items-start gap-3">
-            <svg class="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        <!-- Submit Button -->
+        <Button type="submit" :disabled="isSubmitting" class="w-full">
+          <span v-if="!isSubmitting">Send Message</span>
+          <span v-else class="flex items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-            <div>
-              <p class="text-sm font-medium text-green-800">{{ serverMessage || 'Message sent successfully!' }}</p>
-              <p class="text-sm text-green-700 mt-1">Thank you for reaching out. Our team will follow up with you shortly.</p>
-            </div>
-          </div>
-        </div>
-      </Transition>
-
-        <!-- Error Message -->
-        <Transition
-          enter-active-class="transition duration-200 ease-out"
-          enter-from-class="opacity-0 scale-95"
-          enter-to-class="opacity-100 scale-100"
-          leave-active-class="transition duration-150 ease-in"
-          leave-from-class="opacity-100 scale-100"
-          leave-to-class="opacity-0 scale-95"
-        >
-          <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <div class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-red-600 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
-              <p class="text-sm text-red-800">{{ error }}</p>
-            </div>
-          </div>
-        </Transition>
-
-        <Button type="submit" variant="primary" size="lg" :loading="loading" :disabled="loading" class="w-full">
-          {{ loading ? 'Sending...' : 'Send Message' }}
+            Sending...
+          </span>
         </Button>
       </form>
     </div>

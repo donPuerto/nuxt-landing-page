@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, type HTMLAttributes } from "vue";
 import { Renderer, Camera, Transform, Program, Mesh, Plane } from "ogl";
-import { cn } from "~/lib/utils";
+import { cn } from "../../../lib/utils";
 
 interface Props {
   hue?: number;

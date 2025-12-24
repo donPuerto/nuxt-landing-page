@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import 'vue-sonner/style.css'
+
 const colorMode = useColorMode();
 
 // Sync class to document

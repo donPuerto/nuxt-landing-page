@@ -1,5 +1,7 @@
 <!-- app/components/global/Hero.vue -->
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
+
 const { scrollTo } = useSmoothScroll();
 </script>
 
@@ -15,10 +17,10 @@ const { scrollTo } = useSmoothScroll();
           We help businesses streamline operations, reduce costs, and scale faster through intelligent automation solutions and cutting-edge AI integration.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button @click="scrollTo('contact')" variant="primary" size="lg">
+          <Button @click="scrollTo('contact')" size="lg">
             Get Started
           </Button>
-          <Button @click="scrollTo('services')" variant="secondary" size="lg">
+          <Button @click="scrollTo('services')" variant="outline" size="lg">
             Our Services
           </Button>
         </div>

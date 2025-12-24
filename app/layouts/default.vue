@@ -19,9 +19,11 @@ const { rippleStore } = useRipple();
     <Navbar />
     <main class="flex-1 relative z-10">
       <slot />
-      <ToastContainer />
     </main>
     <Footer />
+    <ClientOnly>
+      <Sonner position="top-right" class="z-[100]" />
+    </ClientOnly>
     <BackToTop />
 
     <!-- Global Ripple Overlay -->
