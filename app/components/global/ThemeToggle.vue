@@ -56,9 +56,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <button
+  <Button
+    variant="ghost"
+    size="icon"
     @click="toggleTheme"
-    class="relative inline-flex items-center justify-center w-10 h-10 border-2 border-blue-500 dark:border-blue-600 rounded-lg text-blue-500 dark:text-blue-400 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200 overflow-hidden shadow-sm"
+    class="relative w-10 h-10 text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 overflow-hidden"
     :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
   >
     <!-- Sun icon (show when dark mode is on - to switch to light) -->
@@ -88,5 +90,5 @@ onMounted(() => {
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
       </svg>
     </Transition>
-  </button>
+  </Button>
 </template>

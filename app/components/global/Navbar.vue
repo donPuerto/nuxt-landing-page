@@ -32,23 +32,23 @@ const toggleMobileMenu = () => {
     <Container class="py-4">
       <div class="flex items-center justify-between">
         <!-- Logo -->
-        <button @click="handleNavClick('home')" class="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+        <Button variant="ghost" @click="handleNavClick('home')" class="p-0 hover:bg-transparent">
           <Logo size="sm" />
-        </button>
+        </Button>
 
         <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center gap-8">
-          <button
+        <div class="hidden md:flex items-center gap-2">
+          <Button
+            variant="ghost"
             v-for="link in navLinks"
             :key="link.id"
             @click="handleNavClick(link.id)"
             :class="cn(
-              'text-base font-medium transition-colors duration-200 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1',
-              isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+              isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400' : ''
             )"
           >
             {{ link.label }}
-          </button>
+          </Button>
         </div>
 
         <!-- CTA Button & Theme Toggle (Desktop) -->
@@ -62,9 +62,10 @@ const toggleMobileMenu = () => {
         <!-- Mobile Menu Button & Theme Toggle -->
         <div class="md:hidden flex items-center gap-2">
           <ThemeToggle />
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             @click="toggleMobileMenu"
-            class="p-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
             :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
             aria-expanded="false"
           >
@@ -74,7 +75,7 @@ const toggleMobileMenu = () => {
             <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -89,17 +90,18 @@ const toggleMobileMenu = () => {
       >
         <div v-if="mobileMenuOpen" class="md:hidden pt-4 pb-2 border-t border-gray-200 dark:border-gray-800 mt-4">
           <div class="flex flex-col gap-2">
-            <button
+            <Button
+              variant="ghost"
               v-for="link in navLinks"
               :key="link.id"
               @click="handleNavClick(link.id)"
               :class="cn(
-                'text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500',
-                isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-300'
+                'justify-start',
+                isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : ''
               )"
             >
               {{ link.label }}
-            </button>
+            </Button>
             <Button @click="handleNavClick('contact')" class="mt-2">
               Let's Talk
             </Button>

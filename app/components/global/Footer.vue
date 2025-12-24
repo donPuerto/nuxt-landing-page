@@ -1,5 +1,7 @@
 <!-- app/components/global/Footer.vue -->
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
+
 const { scrollTo } = useSmoothScroll();
 
 const currentYear = 2025;

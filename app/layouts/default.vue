@@ -22,7 +22,7 @@ const { rippleStore } = useRipple();
     </main>
     <Footer />
     <ClientOnly>
-      <Sonner position="top-right" class="z-[100]" />
+      <Sonner position="top-right" class="z-100" />
     </ClientOnly>
     <BackToTop />
 
