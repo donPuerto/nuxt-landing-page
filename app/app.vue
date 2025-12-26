@@ -1,42 +1,104 @@
 <script setup lang="ts">
 import 'vue-sonner/style.css'
-import { toast } from 'vue-sonner'
+import { Toaster } from 'vue-sonner'
 
-const colorMode = useColorMode();
+const colorMode = useColorMode()
 
 // Sync class to document
 watch(() => colorMode.value, (newVal) => {
   if (import.meta.client) {
     if (newVal === 'dark') {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add('dark')
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove('dark')
     }
   }
-}, { immediate: true });
-
-// Global toast configuration
-onMounted(() => {
-  watch(() => colorMode.value, (isDark) => {
-    // This updates all toast themes dynamically
-    const backgroundColor = isDark === 'dark' ? '#1f2937' : '#ffffff'
-    const borderColor = isDark === 'dark' ? '#374151' : '#e5e7eb'
-    const textColor = isDark === 'dark' ? '#ffffff' : '#111827'
-    
-    // Apply styles via CSS variables that vue-sonner respects
-    const style = document.documentElement.style
-    style.setProperty('--sonner-background', backgroundColor)
-    style.setProperty('--sonner-border', borderColor)
-    style.setProperty('--sonner-text', textColor)
-  }, { immediate: true })
-})
+}, { immediate: true })
 </script>
 
 <template>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+
+  <ClientOnly>
+    <Toaster 
+      class="pointer-events-auto"
+      :theme="(colorMode.preference as any) || 'system'"
+      position="top-right"
+    />
+  </ClientOnly>
 </template>
+
+<style>
+/* Light mode toast styling */
+:where(.sonner-toast) {
+  background-color: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+  color: #111827 !important;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+:where(.sonner-toast) * {
+  color: #111827 !important;
+}
+
+:where(.sonner-title) {
+  color: #111827 !important;
+  font-weight: 600;
+}
+
+:where(.sonner-description) {
+  color: #6b7280 !important;
+}
+
+/* Dark mode toast styling */
+:root.dark :where(.sonner-toast) {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #ffffff !important;
+}
+
+:root.dark :where(.sonner-toast) * {
+  color: #ffffff !important;
+}
+
+:root.dark :where(.sonner-title) {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+:root.dark :where(.sonner-description) {
+  color: #d1d5db !important;
+}
+
+/* Success, Error, Warning colors */
+:where(.sonner-toast[data-type="success"]) {
+  border-color: #10b981 !important;
+}
+
+:root.dark :where(.sonner-toast[data-type="success"]) {
+  border-color: #059669 !important;
+}
+
+:where(.sonner-toast[data-type="error"]) {
+  border-color: #ef4444 !important;
+}
+
+:root.dark :where(.sonner-toast[data-type="error"]) {
+  border-color: #dc2626 !important;
+}
+
+:where(.sonner-toast[data-type="warning"]) {
+  border-color: #f59e0b !important;
+}
+
+:root.dark :where(.sonner-toast[data-type="warning"]) {
+  border-color: #d97706 !important;
+}
+</style>
 
 <style>
 :root {
