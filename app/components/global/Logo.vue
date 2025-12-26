@@ -86,71 +86,9 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
 </style>
 
 <template>
-  <!-- Logo only variant (just square) -->
-  <div v-if="props.logoOnly && !props.borderless" :class="squareSizeClasses[size]">
-    <!-- Gradient border wrapper -->
-    <div 
-      :class="borderClasses"
-      :style="props.animated ? gradientStyle : { background: staticGradient }"
-      class="w-full h-full rounded-lg p-0.5"
-    >
-      <!-- Inner content -->
-      <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
-        {{ initials }}
-      </div>
-    </div>
-  </div>
-  
-  <!-- Logo only variant borderless -->
-  <div 
-    v-else-if="props.logoOnly && props.borderless"
-    :class="cn(
-      'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
-      squareSizeClasses[size],
-      props.class
-    )"
-  >
-    {{ initials }}
-  </div>
-
-  <!-- Square variant with gradient border (initials only) -->
-  <div v-else-if="variant === 'square' && !props.borderless" :class="squareSizeClasses[size]">
-    <!-- Gradient border wrapper -->
-    <div 
-      :class="borderClasses"
-      :style="props.animated ? gradientStyle : { background: staticGradient }"
-      class="w-full h-full rounded-lg p-0.5"
-    >
-      <!-- Inner content -->
-      <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
-        {{ initials }}
-      </div>
-    </div>
-  </div>
-  
-  <!-- Square variant without border -->
-  <div 
-    v-else-if="variant === 'square' && props.borderless"
-    :class="cn(
-      'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
-      squareSizeClasses[size],
-      props.class
-    )"
-  >
-    {{ initials }}
-  </div>
-  
-  <!-- Full variant (initials in square + name description) -->
-  <div 
-    v-else
-    :class="cn(
-      'flex items-center gap-2 font-bold text-gray-900 dark:text-white',
-      sizeClasses[size],
-      props.class
-    )"
-  >
-    <!-- Logo square with gradient border -->
-    <div v-if="!props.borderless" :class="squareSizeClasses[size]">
+  <ClientOnly>
+    <!-- Logo only variant (just square) -->
+    <div v-if="props.logoOnly && !props.borderless" :class="squareSizeClasses[size]">
       <!-- Gradient border wrapper -->
       <div 
         :class="borderClasses"
@@ -164,19 +102,93 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
       </div>
     </div>
     
-    <!-- Logo square without border -->
+    <!-- Logo only variant borderless -->
     <div 
-      v-else
+      v-else-if="props.logoOnly && props.borderless"
       :class="cn(
         'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
-        squareSizeClasses[size]
+        squareSizeClasses[size],
+        props.class
+      )"
+    >
+      {{ initials }}
+    </div>
+
+    <!-- Square variant with gradient border (initials only) -->
+    <div v-else-if="variant === 'square' && !props.borderless" :class="squareSizeClasses[size]">
+      <!-- Gradient border wrapper -->
+      <div 
+        :class="borderClasses"
+        :style="props.animated ? gradientStyle : { background: staticGradient }"
+        class="w-full h-full rounded-lg p-0.5"
+      >
+        <!-- Inner content -->
+        <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+          {{ initials }}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Square variant without border -->
+    <div 
+      v-else-if="variant === 'square' && props.borderless"
+      :class="cn(
+        'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
+        squareSizeClasses[size],
+        props.class
       )"
     >
       {{ initials }}
     </div>
     
-    <!-- Name description (no gradient border) -->
-    <span class="text-gray-900 dark:text-white">{{ props.name }}</span>
-  </div>
+    <!-- Full variant (initials in square + name description) -->
+    <div 
+      v-else
+      :class="cn(
+        'flex items-center gap-2 font-bold text-gray-900 dark:text-white',
+        sizeClasses[size],
+        props.class
+      )"
+    >
+      <!-- Logo square with gradient border -->
+      <div v-if="!props.borderless" :class="squareSizeClasses[size]">
+        <!-- Gradient border wrapper -->
+        <div 
+          :class="borderClasses"
+          :style="props.animated ? gradientStyle : { background: staticGradient }"
+          class="w-full h-full rounded-lg p-0.5"
+        >
+          <!-- Inner content -->
+          <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+            {{ initials }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Logo square without border -->
+      <div 
+        v-else
+        :class="cn(
+          'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
+          squareSizeClasses[size]
+        )"
+      >
+        {{ initials }}
+      </div>
+      
+      <!-- Name description (no gradient border) -->
+      <span class="text-gray-900 dark:text-white">{{ props.name }}</span>
+    </div>
+
+    <template #fallback>
+      <div :class="squareSizeClasses[size]">
+        <div class="w-full h-full rounded-lg p-0.5 bg-linear-to-br from-blue-500 to-purple-600">
+          <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+            {{ initials }}
+          </div>
+        </div>
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 

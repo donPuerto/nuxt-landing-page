@@ -54,6 +54,13 @@ export const useConfetti = () => {
   }
 
   /**
+   * Alias for form submission success - uses Fireworks mode
+   */
+  const fireSuccess = () => {
+    fireFireworks()
+  }
+
+  /**
    * Mode 2: Side Cannons - Continuous side blasts
    * Great for big celebrations (3 seconds)
    */
@@ -137,13 +144,6 @@ export const useConfetti = () => {
     setTimeout(() => {
       state.value.isActive = false
     }, 2000)
-  }
-
-  /**
-   * Alias for form submission success - uses Fireworks mode
-   */
-  const fireSuccess = () => {
-    fireFireworks()
   }
 
   return {

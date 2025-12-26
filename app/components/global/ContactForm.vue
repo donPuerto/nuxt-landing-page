@@ -24,19 +24,26 @@ const { handleSubmit, resetForm, isSubmitting } = useForm({
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    const response = await $fetch<{ message?: string }>('/api/contact', {
+    const response = await $fetch<{ ok?: boolean; message?: string }>('/api/contact', {
       method: 'POST',
       body: values,
     })
 
-    toast.success(response?.message || 'Message sent successfully!', {
-      description: 'Thank you for reaching out. Our team will follow up with you shortly.',
-    })
-    
-    // Trigger confetti on successful submission
-    fireSuccess()
-    
-    resetForm()
+    // Only show success if response is ok
+    if (response?.ok !== false) {
+      toast.success(response?.message || 'Message sent successfully!', {
+        description: 'Thank you for reaching out. Our team will follow up with you shortly.',
+      })
+      
+      // Trigger confetti on successful submission
+      fireSuccess()
+      
+      resetForm()
+    } else {
+      toast.error('Submission failed', {
+        description: response?.message || 'Failed to send message. Please try again.',
+      })
+    }
   } catch (err: any) {
     toast.error('Submission failed', {
       description: err.data?.message || 'Failed to send message. Please try again.',

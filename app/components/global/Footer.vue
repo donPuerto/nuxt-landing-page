@@ -62,15 +62,22 @@ const bgColor = computed(() => 'transparent');
         <!-- Bottom Section: Copyright & Contact -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center text-center md:text-left">
           <!-- Left: Copyright -->
-          <div>
-            <p class="text-sm md:text-base font-medium text-gray-700 dark:text-gray-200 flex items-center justify-center md:justify-start gap-3">
+          <ClientOnly>
+            <div class="text-sm md:text-base font-medium text-gray-700 dark:text-gray-200 flex items-center justify-center md:justify-start gap-3">
               <Logo size="sm" logoOnly :name="'DP'" :animated="true" />
               <span>&copy; {{ currentYear }} DP. All rights reserved.</span>
-            </p>
-          </div>
+            </div>
+            
+            <template #fallback>
+              <div class="text-sm md:text-base font-medium text-gray-700 dark:text-gray-200 text-center md:text-left">
+                &copy; {{ currentYear }} DP. All rights reserved.
+              </div>
+            </template>
+          </ClientOnly>
 
           <!-- Right: Contact Details -->
-          <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">
+          <ClientOnly>
+            <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">
             <div class="flex items-center gap-2">
               <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -85,6 +92,15 @@ const bgColor = computed(() => 'transparent');
               <span>0976 093 8376</span>
             </div>
           </div>
+            
+          <template #fallback>
+              <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">
+                <span>don.puerto.1003@gmail.com</span>
+                <span class="text-gray-400 dark:text-gray-600">|</span>
+                <span>0976 093 8376</span>
+              </div>
+            </template>
+          </ClientOnly>
         </div>
       </div>
     </Container>
