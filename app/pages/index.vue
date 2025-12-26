@@ -23,7 +23,7 @@ useHead({
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Our Services
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
               Comprehensive AI and automation solutions tailored to your business needs
             </p>
           </div>
@@ -59,7 +59,7 @@ useHead({
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               What Our Clients Say
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
               Real results from businesses we've helped transform
             </p>
           </div>
@@ -91,10 +91,10 @@ useHead({
       <Container>
         <FadeIn direction="up">
           <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Trusted By
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
               Leading companies that rely on our automation solutions
             </p>
           </div>
@@ -122,7 +122,7 @@ useHead({
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Let's Work Together
             </h2>
-            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
               Ready to transform your business? Get in touch with us today and let's discuss your project.
             </p>
           </div>

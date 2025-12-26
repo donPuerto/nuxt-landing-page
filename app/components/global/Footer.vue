@@ -1,10 +1,16 @@
 <!-- app/components/global/Footer.vue -->
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { computed } from 'vue';
+import { useColorMode } from '@vueuse/core';
 
 const { scrollTo } = useSmoothScroll();
 
 const currentYear = 2025;
+
+const colorMode = useColorMode();
+const isDark = computed(() => colorMode.value === 'dark');
+const bgColor = computed(() => 'transparent');
 </script>
 
 <template>
@@ -57,9 +63,7 @@ const currentYear = 2025;
           <!-- Left: Copyright -->
           <div>
             <p class="text-sm md:text-base font-medium text-gray-700 dark:text-gray-200 flex items-center justify-center md:justify-start gap-3">
-              <ClientOnly>
-                <Logo size="sm" variant="square" />
-              </ClientOnly>
+              <Logo size="sm" logoOnly :name="'DP'" :animated="true" />
               <span>&copy; {{ currentYear }} DP. All rights reserved.</span>
             </p>
           </div>

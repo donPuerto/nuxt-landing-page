@@ -1,238 +1,815 @@
-Copilot Instructions
+# Copilot Instructions
 
 Nuxt 4 + Tailwind CSS v4 + Vue shadcn/ui (Primary) + Inspira UI (Secondary)
 
-1. Project Stack
+## 1. Project Stack
 
-Framework: Nuxt 4
+**Framework:** Nuxt 4 (SSR-enabled single-page architecture)  
+**Language:** TypeScript (strict mode, Composition API)  
+**Styling:** Tailwind CSS v4 via `@tailwindcss/vite` plugin  
+**Forms:** vee-validate + zod  
+**UI:** Vue shadcn/ui (primary) + custom components  
+**Animations:** IntersectionObserver-based, motion-v  
+**Toast:** vue-sonner  
 
-Language: TypeScript
+❌ **Do not** add PostCSS unless explicitly required  
+❌ **Do not** use React-based shadcn or reimplement shadcn with raw Tailwind
 
-Styling: Tailwind CSS v4 (Vite plugin)
+### Component Structure
+```
+app/
+  components/
+    global/       # Page-level sections (Hero, ContactForm, Navbar, Footer)
+    ui/           # Reusable UI primitives (shadcn + custom wrappers)
+  pages/index.vue # Single-page marketing site
+  layouts/default.vue # Header + Footer wrapper
+  composables/    # useForm, useRipple, useScrollSpy, useSmoothScroll
+  lib/utils.ts    # cn() utility - MANDATORY for class merging
+server/api/       # Backend endpoints (contact.post.ts → n8n webhook)
+```
 
-❌ Do not add PostCSS unless explicitly required
+## 2. Shadcn-First Component Rule (MANDATORY)
 
-UI Libraries (Priority Order)
-
-Vue shadcn/ui (PRIMARY UI SYSTEM)
-
-Must be used for all interactive and form-based components
-
-Acts as the default component system for the app
-
-Inspira UI (SECONDARY / LAYOUT)
-
-Used only for marketing layouts, page sections, and non-interactive composition
-
-Custom Tailwind components
-
-Allowed only when no shadcn or Inspira component exists
-
-❌ React-based shadcn is forbidden
-❌ Do not reimplement shadcn components with raw Tailwind
-
-2. Shadcn-First Component Rule (MANDATORY)
-Default Rule
-
-If a Vue shadcn/ui component exists, it MUST be used.
+**Default Rule:** If a Vue shadcn/ui component exists, it MUST be used.
 
 This applies to:
+- Pages, components, forms, dialogs, UI primitives
+- All interactive elements (buttons, inputs, dropdowns, modals)
 
-Pages
+**Replacement Rule:** When building or modifying a page:
+- ❌ Do not create custom Tailwind markup for buttons, inputs, forms, or cards
+- ✅ Replace with appropriate Vue shadcn/ui component from `@/components/ui/*`
 
-Components
+**Component Mapping:**
+| UI Need | Required Component | Import Path |
+|---------|-------------------|-------------|
+| Button | `Button` | `@/components/ui/button` |
+| Input field | `Input` | `@/components/ui/input` |
+| Textarea | `Textarea` | `@/components/ui/textarea` |
+| Form layout | `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage` | `@/components/ui/form` |
+| Card | `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter` | `@/components/ui/card` |
+| Toast | `toast` from `vue-sonner` | `vue-sonner` |
 
-Forms
+## 3. Coding Standards
 
-Dialogs
-
-UI primitives
-
-Replacement Rule
-
-When building or modifying a page:
-
-❌ Do not create custom Tailwind markup for buttons, inputs, forms, or cards
-
-✅ Replace existing or generated markup with the appropriate Vue shadcn/ui component
-
-Examples
-UI Need	Required Component
-Button	Button
-Input field	Input
-Textarea	Textarea
-Form layout	Form, FormField
-Card	Card
-Modal	Dialog
-Dropdown	DropdownMenu
-Alert / feedback	Alert
-3. Coding Defaults
-
-Vue SFCs must use:
-
+**Vue SFC Pattern:**
+```vue
 <script setup lang="ts">
+// Imports
+import { Button } from '@/components/ui/button'
+import { cn } from '~/lib/utils'
+
+// Composables
+const { data } = await useFetch('/api/endpoint')
+
+// Refs/State
+const isOpen = ref(false)
+</script>
+
+<template>
+  <!-- Use semantic HTML -->
+  <section class="py-16">
+    <Button @click="isOpen = !isOpen">Toggle</Button>
+  </section>
+</template>
+```
+
+**Follow Nuxt conventions:**
+- `app/pages/` - File-based routing (currently single-page only)
+- `layouts/default.vue` - Shared layout wrapper
+- `components/` - Auto-imported components (no manual imports needed)
+- `composables/` - Auto-imported composables
+- `server/api/` - Backend API routes
+
+**Keep components:**
+- Small and focused
+- Reusable with clear prop interfaces
+- Avoid duplicating shadcn logic
+
+### Logo Component Pattern (MANDATORY - SINGLE INSTANCE ONLY)
+
+**⚠️ CRITICAL: Use ONLY ONE Logo.vue component throughout the entire page. All sections (Navbar, Footer, Hero, etc.) must reference the same `@/components/global/Logo.vue` component with consistent props.**
+
+**The Logo component automatically parses names into initials and generates animated flowing gradient borders.**
+
+**Logo Props:**
+```typescript
+interface LogoProps {
+  name?: string;        // Full name to parse (e.g., "Don Puerto" → "DP", "DP" → "DP")
+  size?: 'sm' | 'lg';   // Logo size (default: 'sm')
+  variant?: 'full' | 'square'; // 'full' shows initials + name, 'square' shows initials only
+  borderless?: boolean; // Remove gradient border (default: false)
+  logoOnly?: boolean;   // Show only the square logo without name text (default: false)
+  animated?: boolean;   // Animate gradient border with flowing effect (default: false)
+  class?: string;       // Additional Tailwind classes for customization
+}
+```
+
+**Usage Examples (All Using Same Component):**
+
+```vue
+<!-- Navbar: Animated square logo with flowing gradient -->
+<Logo 
+  size="sm" 
+  variant="square" 
+  :name="'Don Puerto'" 
+  :animated="true" 
+  class="text-blue-600 dark:text-blue-400" 
+/>
+
+<!-- Footer: Logo only (just square) with animated flowing gradient -->
+<Logo 
+  size="sm" 
+  logoOnly 
+  :name="'DP'" 
+  :animated="true" 
+/>
+
+<!-- Full variant with animated gradient (initials + name) -->
+<Logo 
+  name="Don Puerto" 
+  variant="full" 
+  size="sm"
+  :animated="true" 
+/>
+
+<!-- Static gradient (no animation) -->
+<Logo name="Don Puerto" variant="square" size="sm" />
+
+<!-- Default: Hardcoded "DP" with static gradient -->
+<Logo />
+```
+
+**Key Features (APPLY CONSISTENTLY):**
+- ✅ **Intelligent name parsing**: "Don Puerto" → "DP", "DP" → "DP" (no spaces = already initials)
+- ✅ **Animated flowing gradient**: Colors flow in ONE DIRECTION continuously around border
+- ✅ **Vibrant gradient colors**: #A07CFE (purple) → #FE8FB5 (pink) → #FFD700 (golden yellow) → #FF4500 (red-orange) → #FFBE7B (orange)
+- ✅ **2-second animation cycle**: Smooth, continuous flow creates eye-catching effect
+- ✅ **Hover glow effect**: Drop shadow glow appears on hover (4px purple + 8px pink + 6px yellow)
+- ✅ **Full dark/light mode support**: Works seamlessly with theme toggle
+- ✅ **Responsive sizing**: `size="sm"` (36px) for navbar/footer, `size="lg"` (64px) for hero
+- ✅ **Border-only styling**: Only the logo square has gradient border, text does NOT
+
+**Animated Gradient Border Implementation:**
+```vue
+<script setup>
+// Gradient flows in one direction (linear position animation)
+const gradientStyle = computed(() => {
+  return {
+    background: 'linear-gradient(90deg, #A07CFE, #FE8FB5, #FFD700, #FF4500, #FFBE7B, #A07CFE)',
+    backgroundSize: '200% 200%',
+  };
+});
+
+const borderClasses = computed(() => {
+  return props.animated ? 'animate-gradient-flow' : '';
+});
+</script>
+
+<style scoped>
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;  /* Flows in one continuous direction */
+  }
+}
+
+.animate-gradient-flow {
+  animation: gradientFlow 2s ease infinite !important;
+  transition: filter 0.3s ease;
+}
+
+/* Hover glow: subtle multi-color effect */
+.animate-gradient-flow:hover {
+  filter: drop-shadow(0 0 4px rgba(160, 124, 254, 0.8)) 
+          drop-shadow(0 0 8px rgba(254, 143, 181, 0.6)) 
+          drop-shadow(0 0 6px rgba(255, 215, 0, 0.4));
+}
+</style>
+
+<!-- Wrapper structure (consistent across all usages) -->
+<div 
+  :class="borderClasses"
+  :style="props.animated ? gradientStyle : { background: staticGradient }"
+  class="w-full h-full rounded-lg p-0.5"
+>
+  <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+    {{ initials }}
+  </div>
+</div>
+```
+
+**Placement Rules (Apply Across Entire Page):**
+| Location | Props | Notes |
+|----------|-------|-------|
+| Navbar (top-left) | `size="sm"` `variant="square"` `animated={true}` | Clickable to scroll home |
+| Footer (bottom-left) | `logoOnly` `size="sm"` `animated={true}` | Just the square, no text |
+| Hero Section | Optional: `size="lg"` `animated={true}` | For featured logo |
+| Any Button/Link | `logoOnly` `size="sm"` `animated={false}` | Static for consistency |
+
+**❌ DO NOT:**
+- Create multiple Logo components or variants
+- Use different gradient colors or animation speeds
+- Hardcode initials instead of using name prop
+- Animate non-animated variants
+- Forget `animated={true}` on navbar and footer
+
+**✅ DO:**
+- Always use the single `@/components/global/Logo.vue` component
+- Use `animated={true}` for navbar and footer
+- Use `animated={false}` for secondary/less prominent logos
+- Leverage intelligent name parsing ("Don Puerto" → "DP")
+- Test hover effects in both light and dark modes
 
 
-Prefer Composition API
+## 4. Tailwind Utility Requirement (MANDATORY)
 
-Follow Nuxt conventions:
+**All Tailwind class merging must use the shared `cn()` utility.**
 
-app/pages/
-
-layouts/
-
-components/
-
-composables/
-
-server/
-
-Keep components small and reusable
-
-Do not duplicate logic already handled by shadcn
-
-4. Tailwind Utility Requirement (MANDATORY)
-
-All Tailwind class merging must use the shared utility.
-
-Utility Location
-
-lib/utils.ts
-
+**Utility Location:** `lib/utils.ts`
+```typescript
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+```
 
-Usage Rules
+**Usage Rules - Always use `cn()` when:**
+1. Extending or overriding shadcn component styles
+2. Conditionally applying Tailwind classes
+3. Accepting a `class?: string` prop
+4. Merging default + custom styles
 
-Always use cn() when:
+**Example Pattern:**
+```vue
+<script setup lang="ts">
+import { cn } from '~/lib/utils'
 
-Extending or overriding shadcn component styles
+const props = defineProps<{
+  variant?: 'default' | 'ghost'
+  class?: string
+}>()
 
-Conditionally applying Tailwind classes
+const buttonClass = computed(() => 
+  cn(
+    'px-4 py-2 rounded-md',
+    props.variant === 'ghost' && 'bg-transparent',
+    props.class
+  )
+)
+</script>
 
-Accepting a class prop
+<template>
+  <button :class="buttonClass">
+    <slot />
+  </button>
+</template>
+```
 
-❌ No manual string concatenation
+❌ **Never** manually concatenate class strings  
+❌ **Never** use template literals for class merging
 
-5. UI Composition Rules
-Pages (app/pages/index.vue)
+## 5. Form Validation Pattern (vee-validate + zod)
 
-Pages must be composed using shadcn components first
+**Contact forms and all user input MUST follow this pattern:**
 
-Layout structure may wrap shadcn components with Inspira sections if needed
+```vue
+<script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+import { toast } from 'vue-sonner'
 
-Do not write raw HTML inputs, buttons, or forms in pages
+// 1. Define Zod schema
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(50),
+  email: z.string().email('Invalid email address'),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(500),
+}))
 
-Components (components/)
+// 2. Initialize form with vee-validate
+const { handleSubmit, resetForm, isSubmitting } = useForm({
+  validationSchema: formSchema,
+})
 
+// 3. Handle submission
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const response = await $fetch('/api/contact', {
+      method: 'POST',
+      body: values,
+    })
+    toast.success('Message sent successfully!')
+    resetForm()
+  } catch (err: any) {
+    toast.error('Submission failed', {
+      description: err.data?.message || 'Please try again.',
+    })
+  }
+})
+</script>
+
+<template>
+  <form @submit="onSubmit">
+    <FormField v-slot="{ componentField }" name="email">
+      <FormItem>
+        <FormLabel>Email</FormLabel>
+        <FormControl>
+          <Input type="email" v-bind="componentField" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+  </form>
+</template>
+```
+
+**Key Requirements:**
+- Use `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage` from `@/components/ui/form`
+- Bind inputs with `v-bind="componentField"`
+- Show validation errors via `<FormMessage />`
+- Use `toast` from `vue-sonner` for success/error feedback
+
+**Reference:** See [ContactForm.vue](app/components/global/ContactForm.vue)
+
+## 6. Animation & Scroll Patterns
+
+**FadeIn Component (IntersectionObserver-based):**
+```vue
+<FadeIn direction="up" :delay="100">
+  <Card>...</Card>
+</FadeIn>
+```
+
+**Props:**
+- `direction`: `'up' | 'down' | 'left' | 'right'` (default: `'up'`)
+- `delay`: milliseconds before animation starts (default: `0`)
+- `once`: animate only once (default: `true`)
+
+**Pattern for staggered animations:**
+```vue
+<div v-for="(item, index) in items" :key="index">
+  <FadeIn direction="up" :delay="index * 100">
+    <Card>{{ item }}</Card>
+  </FadeIn>
+</div>
+```
+
+**Theme Toggle Ripple Effect:**
+The project uses a custom ripple effect on theme toggle (see `useRipple` composable). The ripple reveals the new theme using CSS mask animations triggered from the click position.
+
+## 7. Layout Width & Alignment (MANDATORY)
+
+**Horizontal alignment must be consistent across ALL page sections.**
+
+### Container Pattern
+
+**All sections (Navbar, Hero, Content sections, Footer) MUST use the `Container` component:**
+
+```vue
+<!-- CORRECT: Consistent alignment -->
+<template>
+  <nav class="...">
+    <Container class="py-4">
+      <!-- Navbar content -->
+    </Container>
+  </nav>
+
+  <section class="py-16">
+    <Container>
+      <!-- Section content -->
+    </Container>
+  </section>
+
+  <footer class="...">
+    <Container class="py-8">
+      <!-- Footer content -->
+    </Container>
+  </footer>
+</template>
+```
+
+**Container Component:**
+- Location: `@/components/ui/Container.vue`
+- Default: `max-w-7xl mx-auto px-6`
+- Always use this for horizontal padding/width consistency
+
+### Layout Toggle Support (Full vs Fixed)
+
+**The project supports toggling between Full-width and Fixed-width layouts via `<head>`:**
+
+```vue
+<script setup lang="ts">
+// In app.vue or layout
+const layoutMode = ref<'full' | 'fixed'>('fixed') // Default: fixed
+
+useHead({
+  htmlAttrs: {
+    'data-layout': layoutMode.value
+  }
+})
+</script>
+```
+
+**CSS Pattern for Layout Toggle:**
+```css
+/* Fixed layout (default) */
+.container {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+/* Full-width layout */
+[data-layout="full"] .container {
+  @apply max-w-none px-6;
+}
+```
+
+### Alignment Rules
+
+✅ **DO:**
+- Use `<Container>` for all sections (Navbar, Hero, Services, Testimonials, Footer)
+- Maintain consistent `px-6` horizontal padding
+- Use `max-w-7xl` for fixed layout
+- Support layout toggle via `data-layout` attribute
+
+❌ **DON'T:**
+- Use inconsistent padding (e.g., `px-4` on Navbar, `px-6` on Hero)
+- Hardcode max-width values directly in sections
+- Skip Container component in any section
+- Create custom container classes that break alignment
+- Add `max-w-*` or `mx-auto` inside components that are already wrapped by `<Container>`
+
+**Example Section Pattern:**
+```vue
+<template>
+  <!-- Background can be full-width -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <!-- Content must use Container for alignment -->
+    <Container>
+      <h2>Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Cards, content, etc. -->
+      </div>
+    </Container>
+  </section>
+</template>
+```
+
+**Common Misalignment Issue - ContactForm Example:**
+```vue
+<!-- ❌ WRONG: Double container creates misalignment -->
+<Container>
+  <ContactForm /> <!-- Component has max-w-5xl mx-auto inside -->
+</Container>
+
+<!-- ✅ CORRECT: Component content flows with Container width -->
+<Container>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <!-- Form content directly, no nested max-w -->
+  </div>
+</Container>
+```
+
+**Reference Implementation:**
+- See [Container.vue](app/components/ui/Container.vue)
+- See [Navbar.vue](app/components/global/Navbar.vue) 
+- See [Hero.vue](app/components/global/Hero.vue)
+- See [Footer.vue](app/components/global/Footer.vue)
+
+## 7.5. Section Header Typography (MANDATORY)
+
+**All section headers MUST follow consistent sizing and theming rules - NO EXCEPTIONS.**
+
+### Exact Font Sizes (Required)
+
+**These EXACT Tailwind classes MUST be used for ALL main section headers:**
+
+```vue
+<div class="text-center mb-12">
+  <!-- PRIMARY HEADING - REQUIRED: text-4xl md:text-5xl -->
+  <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+    Section Title
+  </h2>
+  
+  <!-- SECONDARY DESCRIPTION - REQUIRED: text-sm md:text-base -->
+  <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
+    Section description text
+  </p>
+</div>
+```
+
+### Typography Rules (STRICT REQUIREMENTS)
+
+**ALL Main Section Headings MUST use:**
+- Mobile: `text-4xl` (36px)
+- Desktop: `text-5xl` (48px)
+- Weight: `font-bold`
+- Color Light Mode: `text-gray-900`
+- Color Dark Mode: `dark:text-white`
+- Margin Bottom: `mb-4`
+
+**ALL Main Section Descriptions MUST use:**
+- Mobile: `text-sm` (14px)
+- Desktop: `text-base` (16px)
+- Weight: Regular (default)
+- Color Light Mode: `text-gray-600`
+- Color Dark Mode: `dark:text-gray-400`
+- NO width constraints (no `max-w-*`)
+
+### Dark/Light Mode Theming (REQUIRED)
+
+**Primary Text (Headings):**
+- Light mode: `text-gray-900` (near black)
+- Dark mode: `dark:text-white`
+
+**Secondary Text (Descriptions):**
+- Light mode: `text-gray-600` (medium gray)
+- Dark mode: `dark:text-gray-400` (lighter gray)
+
+✅ **DO - REQUIRED:**
+- Use `text-4xl md:text-5xl` for ALL main section headings
+- Use `text-sm md:text-base` for ALL section descriptions
+- Always pair light colors with `dark:` variants
+- Use `text-center` wrapper with `mb-12` spacing
+- Never use `max-w-*` constraints on description text
+- Always include both light and dark mode classes
+
+❌ **DON'T - FORBIDDEN:**
+- Mix different heading sizes across sections
+- Use `text-3xl md:text-4xl` for main headings (too small)
+- Use `text-base md:text-lg` for descriptions (too large)
+- Hardcode color values instead of using Tailwind semantic colors
+- Forget dark mode classes on text elements
+- Add width constraints that limit description text
+
+**Sections Using This EXACT Pattern:**
+- ✅ Our Services - `text-4xl md:text-5xl` + `text-sm md:text-base`
+- ✅ What Our Clients Say - `text-4xl md:text-5xl` + `text-sm md:text-base`
+- ✅ Trusted By - `text-4xl md:text-5xl` + `text-sm md:text-base`
+- ✅ Let's Work Together - `text-4xl md:text-5xl` + `text-sm md:text-base`
+
+### Sub-section Headers (Contact Form)
+
+**For sub-section headers within form components, use responsive sizing:**
+```vue
+<h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Let's Connect</h3>
+<p class="text-xs md:text-sm text-gray-600 dark:text-gray-400">Description text</p>
+```
+
+**Sub-section Header MUST use:**
+- Mobile: `text-lg` (18px)
+- Desktop: `text-xl` (20px)
+
+**Sub-section Description MUST use:**
+- Mobile: `text-xs` (12px)
+- Desktop: `text-sm` (14px)
+
+
+
+
+**Horizontal alignment must be consistent across ALL page sections.**
+
+### Container Pattern
+
+**All sections (Navbar, Hero, Content sections, Footer) MUST use the `Container` component:**
+
+```vue
+<!-- CORRECT: Consistent alignment -->
+<template>
+  <nav class="...">
+    <Container class="py-4">
+      <!-- Navbar content -->
+    </Container>
+  </nav>
+
+  <section class="py-16">
+    <Container>
+      <!-- Section content -->
+    </Container>
+  </section>
+
+  <footer class="...">
+    <Container class="py-8">
+      <!-- Footer content -->
+    </Container>
+  </footer>
+</template>
+```
+
+**Container Component:**
+- Location: `@/components/ui/Container.vue`
+- Default: `max-w-7xl mx-auto px-6`
+- Always use this for horizontal padding/width consistency
+
+### Layout Toggle Support (Full vs Fixed)
+
+**The project supports toggling between Full-width and Fixed-width layouts via `<head>`:**
+
+```vue
+<script setup lang="ts">
+// In app.vue or layout
+const layoutMode = ref<'full' | 'fixed'>('fixed') // Default: fixed
+
+useHead({
+  htmlAttrs: {
+    'data-layout': layoutMode.value
+  }
+})
+</script>
+```
+
+**CSS Pattern for Layout Toggle:**
+```css
+/* Fixed layout (default) */
+.container {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+/* Full-width layout */
+[data-layout="full"] .container {
+  @apply max-w-none px-6;
+}
+```
+
+### Alignment Rules
+
+✅ **DO:**
+- Use `<Container>` for all sections (Navbar, Hero, Services, Testimonials, Footer)
+- Maintain consistent `px-6` horizontal padding
+- Use `max-w-7xl` for fixed layout
+- Support layout toggle via `data-layout` attribute
+
+❌ **DON'T:**
+- Use inconsistent padding (e.g., `px-4` on Navbar, `px-6` on Hero)
+- Hardcode max-width values directly in sections
+- Skip Container component in any section
+- Create custom container classes that break alignment
+- Add `max-w-*` or `mx-auto` inside components that are already wrapped by `<Container>`
+
+**Example Section Pattern:**
+```vue
+<template>
+  <!-- Background can be full-width -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <!-- Content must use Container for alignment -->
+    <Container>
+      <h2>Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Cards, content, etc. -->
+      </div>
+    </Container>
+  </section>
+</template>
+```
+
+**Common Misalignment Issue - ContactForm Example:**
+```vue
+<!-- ❌ WRONG: Double container creates misalignment -->
+<Container>
+  <ContactForm /> <!-- Component has max-w-5xl mx-auto inside -->
+</Container>
+
+<!-- ✅ CORRECT: Component content flows with Container width -->
+<Container>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <!-- Form content directly, no nested max-w -->
+  </div>
+</Container>
+```
+
+**Reference Implementation:**
+- See [Container.vue](app/components/ui/Container.vue)
+- See [Navbar.vue](app/components/global/Navbar.vue) 
+- See [Hero.vue](app/components/global/Hero.vue)
+- See [Footer.vue](app/components/global/Footer.vue)
+
+## 8. Server API Pattern (n8n Integration)
+
+**Backend Structure:**
+- All API routes in `server/api/`
+- ❌ **Never** call external webhooks directly from client
+- ✅ **Always** proxy through Nuxt server endpoints
+
+**Environment Configuration:**
+```typescript
+// nuxt.config.ts
+runtimeConfig: {
+  n8nWebhookUrl: process.env.NUXT_N8N_WEBHOOK_URL || '',
+  n8nWebhookSecret: process.env.NUXT_N8N_WEBHOOK_SECRET || '',
+}
+```
+
+**API Handler Pattern:**
+```typescript
+// server/api/contact.post.ts
+export default defineEventHandler(async (event) => {
+  // 1. Parse & validate request body
+  const body = await readBody(event);
+  const { name, email, message } = body;
+  
+  // 2. Validate required fields
+  if (!name?.trim()) {
+    return { ok: false, message: 'Name is required' };
+  }
+  
+  // 3. Get runtime config
+  const config = useRuntimeConfig();
+  const webhookUrl = config.n8nWebhookUrl;
+  
+  // 4. Forward to n8n
+  const response = await $fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-webhook-secret': config.n8nWebhookSecret
+    },
+    body: { name, email, message, timestamp: new Date().toISOString() }
+  });
+  
+  return { ok: true, message: 'Success' };
+});
+```
+
+**Reference:** See [contact.post.ts](server/api/contact.post.ts)
+
+## 9. UI Composition Rules
+
+
+**Pages (app/pages/index.vue)**
+- Pages must be composed using shadcn components first
+- Layout structure may wrap shadcn components with Inspira sections if needed
+- Do not write raw HTML inputs, buttons, or forms in pages
+
+**Components (components/)**
 Shadcn components may be:
-
-Used directly
-
-Wrapped for customization
+- Used directly
+- Wrapped for customization
 
 Wrappers must:
+- Forward props
+- Accept `class?: string`
+- Merge styles via `cn()`
 
-Forward props
-
-Accept class?: string
-
-Merge styles via cn()
-
-6. Inspira UI Usage Rules
+## 10. Inspira UI Usage Rules
 
 Inspira UI is allowed only for:
-
-Hero sections
-
-Marketing layout blocks
-
-Section composition
-
-Non-interactive visual structure
+- Hero sections
+- Marketing layout blocks
+- Section composition
+- Non-interactive visual structure
 
 ❌ Do not use Inspira UI for:
+- Forms
+- Inputs
+- Buttons
+- Modals
+- Interactive UI elements
 
-Forms
+## 11. Nuxt Patterns
 
-Inputs
+**Single-page architecture**
+- Use `app/pages/index.vue` only
+- Section-based layout with anchor scrolling
+- ❌ No multi-page routing
 
-Buttons
+**Layout**
+- Use `layouts/default.vue` for header + footer
 
-Modals
+**Server Communication**
+- Backend calls must go through `server/api/`
+- ❌ Never call n8n directly from the client
+- Use `$fetch` / `useFetch` with:
+  - Loading states
+  - Error handling
+  - User feedback
 
-Interactive UI elements
+## 12. Product Requirement
 
-7. Nuxt Patterns
+**One-Page Marketing Agency Landing Page + n8n Automation**
 
-Single-page architecture
+**Landing Page UI Rules:**
+- All forms must use shadcn components
+- CTA buttons must be shadcn `Button`
+- Contact form fields must be:
+  - `Input`
+  - `Textarea`
+  - `Form` / `FormField`
+- Feedback states must use:
+  - `Alert`
+  - `Toast` (if available)
 
-Use app/pages/index.vue only
-
-Section-based layout with anchor scrolling
-
-❌ No multi-page routing
-
-Layout
-
-Use layouts/default.vue for header + footer
-
-Server Communication
-
-Backend calls must go through server/api/
-
-❌ Never call n8n directly from the client
-
-Use $fetch / useFetch with:
-
-Loading states
-
-Error handling
-
-User feedback
-
-8. Product Requirement
-One-Page Marketing Agency Landing Page + n8n Automation
-Step 1. Landing Page UI Rules
-
-All forms must use shadcn components
-
-CTA buttons must be shadcn Button
-
-Contact form fields must be:
-
-Input
-
-Textarea
-
-Form / FormField
-
-Feedback states must use:
-
-Alert
-
-Toast (if available)
-
-9. Output Expectations (Copilot Behavior)
+## 13. Output Expectations (Copilot Behavior)
 
 Copilot must:
-
-Prefer Vue shadcn/ui components by default
-
-Replace raw Tailwind markup with shadcn equivalents
-
-Generate complete, production-ready code
-
-Always specify file paths
-
-Show full updated code blocks
-
-Make minimal, correct changes
-
-Always use cn() when styling shadcn components
-
-Respect single-page architecture
+- Prefer Vue shadcn/ui components by default
+- Replace raw Tailwind markup with shadcn equivalents
+- Generate complete, production-ready code
+- Always specify file paths
+- Show full updated code blocks
+- Make minimal, correct changes
+- Always use `cn()` when styling shadcn components
+- Respect single-page architecture
