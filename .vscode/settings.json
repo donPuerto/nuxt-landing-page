@@ -4,6 +4,15 @@
   "explorer.compactFolders": false,
   "workbench.tree.indent": 8,
   "explorer.fileNesting.enabled": true,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+      "strings": true
+  },
+  "tailwindCSS.experimental.classRegex": ["tw`(.*?)`", "tw\\('(.*?)'\\)", "tw\\(\\s*('(.*?)'|\"(.*?)\")\\s*\\)"],
+  
+
   
 
 }

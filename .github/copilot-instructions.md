@@ -1,6 +1,598 @@
-# Copilot Instructions
+# Copilot Instructions for Nuxt 4 Landing Page
 
-Nuxt 4 + Tailwind CSS v4 + Vue shadcn/ui (Primary) + Inspira UI (Secondary)
+**Tech Stack:** Nuxt 4 + Tailwind CSS v4 + Vue shadcn/ui + n8n Integration
+
+---
+
+## Table of Contents
+1. Quick Start
+2. Project Architecture
+3. Core Rules (MANDATORY)
+4. Coding Standards
+5. Typography & Styling
+6. Component Patterns
+7. Advanced Patterns
+8. Common Mistakes
+
+---
+
+## Quick Start
+
+**Most Important Rules:**
+- ✅ Use ONLY ONE `Logo.vue` component everywhere
+- ✅ Use shadcn/ui components instead of custom Tailwind
+- ✅ Use `cn()` utility for ALL class merging
+- ✅ Use `<Container>` component for ALL section alignment
+- ✅ Keep exact font sizes: headings `text-4xl md:text-5xl`, descriptions `text-sm md:text-base`
+- ❌ Never hardcode padding or max-width directly in sections
+- ❌ Never call n8n webhooks from client side
+
+---
+
+## Project Architecture
+
+### Directory Structure
+```
+app/
+  components/
+    global/       # Page sections: Navbar, Footer, Hero, ContactForm, Logo
+    ui/           # shadcn/ui primitives + custom wrappers
+  pages/index.vue # Single-page marketing site (ONLY PAGE)
+  layouts/default.vue # Shared header + footer layout
+  composables/    # useForm, useRipple, useScrollSpy, useSmoothScroll
+  lib/utils.ts    # cn() utility function
+server/api/
+  contact.post.ts # n8n webhook proxy (NEVER call n8n directly from client)
+```
+
+### Tech Stack
+| Tech | Purpose | Location |
+|------|---------|----------|
+| **Nuxt 4** | SSR single-page, auto-imports | Framework |
+| **TypeScript** | Strict mode, Composition API | `<script setup lang="ts">` |
+| **Tailwind v4** | Styling via `@tailwindcss/vite` | Utility-first CSS |
+| **shadcn/ui** | Headless Vue components (PRIMARY) | `/components/ui/*` |
+| **vee-validate + zod** | Type-safe forms | Form validation |
+| **vue-sonner** | Toast notifications | User feedback |
+| **@nuxtjs/color-mode** | Dark/light theme | Theme toggle |
+
+---
+
+## Core Rules (MANDATORY)
+
+### Rule 1: Shadcn-First Components
+
+**If shadcn/ui has it, use it. Period.**
+
+```vue
+❌ WRONG:
+<div class="px-4 py-2 bg-blue-600 text-white rounded">Click me</div>
+
+✅ CORRECT:
+<Button>Click me</Button>
+```
+
+**Quick Component Map:**
+| UI Need | Component | Path |
+|---------|-----------|------|
+| Button | `Button` | `@/components/ui/button` |
+| Input | `Input` | `@/components/ui/input` |
+| Textarea | `Textarea` | `@/components/ui/textarea` |
+| Form | `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage` | `@/components/ui/form` |
+| Card | `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter` | `@/components/ui/card` |
+| Toast | `toast` | `vue-sonner` |
+
+### Rule 2: Single Logo Component (CRITICAL)
+
+**Use `@/components/global/Logo.vue` EVERYWHERE with consistent props.**
+
+```vue
+<!-- Navbar -->
+<Logo size="sm" variant="square" :name="'Don Puerto'" :animated="true" />
+
+<!-- Footer -->
+<Logo size="sm" logoOnly :name="'DP'" :animated="true" />
+
+<!-- Hero (optional) -->
+<Logo size="lg" variant="full" :name="'Don Puerto'" :animated="true" />
+```
+
+**Logo Props:**
+| Prop | Type | Default | Purpose |
+|------|------|---------|---------|
+| `name` | string | `'DP'` | Full name or initials (auto-parsed) |
+| `size` | `'sm' \| 'lg'` | `'sm'` | Small (36px) or Large (64px) |
+| `variant` | `'full' \| 'square'` | `'full'` | With or without name text |
+| `animated` | boolean | `false` | Flowing gradient animation |
+| `logoOnly` | boolean | `false` | Just the square (no text) |
+| `borderless` | boolean | `false` | Remove gradient border |
+| `class` | string | `''` | Additional Tailwind classes |
+
+**Gradient Details:**
+- **Colors**: Purple → Pink → Golden Yellow → Red-Orange → Orange
+- **Animation**: 2 seconds, one direction, continuous
+- **Hover**: Multi-color glow effect
+- **Dark Mode**: Full support
+
+### Rule 3: Container for Alignment
+
+**Use `<Container>` component in EVERY section for alignment.**
+
+```vue
+<!-- ✅ CORRECT -->
+<section class="py-16 bg-gray-50">
+  <Container>
+    <!-- Content: max-w-7xl mx-auto px-6 -->
+  </Container>
+</section>
+
+<!-- ❌ WRONG -->
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <!-- Breaking layout rules -->
+</section>
+```
+
+**Container Rules:**
+- Location: `@/components/ui/Container.vue`
+- Default: `max-w-7xl mx-auto px-6`
+- Never nest Container inside Container
+- Supports layout toggle: `data-layout="full"` on HTML
+
+### Rule 4: Use cn() for Class Merging
+
+**Always use `cn()` from `~/lib/utils.ts` for conditional/merged classes.**
+
+```typescript
+// ✅ CORRECT
+import { cn } from '~/lib/utils'
+
+const buttonClass = computed(() =>
+  cn(
+    'px-4 py-2 rounded-md',
+    props.variant === 'ghost' && 'bg-transparent',
+    props.class
+  )
+)
+
+// ❌ WRONG
+const buttonClass = `px-4 py-2 ${isActive ? 'bg-blue' : 'bg-gray'}`
+```
+
+---
+
+## Coding Standards
+
+### Vue SFC Pattern (Required)
+
+```vue
+<script setup lang="ts">
+// 1. Imports (shadcn first)
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '~/lib/utils'
+
+// 2. Composables
+const { data } = await useFetch('/api/endpoint')
+
+// 3. State
+const isOpen = ref(false)
+const items = computed(() => [...])
+
+// 4. Methods
+const handleClick = () => { }
+</script>
+
+<template>
+  <section class="py-16">
+    <Container>
+      <Card>
+        <CardContent>
+          <Button @click="handleClick">Click me</Button>
+        </CardContent>
+      </Card>
+    </Container>
+  </section>
+</template>
+```
+
+### Nuxt Conventions
+- ✅ Single page: `app/pages/index.vue` only
+- ✅ Auto-imports: components and composables
+- ✅ Layout: `layouts/default.vue` for header/footer
+- ✅ API: `server/api/` for backend routes
+- ❌ No multi-page routing
+- ❌ No direct client-side webhook calls
+
+### Component Design
+- Small, focused, single responsibility
+- Accept `class?: string` for customization
+- Forward props to wrapped components
+- Use `cn()` for style merging
+
+---
+
+## Typography & Styling
+
+### Main Section Headers (MANDATORY)
+
+**ALL main section headings use exact same sizes:**
+
+```vue
+<div class="text-center mb-12">
+  <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+    Section Title
+  </h2>
+  <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
+    Section description
+  </p>
+</div>
+```
+
+**Required Typography:**
+| Element | Mobile | Desktop | Weight | Light | Dark |
+|---------|--------|---------|--------|-------|------|
+| **Heading** | `text-4xl` | `text-5xl` | `font-bold` | `text-gray-900` | `dark:text-white` |
+| **Description** | `text-sm` | `text-base` | Regular | `text-gray-600` | `dark:text-gray-400` |
+
+**Sections Using This:**
+- ✅ Services, Testimonials, Clients, Contact sections
+- ✅ Footer "Connect with me" section
+
+### Sub-Section Headers (Forms, Cards)
+
+```vue
+<h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
+  Let's Connect
+</h3>
+<p class="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+  Description
+</p>
+```
+
+**Sizes:** Heading `text-lg md:text-xl`, Description `text-xs md:text-sm`
+
+### Navbar & Footer Typography
+
+| Element | Size | Weight | Colors |
+|---------|------|--------|--------|
+| **Navbar Logo** | `text-base md:text-lg` | `font-bold` | `text-gray-900 dark:text-white` |
+| **Navbar Links** | Inherit from Button | Regular | Active: `text-blue-600 dark:text-blue-400` |
+| **Footer Text** | `text-sm md:text-base` | `font-medium` | `text-gray-700 dark:text-gray-200` |
+
+**Dark Mode Rule (MANDATORY):**
+Every text element needs light + dark variant:
+```
+❌ <span class="text-gray-900">Text</span>
+✅ <span class="text-gray-900 dark:text-white">Text</span>
+```
+
+### Hero Section Formatting (RECOMMENDED PATTERN)
+
+**The Hero section uses larger, more impactful typography for the main landing section.**
+
+```vue
+<Section id="home" class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+  <Container>
+    <FadeIn direction="up" class="text-center max-w-4xl mx-auto">
+      <!-- Main Heading -->
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+        Transform Your Business with
+        <span class="text-blue-600 dark:text-blue-400"> AI-Powered Automation</span>
+      </h1>
+      
+      <!-- Description -->
+      <p class="text-lg md:text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+        We help businesses streamline operations, reduce costs, and scale faster through intelligent automation solutions.
+      </p>
+      
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button @click="scrollTo('contact')" size="lg">Get Started</Button>
+        <Button variant="outline" size="lg">Our Services</Button>
+      </div>
+    </FadeIn>
+  </Container>
+</Section>
+```
+
+**Hero Typography Specifications:**
+
+| Element | Mobile | Tablet | Desktop | Weight | Colors |
+|---------|--------|--------|---------|--------|--------|
+| **Main Heading** | `text-5xl` (48px) | `text-6xl` (64px) | `text-7xl` (80px) | `font-bold` | Light: `text-gray-900` / Dark: `dark:text-white` |
+| **Accent Text** | Same | Same | Same | `font-bold` | `text-blue-600 dark:text-blue-400` |
+| **Description** | `text-lg` (18px) | `text-lg` (18px) | `text-lg` (18px) | Regular | Light: `text-gray-600` / Dark: `dark:text-gray-400` |
+
+**Hero Spacing Rules:**
+- Heading margin bottom: `mb-6`
+- Description margin bottom: `mb-10`
+- Button gap: `gap-4`
+- Description max-width: `max-w-2xl`
+- Heading container max-width: `max-w-4xl`
+
+**Hero CSS Properties:**
+- Line height: `leading-tight` (headings), `leading-relaxed` (descriptions)
+- Section padding: `pt-32 pb-16` (mobile), `md:pt-40 md:pb-24` (desktop)
+- Background: `bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm`
+- Text alignment: `text-center`
+
+**Key Differences from Section Headers:**
+| Feature | Section Headers | Hero Section |
+|---------|-----------------|-------------|
+| Heading Size | `text-4xl md:text-5xl` | `text-5xl md:text-6xl lg:text-7xl` (LARGER) |
+| Description Size | `text-sm md:text-base` | `text-lg md:text-lg` (LARGER) |
+| Max Width | N/A (full) | `max-w-4xl` (constrained) |
+| Line Height | Normal | `leading-tight` (headings) / `leading-relaxed` (description) |
+| Animation | N/A | FadeIn with `direction="up"` |
+
+**Hero CTA Button Pattern:**
+```vue
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+  <Button @click="scrollTo('contact')" size="lg">Primary Action</Button>
+  <Button variant="outline" size="lg">Secondary Action</Button>
+</div>
+```
+
+- Always use `size="lg"` for hero buttons
+- Stack on mobile (`flex-col sm:flex-row`)
+- Center alignment with `justify-center`
+- Consistent gap: `gap-4`
+
+---
+
+## Component Patterns
+
+### Form Pattern (vee-validate + zod)
+
+```vue
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+import { toast } from 'vue-sonner'
+
+// 1. Define schema
+const schema = toTypedSchema(z.object({
+  email: z.string().email('Invalid email'),
+  message: z.string().min(10),
+}))
+
+// 2. Initialize form
+const { handleSubmit, resetForm } = useForm({ validationSchema: schema })
+
+// 3. Handle submit
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    await $fetch('/api/contact', { method: 'POST', body: values })
+    toast.success('Sent!')
+    resetForm()
+  } catch (err) {
+    toast.error('Failed', { description: err.data?.message })
+  }
+})
+</script>
+
+<template>
+  <form @submit="onSubmit">
+    <FormField v-slot="{ componentField }" name="email">
+      <FormItem>
+        <FormLabel>Email</FormLabel>
+        <FormControl>
+          <Input type="email" v-bind="componentField" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+  </form>
+</template>
+```
+
+### Animation Pattern (FadeIn)
+
+```vue
+<!-- Single element -->
+<FadeIn direction="up" :delay="100">
+  <Card>...</Card>
+</FadeIn>
+
+<!-- Staggered list -->
+<div v-for="(item, i) in items" :key="i">
+  <FadeIn direction="up" :delay="i * 100">
+    <Card>{{ item }}</Card>
+  </FadeIn>
+</div>
+```
+
+**Props:** `direction` (up|down|left|right), `delay` (ms), `once` (boolean)
+
+### n8n Integration (API Proxy)
+
+```typescript
+// ✅ server/api/contact.post.ts - Proxy pattern
+export default defineEventHandler(async (event) => {
+  const { name, email, message } = await readBody(event)
+  
+  const config = useRuntimeConfig()
+  const response = await $fetch(config.n8nWebhookUrl, {
+    method: 'POST',
+    headers: { 'x-webhook-secret': config.n8nWebhookSecret },
+    body: { name, email, message, timestamp: new Date().toISOString() }
+  })
+  
+  return { ok: true }
+})
+
+// ❌ NEVER call n8n directly from client
+await $fetch('https://webhook.site/...', { method: 'POST', body: data })
+```
+
+---
+
+## Advanced Patterns
+
+### Custom Component Wrapper
+
+```vue
+<script setup lang="ts">
+import { Button as ShadcnButton } from '@/components/ui/button'
+import { cn } from '~/lib/utils'
+
+interface Props {
+  variant?: 'primary' | 'secondary'
+  class?: string
+}
+
+const props = withDefaults(defineProps<Props>(), { variant: 'primary' })
+
+const buttonClass = computed(() =>
+  cn(
+    'px-6 py-3 rounded-lg',
+    props.variant === 'primary' && 'bg-blue-600 text-white',
+    props.variant === 'secondary' && 'bg-gray-100 text-gray-900',
+    props.class
+  )
+)
+</script>
+
+<template>
+  <ShadcnButton :class="buttonClass">
+    <slot />
+  </ShadcnButton>
+</template>
+```
+
+### Responsive Grid
+
+```vue
+<Container>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <Card v-for="item in items" :key="item.id">
+      <CardContent>{{ item.title }}</CardContent>
+    </Card>
+  </div>
+</Container>
+```
+
+---
+
+## Common Mistakes
+
+### ❌ Mistake 1: Multiple Logo Components
+```vue
+<!-- WRONG -->
+<Navbar /> <!-- Uses Logo.vue -->
+<Footer /> <!-- Uses FooterLogo.vue -->
+
+<!-- CORRECT -->
+<Navbar /> <!-- Uses Logo.vue -->
+<Footer /> <!-- Uses Logo.vue with logoOnly prop -->
+```
+
+### ❌ Mistake 2: Hardcoded Padding/Width
+```vue
+<!-- WRONG -->
+<section class="max-w-7xl mx-auto px-6 py-16">Content</section>
+
+<!-- CORRECT -->
+<section class="py-16"><Container>Content</Container></section>
+```
+
+### ❌ Mistake 3: Inconsistent Font Sizes
+```vue
+<!-- WRONG - Different sizes -->
+<h2 class="text-3xl md:text-4xl">Services</h2>
+<h2 class="text-4xl md:text-5xl">Testimonials</h2>
+
+<!-- CORRECT - Same everywhere -->
+<h2 class="text-4xl md:text-5xl">Services</h2>
+<h2 class="text-4xl md:text-5xl">Testimonials</h2>
+```
+
+### ❌ Mistake 4: String Concatenation
+```typescript
+// WRONG
+:class="'text-' + size + ' py-' + padding"
+
+// CORRECT
+:class="cn('text-base py-4', { 'text-lg': size === 'lg' })"
+```
+
+### ❌ Mistake 5: Missing Dark Mode
+```vue
+<!-- WRONG -->
+<h2 class="text-gray-900">Heading</h2>
+
+<!-- CORRECT -->
+<h2 class="text-gray-900 dark:text-white">Heading</h2>
+```
+
+### ❌ Mistake 6: Client-Side Webhook Calls
+```typescript
+// WRONG - Never do this
+const response = await fetch('https://webhook.site/...', {...})
+
+// CORRECT - Use server endpoint
+const response = await $fetch('/api/contact', {...})
+```
+
+### ❌ Mistake 7: Nested Containers
+```vue
+<!-- WRONG - Double container -->
+<Container><ContactForm /></Container>
+
+<!-- CORRECT -->
+<Container>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <!-- Form content directly -->
+  </div>
+</Container>
+```
+
+---
+
+## Reference Files
+
+- Logo.vue - `app/components/global/Logo.vue`
+- Navbar.vue - `app/components/global/Navbar.vue`
+- Footer.vue - `app/components/global/Footer.vue`
+- Container.vue - `app/components/ui/Container.vue`
+- ContactForm.vue - `app/components/global/ContactForm.vue`
+- index.vue - `app/pages/index.vue`
+- contact.post.ts - `server/api/contact.post.ts`
+
+---
+
+## Quick Checklist
+
+- [ ] Using shadcn/ui components (not custom Tailwind)?
+- [ ] Using `cn()` for class merging?
+- [ ] Using `<Container>` for alignment?
+- [ ] Using single `Logo.vue` component?
+- [ ] Font sizes correct: `text-4xl md:text-5xl` (headings), `text-sm md:text-base` (descriptions)?
+- [ ] Dark mode classes included?
+- [ ] Form validation with vee-validate + zod?
+- [ ] API calls through `server/api/`?
+- [ ] No hardcoded padding/max-width in sections?
+
+---
+
+## VS Code Configuration Notes
+
+**CSS IntelliSense Data:**
+- VS Code generates `css-data.json` for Tailwind CSS IntelliSense
+- This file is auto-generated and should be ignored in version control
+- If you see CSS validation warnings, ensure `.vscode/settings.json` includes Tailwind directives support
+
+**Recommended `.vscode/settings.json`:**
+```
+{
+  "css.validate": false,
+  "tailwindCSS.experimental.classRegex": [
+    ["cn\\(([^)]*)\\)", "[\\"'`]([^\\"'`]*).*?[\\"'`]"]
+  ]
+}
+```
+- [ ] Tested in light and dark modes?
 
 ## 1. Project Stack
 
@@ -334,7 +926,7 @@ const onSubmit = handleSubmit(async (values) => {
 - Show validation errors via `<FormMessage />`
 - Use `toast` from `vue-sonner` for success/error feedback
 
-**Reference:** See [ContactForm.vue](app/components/global/ContactForm.vue)
+**Reference:** See `app/components/global/ContactForm.vue`
 
 ## 6. Animation & Scroll Patterns
 
@@ -475,10 +1067,10 @@ useHead({
 ```
 
 **Reference Implementation:**
-- See [Container.vue](app/components/ui/Container.vue)
-- See [Navbar.vue](app/components/global/Navbar.vue) 
-- See [Hero.vue](app/components/global/Hero.vue)
-- See [Footer.vue](app/components/global/Footer.vue)
+- See `app/components/ui/Container.vue`
+- See `app/components/global/Navbar.vue`
+- See `app/components/global/Hero.vue`
+- See `app/components/global/Footer.vue`
 
 ## 7.5. Section Header Typography (MANDATORY)
 
@@ -567,6 +1159,53 @@ useHead({
 **Sub-section Description MUST use:**
 - Mobile: `text-xs` (12px)
 - Desktop: `text-sm` (14px)
+
+### Navbar & Footer Typography (MANDATORY)
+
+**All navigation and footer text MUST be consistent with section content.**
+
+**Navbar Logo Text:**
+- Mobile: `text-base` (16px)
+- Desktop: `text-lg` (18px)
+- Weight: `font-bold`
+- Color: `text-gray-900 dark:text-white`
+
+**Navbar Navigation Links:**
+- Use shadcn `Button` component with `variant="ghost"`
+- Default size inherits button typography (`text-sm md:text-base`)
+- Active state: `text-blue-600 dark:text-blue-400`
+
+**Footer "Connect with me" Section:**
+- Heading: `text-4xl md:text-5xl` (same as main section headers)
+- Description: `text-sm md:text-base` (same as section descriptions)
+
+**Footer Copyright & Contact Details:**
+- Text size: `text-sm md:text-base` (same as navbar buttons)
+- Color: `text-gray-700 dark:text-gray-200`
+- Font weight: `font-medium`
+
+**Footer Contact Details Right Column:**
+- Same text size as copyright: `text-sm md:text-base`
+- Icon size: `w-5 h-5`
+- Hover effect: `hover:text-blue-500 dark:hover:text-blue-300`
+
+✅ **DO:**
+- Use `text-base md:text-lg` for navbar logo text
+- Use `text-sm md:text-base` for all footer text content
+- Use `text-4xl md:text-5xl` for footer "Connect with me" heading
+- Maintain consistent icon sizing (`w-5 h-5` for footer, `w-6 h-6` for nav buttons)
+- Always include dark mode color pairs
+
+❌ **DON'T:**
+- Mix different sizes between navbar logo and footer text
+- Use `text-xs` for footer contact details
+- Create custom font sizes for navbar/footer
+- Forget dark mode classes on footer text
+- Use different text sizes for copyright vs contact details
+
+**Reference Implementation:**
+- See `app/components/global/Navbar.vue`
+- See `app/components/global/Footer.vue`
 
 
 
@@ -682,10 +1321,10 @@ useHead({
 ```
 
 **Reference Implementation:**
-- See [Container.vue](app/components/ui/Container.vue)
-- See [Navbar.vue](app/components/global/Navbar.vue) 
-- See [Hero.vue](app/components/global/Hero.vue)
-- See [Footer.vue](app/components/global/Footer.vue)
+- See `app/components/ui/Container.vue`
+- See `app/components/global/Navbar.vue`
+- See `app/components/global/Hero.vue`
+- See `app/components/global/Footer.vue`
 
 ## 8. Server API Pattern (n8n Integration)
 
@@ -734,7 +1373,7 @@ export default defineEventHandler(async (event) => {
 });
 ```
 
-**Reference:** See [contact.post.ts](server/api/contact.post.ts)
+**Reference:** See `server/api/contact.post.ts`
 
 ## 9. UI Composition Rules
 
