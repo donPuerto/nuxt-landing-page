@@ -4,28 +4,10 @@ import { CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon
 import { Toaster as Sonner } from "vue-sonner"
 
 const props = defineProps<ToasterProps>()
-const colorMode = useColorMode()
-
-const toastOptions = computed(() => {
-  const isDark = colorMode.value === 'dark'
-  return {
-    style: {
-      background: isDark ? '#1f2937' : '#ffffff',
-      border: isDark ? '2px solid #374151' : '2px solid #e5e7eb',
-      color: isDark ? '#ffffff' : '#111827',
-      borderRadius: '8px',
-      padding: '16px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-    },
-  }
-})
 </script>
 
 <template>
-  <Sonner
-    :toast-options="toastOptions"
-    v-bind="props"
-  >
+  <Sonner v-bind="props">
     <template #success-icon>
       <CircleCheckIcon class="size-4" />
     </template>
