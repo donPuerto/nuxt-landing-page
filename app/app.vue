@@ -56,8 +56,8 @@ watch(() => colorMode.value, (newVal) => {
 
 /* Dark mode toast styling */
 :root.dark :where(.sonner-toast) {
-  background-color: #1f2937 !important;
-  border-color: #374151 !important;
+  background-color: #111827 !important;
+  border: 2px solid #1f2937 !important;
   color: #ffffff !important;
 }
 
