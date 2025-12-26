@@ -1441,14 +1441,221 @@ Inspira UI is allowed only for:
   - `Alert`
   - `Toast` (if available)
 
-## 13. Output Expectations (Copilot Behavior)
+## 13. Production Setup & SSR Configuration
 
-Copilot must:
-- Prefer Vue shadcn/ui components by default
-- Replace raw Tailwind markup with shadcn equivalents
-- Generate complete, production-ready code
-- Always specify file paths
-- Show full updated code blocks
-- Make minimal, correct changes
-- Always use `cn()` when styling shadcn components
-- Respect single-page architecture
+### SSR Disabled by Design
+
+**This project uses `ssr: false` in `nuxt.config.ts`** for the following reasons:
+- Client-side marketing site with complex animations and dynamic effects
+- AnimatedLogo component with multiple conditional branches creates hydration mismatches
+- FluidCursor WebGL effect is client-only
+- Confetti animations are client-side events
+- No SEO benefit for single-page applications
+
+**Configuration:**
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  ssr: false, // Disabled for client-side marketing site
+  // ... rest of config
+})
+```
+
+### Dark Mode Flash Prevention
+
+**Inline Script (Head):**
+```typescript
+app: {
+  head: {
+    script: [
+      {
+        innerHTML: `if(localStorage.getItem('nuxt-color-mode')==='dark'||!localStorage.getItem('nuxt-color-mode'))document.documentElement.classList.add('dark')`,
+        async: false,
+        defer: false,
+      }
+    ]
+  }
+}
+```
+
+**Purpose:** Runs before Vue hydrates to immediately apply dark mode class, preventing white flash on reload when user prefers dark theme.
+
+**CSS Fallback:**
+```css
+/* In app/assets/css/tailwind.css */
+@supports (color-scheme: dark) {
+  html {
+    color-scheme: dark;
+    background-color: rgb(17, 24, 39);
+    color: rgb(255, 255, 255);
+  }
+}
+
+html.light {
+  color-scheme: light;
+  background-color: #ffffff;
+  color: #111827;
+}
+```
+
+### Content Security Policy for Web Workers
+
+**Required for canvas-confetti library:**
+```typescript
+routeRules: {
+  '/**': {
+    headers: {
+      'Content-Security-Policy': process.env.NODE_ENV === 'development' 
+        ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;"
+        : "script-src 'self' 'unsafe-inline' https:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;"
+    }
+  }
+}
+```
+
+**Critical:** `worker-src 'self' blob:` must be included to allow canvas-confetti to create web workers for the fireworks effect.
+
+### Toast Theming Setup
+
+**Sonner Toast Component with Dynamic Theme:**
+```vue
+<script setup lang="ts">
+const colorMode = useColorMode()
+
+const toastOptions = computed(() => ({
+  unstyled: false,
+  classNames: {
+    toast: colorMode.value === 'dark'
+      ? '!bg-gray-800 !border-2 !border-gray-700 !text-white'
+      : '!bg-white !border-2 !border-gray-300 !text-gray-900',
+    title: colorMode.value === 'dark'
+      ? '!text-white !font-semibold'
+      : '!text-gray-900 !font-semibold',
+    description: colorMode.value === 'dark'
+      ? '!text-gray-300'
+      : '!text-gray-600',
+    success: colorMode.value === 'dark'
+      ? '!border-green-600'
+      : '!border-green-500',
+    error: colorMode.value === 'dark'
+      ? '!border-red-600'
+      : '!border-red-500',
+    warning: colorMode.value === 'dark'
+      ? '!border-yellow-600'
+      : '!border-yellow-500',
+    info: colorMode.value === 'dark'
+      ? '!border-blue-600'
+      : '!border-blue-500',
+  },
+}))
+</script>
+```
+
+**Key:** Use `!important` flags with conditional classNames based on `colorMode.value` to ensure proper theme switching.
+
+### Confetti Integration for Form Success
+
+**Location:** `app/composables/useConfetti.ts`
+
+**4 Confetti Modes:**
+1. `fireFireworks()` - 5-second dual-side celebration (default for form submission)
+2. `fireSideCannons()` - 3-second continuous side cannons
+3. `fireRandom()` - Random angle burst
+4. `fireBasic(options?)` - Customizable center burst
+
+**Usage in Forms:**
+```typescript
+const { fireSuccess } = useConfetti()
+
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const response = await $fetch('/api/contact', { method: 'POST', body: values })
+    
+    if (response?.ok !== false) {
+      toast.success('Message sent successfully!')
+      fireSuccess() // Triggers fireworks
+      resetForm()
+    }
+  } catch (err: any) {
+    toast.error('Submission failed')
+  }
+})
+```
+
+### FluidCursor WebGL Integration
+
+**Location:** `app/components/ui/fluid-cursor/FluidCursor.vue`
+
+**Features:**
+- WebGL fluid simulation
+- Mouse/touch tracking
+- Cursor-following particles
+- Real-time rendering
+
+**Usage in Layout:**
+```vue
+<template>
+  <NuxtLayout>
+    <!-- ... -->
+    <FluidCursor class="fixed inset-0 z-50" />
+    <!-- ... -->
+  </NuxtLayout>
+</template>
+```
+
+**Z-Index Layering (Important):**
+- FluidCursor: `z-50` (above content)
+- Main content: `z-10`
+- Confetti: `z-9999` (above everything except ripple)
+- Ripple overlay: `z-100` (theme toggle effect)
+
+### Production Checklist
+
+✅ **Before Deployment:**
+- [ ] SSR is set to `false`
+- [ ] Dark mode script is in `app.head.script`
+- [ ] CSP includes `worker-src 'self' blob:` for confetti
+- [ ] Toast theming uses `colorMode.value` computed property
+- [ ] Logo component works without ClientOnly wrappers
+- [ ] FluidCursor is positioned correctly with proper z-index
+- [ ] Contact form calls `/api/contact` (server endpoint)
+- [ ] n8n webhook URL is set in environment variables
+- [ ] No hydration warnings in console
+- [ ] Dark mode applies immediately on reload without white flash
+- [ ] Confetti triggers on successful form submission
+- [ ] Toast displays with correct theme colors
+
+### Known Limitations & Design Decisions
+
+**No SSR:**
+- Performance: Faster initial client-side rendering for single-page app
+- Flexibility: No hydration mismatches with complex animated components
+- Limitation: No server-side rendering for improved time-to-interactive
+
+**ClientOnly No Longer Used:**
+- Removed all ClientOnly wrappers from components
+- Instead, entire app is client-rendered with `ssr: false`
+- Simpler component code without fallback templates
+
+**Dark Mode Handling:**
+- Inline script prevents white flash
+- CSS fallback applies dark colors immediately
+- Computed properties ensure toast theming updates reactively
+
+---
+
+## Quick Reference: What Was Implemented
+
+This project includes enterprise-grade features:
+
+1. **Animated Logo Component** - Single reusable Logo with flowing gradient animation
+2. **FluidCursor Effect** - WebGL-based interactive cursor tracking
+3. **Confetti Celebrations** - 4 modes of canvas-confetti animations for form success
+4. **Toast Notifications** - vue-sonner with proper light/dark theme support
+5. **Form Validation** - vee-validate + zod for type-safe forms
+6. **n8n Webhook Integration** - Server-side proxy to n8n automation
+7. **Dark/Light Theme** - Full theme support with zero white flash
+8. **Responsive Design** - Mobile-first approach with Tailwind CSS v4
+9. **Smooth Scroll** - Custom composable for anchor navigation
+10. **CSP Configuration** - Proper security headers with blob: worker support
+

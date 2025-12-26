@@ -2,6 +2,21 @@
 @import "tailwindcss";
 @import "vue-sonner/style.css";
 
+/* Prevent white flash on dark mode reload */
+@supports (color-scheme: dark) {
+  html {
+    color-scheme: dark;
+    background-color: rgb(17, 24, 39);
+    color: rgb(255, 255, 255);
+  }
+}
+
+html.light {
+  color-scheme: light;
+  background-color: #ffffff;
+  color: #111827;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

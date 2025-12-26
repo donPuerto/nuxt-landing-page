@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  ssr: true,
+  ssr: false,
   css: ['~/assets/css/tailwind.css'],
   modules: [
     '@nuxtjs/color-mode',
@@ -15,6 +15,17 @@ export default defineNuxtConfig({
     { path: '~/components', pathPrefix: false, extensions: ['.vue'] },
   ],
   plugins: [],
+  app: {
+    head: {
+      script: [
+        {
+          innerHTML: `if(localStorage.getItem('nuxt-color-mode')==='dark'||!localStorage.getItem('nuxt-color-mode'))document.documentElement.classList.add('dark')`,
+          async: false,
+          defer: false,
+        }
+      ]
+    }
+  },
   runtimeConfig: {
     n8nWebhookUrl: process.env.NUXT_N8N_WEBHOOK_URL || '',
     n8nWebhookSecret: process.env.NUXT_N8N_WEBHOOK_SECRET || '',
