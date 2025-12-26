@@ -182,7 +182,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
 
     <template #fallback>
       <div :class="squareSizeClasses[size]">
-        <div class="w-full h-full rounded-lg p-0.5 bg-linear-to-br from-blue-500 to-purple-600">
+        <div class="w-full h-full rounded-lg p-0.5 bg-gradient-to-br from-blue-500 to-purple-600">
           <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
             {{ initials }}
           </div>
