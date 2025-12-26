@@ -10,6 +10,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { cn } from '~/lib/utils'
 
+const { fireSuccess } = useConfetti()
+
 const formSchema = toTypedSchema(z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50),
   email: z.string().email('Invalid email address'),
@@ -30,6 +32,9 @@ const onSubmit = handleSubmit(async (values) => {
     toast.success(response?.message || 'Message sent successfully!', {
       description: 'Thank you for reaching out. Our team will follow up with you shortly.',
     })
+    
+    // Trigger confetti on successful submission
+    fireSuccess()
     
     resetForm()
   } catch (err: any) {
