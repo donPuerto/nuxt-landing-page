@@ -6,6 +6,7 @@ const { rippleStore } = useRipple();
 <template>
   <div class="min-h-screen flex flex-col relative">
     <ClientOnly>
+      <FluidCursor class="fixed inset-0 z-10" />
       <NeuralBg class="fixed inset-0 z-0" />
       <template #fallback>
         <div class="fixed inset-0 z-0 w-screen h-screen pointer-events-none overflow-hidden">
