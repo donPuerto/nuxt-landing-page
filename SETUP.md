@@ -18,16 +18,18 @@ npm install
 
 ## 2) Environment Variables
 
-Create a `.env` file in the project root with the n8n webhook URL.
+Create a `.env` file in the project root with the n8n webhook URL and optional secret.
 
 ```bash
-N8N_WEBHOOK_URL=https://your-n8n-host/webhook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+NUXT_N8N_WEBHOOK_URL=https://your-n8n-host/webhook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+NUXT_N8N_WEBHOOK_SECRET=your-secret-key-here
 ```
 
 Notes:
 
 - Do not expose this URL in client code; it is only used server-side by `server/api/contact.post.ts`.
-- All contact submissions are forwarded to this URL with `{ name, email, message }`.
+- All contact submissions are forwarded to this URL with `{ name, email, message, timestamp }`.
+- The webhook secret is sent as `x-webhook-secret` header for additional security.
 
 ## 3) Run the Dev Server
 
@@ -37,11 +39,38 @@ npm run dev
 
 The app should be accessible at `http://localhost:3000`.
 
-## 4) UI Conventions and Tailwind
+## 4) Configuration Details
+
+### SSR Disabled
+This project uses `ssr: false` in `nuxt.config.ts` for client-side rendering because:
+- Complex animated components (Logo, FluidCursor) cause hydration mismatches with SSR
+- Single-page marketing site doesn't benefit from SEO advantages of SSR
+- Faster initial client-side rendering for animations
+
+### Dark Mode Flash Prevention
+The app includes:
+- **Inline script** in `nuxt.config.ts` that runs before hydration to apply dark class
+- **CSS fallback** in `tailwind.css` with dark theme colors to prevent white flash on reload
+- **Computed theme switching** in `app.vue` for reactive dark/light mode
+
+### Content Security Policy (CSP)
+The `nuxt.config.ts` includes CSP headers with `worker-src 'self' blob:` to allow:
+- **canvas-confetti** library to create web workers for fireworks animations
+- **Development**: Full access with `unsafe-eval` for HMR
+- **Production**: Restricted script sources for security
+
+### Toast Theming
+Toast notifications (vue-sonner) are configured in `app.vue` with:
+- **Dark mode**: Background `#111827` (gray-900), Border `#1f2937` (gray-800)
+- **Light mode**: Background `#ffffff`, Border `#e5e7eb` (gray-200)
+- **Reactive switching**: CSS updates when user toggles theme
+- **Position**: Top-right corner with `pointer-events-auto`
+
+## 5) UI Conventions and Tailwind
 
 - Use `<script setup lang="ts">` and Composition API
-- Tailwind CSS v4; do not add PostCSS unless explicitly required
-- Merge class names with the shared `cn()` utility in `app/lib/utils.ts`:
+- Tailwind CSS v4 via `@tailwindcss/vite` plugin (no PostCSS)
+- **MANDATORY**: Merge class names with `cn()` utility in `app/lib/utils.ts`
 
 ```ts
 import { type ClassValue, clsx } from "clsx";

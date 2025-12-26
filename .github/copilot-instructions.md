@@ -1517,41 +1517,53 @@ routeRules: {
 
 ### Toast Theming Setup
 
-**Sonner Toast Component with Dynamic Theme:**
+**Sonner Toast Component with Dynamic Theme in app.vue:**
 ```vue
 <script setup lang="ts">
-const colorMode = useColorMode()
+import { Toaster } from 'vue-sonner'
 
-const toastOptions = computed(() => ({
-  unstyled: false,
-  classNames: {
-    toast: colorMode.value === 'dark'
-      ? '!bg-gray-800 !border-2 !border-gray-700 !text-white'
-      : '!bg-white !border-2 !border-gray-300 !text-gray-900',
-    title: colorMode.value === 'dark'
-      ? '!text-white !font-semibold'
-      : '!text-gray-900 !font-semibold',
-    description: colorMode.value === 'dark'
-      ? '!text-gray-300'
-      : '!text-gray-600',
-    success: colorMode.value === 'dark'
-      ? '!border-green-600'
-      : '!border-green-500',
-    error: colorMode.value === 'dark'
-      ? '!border-red-600'
-      : '!border-red-500',
-    warning: colorMode.value === 'dark'
-      ? '!border-yellow-600'
-      : '!border-yellow-500',
-    info: colorMode.value === 'dark'
-      ? '!border-blue-600'
-      : '!border-blue-500',
-  },
-}))
+const colorMode = useColorMode()
 </script>
+
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+
+  <ClientOnly>
+    <Toaster 
+      class="pointer-events-auto"
+      :theme="(colorMode.preference as any) || 'system'"
+      position="top-right"
+    />
+  </ClientOnly>
+</template>
+
+<style>
+/* Light mode toast styling */
+:where(.sonner-toast) {
+  background-color: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+  color: #111827 !important;
+}
+
+/* Dark mode toast styling */
+:root.dark :where(.sonner-toast) {
+  background-color: #111827 !important;
+  border: 2px solid #1f2937 !important;
+  color: #ffffff !important;
+}
+</style>
 ```
 
-**Key:** Use `!important` flags with conditional classNames based on `colorMode.value` to ensure proper theme switching.
+**Key Features:**
+- **ClientOnly wrapper** - Prevents SSR issues with toast component
+- **Theme binding** - `:theme` prop bound to `colorMode.preference` for automatic theme detection
+- **CSS-based theming** - Uses `:root.dark` selector with `!important` to override vue-sonner defaults
+- **Dark colors**: Background `#111827` (gray-900), Border `#1f2937` (gray-800), Text `#ffffff`
+- **Light colors**: Background `#ffffff`, Border `#e5e7eb` (gray-200), Text `#111827`
+- **Success/Error/Warning borders** - Colored borders for different toast types
+- **Position**: Top-right corner for better visibility
 
 ### Confetti Integration for Form Success
 

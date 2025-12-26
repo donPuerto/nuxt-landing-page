@@ -1,44 +1,77 @@
 # Nuxt 4 Marketing Agency Landing Page
 
-Production-ready, single-page landing site built with Nuxt 4 + TypeScript, Tailwind CSS v4, Vue shadcn/ui, and Inspira UI. Form submissions are handled via a Nuxt server endpoint and forwarded to n8n using an environment-configured webhook.
+Production-ready, single-page landing site built with Nuxt 4 + TypeScript, Tailwind CSS v4, Vue shadcn/ui, and advanced client-side features. Form submissions are handled via a Nuxt server endpoint and forwarded to n8n using an environment-configured webhook.
 
 ## Stack
 
-- Nuxt 4 (TypeScript, Composition API, Vite plugin)
-- Tailwind CSS v4 (no PostCSS added unless explicitly required)
-- UI: Vue shadcn/ui primitives + Inspira UI components
-- Automation: n8n workflow via webhook
+- **Nuxt 4** (SSR disabled, TypeScript, Composition API, Vite plugin)
+- **Tailwind CSS v4** (via `@tailwindcss/vite` plugin)
+- **UI Components**: Vue shadcn/ui primitives (primary)
+- **Forms**: vee-validate + zod for type-safe validation
+- **Animations**: canvas-confetti (4 modes), FluidCursor WebGL effect
+- **Toast Notifications**: vue-sonner with full dark/light theme support
+- **Automation**: n8n workflow via secure webhook proxy
 
 ## Key Features
 
-- Single-page architecture with section-based layout (Hero, Services, Contact)
-- Contact form posts to a secure Nuxt endpoint and forwards to n8n
-- Mobile-first, accessible UI with visible focus states
-- Shared Tailwind utility for class merging via `cn()`
+### Core Architecture
+- ✅ **Single-page application** with section-based layout (Hero, Services, Testimonials, Contact)
+- ✅ **SSR disabled** (`ssr: false`) for client-side rendering - prevents hydration mismatches with complex animations
+- ✅ **Dark/light theme** with zero flash on reload - inline script applies theme before hydration
+- ✅ **Mobile-first responsive design** with accessible UI and visible focus states
+
+### Advanced Features
+- ✅ **Animated Logo Component** - Single reusable Logo with flowing gradient animation (5-color gradient)
+- ✅ **FluidCursor WebGL Effect** - Interactive cursor tracking with real-time fluid simulation
+- ✅ **Confetti Celebrations** - 4 modes (fireworks, side cannons, random, basic) triggered on form success
+- ✅ **Toast Notifications** - vue-sonner with reactive theme switching (dark: #111827, light: #ffffff)
+- ✅ **Form Validation** - vee-validate + zod for type-safe contact form with real-time validation
+- ✅ **n8n Integration** - Server-side webhook proxy with CSP configuration for security
+- ✅ **Smooth Scroll** - Custom composable for anchor navigation with offset support
+- ✅ **CSP Headers** - Proper Content Security Policy with `worker-src blob:` for canvas-confetti
+
+### Design System
+- ✅ **Shadcn-first approach** - All UI components use Vue shadcn/ui primitives
+- ✅ **Consistent typography** - Headings: `text-4xl md:text-5xl`, Descriptions: `text-sm md:text-base`
+- ✅ **Container-based alignment** - All sections use `<Container>` component for consistent max-width
+- ✅ **Utility-first styling** - `cn()` utility for Tailwind class merging (required)
 
 ## Project Structure
 
 ```
 app/
+  components/
+    global/       # Page sections: Navbar, Footer, Hero, ContactForm, Logo
+    ui/           # shadcn/ui primitives + custom wrappers
+      fluid-cursor/ # FluidCursor WebGL component
+      sonner/     # Toast notification wrapper
   pages/
-    index.vue     # Single landing page
+    index.vue     # Single landing page (ONLY PAGE)
   layouts/
-    default.vue   # Header, footer, shared layout
-  components/     # UI primitives + sections
-  composables/    # Hooks (form, scroll, toast)
+    default.vue   # Shared header + footer layout
+  composables/
+    useForm.ts          # Form handling utilities
+    useRipple.ts        # Theme toggle ripple effect
+    useScrollSpy.ts     # Active section detection
+    useSmoothScroll.ts  # Anchor navigation
+    useConfetti.ts      # 4 confetti celebration modes
   lib/
-    utils.ts      # cn() utility for class merging
+    utils.ts      # cn() utility for class merging (MANDATORY)
+  assets/css/
+    tailwind.css  # Dark mode flash prevention CSS
 server/
   api/
-    contact.post.ts  # Validates and forwards to n8n
+    contact.post.ts  # n8n webhook proxy (validates + forwards)
 ```
 
-See the repository for full structure. Core files to know:
+Core files:
 
-- `app/pages/index.vue`: Main landing page sections (Hero, Services, Contact)
-- `app/layouts/default.vue`: Wrapper with header/footer
-- `server/api/contact.post.ts`: Form validation + forwarding to n8n
-- `app/lib/utils.ts`: Tailwind class merging utility
+- `app/pages/index.vue` - Main landing page with all sections
+- `app/layouts/default.vue` - Header/footer wrapper with FluidCursor
+- `app/components/global/Logo.vue` - Single animated logo component
+- `app/composables/useConfetti.ts` - 4 confetti celebration modes
+- `server/api/contact.post.ts` - Form validation + n8n forwarding
+- `app/lib/utils.ts` - Tailwind class merging utility (required everywhere)
 
 ## Tailwind Utility (MANDATORY)
 
