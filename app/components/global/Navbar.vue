@@ -37,7 +37,7 @@ const toggleMobileMenu = () => {
     <Container class="py-4">
       <div class="flex items-center justify-between">
         <!-- Logo -->
-        <div class="flex items-center gap-2 cursor-pointer" @click="handleNavClick('home')" role="button">
+        <div class="flex items-center space-x-3 cursor-pointer" @click="handleNavClick('home')" role="button">
           <Logo size="sm" variant="square" :name="'Don Puerto'" :animated="true" class="text-blue-600 dark:text-blue-400" />
           <span class="font-bold text-base md:text-lg text-gray-900 dark:text-white">Don Puerto</span>
         </div>
