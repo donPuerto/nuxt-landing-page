@@ -1,5 +1,50 @@
 # Copilot Instructions for Nuxt 4 Landing Page
 
+> Quick Guide for AI Agents (Jan 2026)
+
+**Architecture & Entry Points**
+- Nuxt 4 SPA with `ssr: false`; sections live in `app/pages/index.vue`, layout in `app/layouts/default.vue`.
+- UI primitives under `app/components/ui/*`; page sections in `app/components/global/*` (e.g., `Hero.vue`, `ContactForm.vue`, `Navbar.vue`, `Footer.vue`).
+- Server API proxy in `server/api/contact.post.ts` forwards form submissions to n8n via runtime config.
+
+**Core Conventions (MANDATORY)**
+- Shadcn-first: Use components from `app/components/ui/*` (e.g., `Button`, `Input`, `FormItem`) instead of raw Tailwind for interactive UI.
+- Single `Logo.vue`: Always use `app/components/global/Logo.vue` with props (`size`, `variant`, `animated`, `logoOnly`).
+- Container alignment: Wrap all sections with `app/components/ui/Container.vue`; never hardcode `max-w-*` or nest containers.
+- Class merging: Always use `cn()` from `app/lib/utils.ts` for conditional classes; accept `class?: string` and merge.
+- Typography: Section headings `text-4xl md:text-5xl`; descriptions `text-sm md:text-base`; include dark mode pairs (`text-gray-900 dark:text-white`).
+
+**Forms & Data Flow**
+- Validate with vee-validate + zod; use `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`.
+- Submit via `$fetch('/api/contact')`; server validates and forwards to `runtimeConfig.n8nWebhookUrl` with optional `x-webhook-secret`.
+- Never call external webhooks from the client.
+
+**Integrations & Effects**
+- Toasts via `vue-sonner` (`Sonner` component) with theme-aware styling; placed in `app/layouts/default.vue`.
+- Confetti modes in `app/composables/useConfetti.ts`; trigger on successful form submission.
+- FluidCursor WebGL in `app/components/ui/fluid-cursor/FluidCursor.vue`; rendered in layout.
+- CSP note: `nuxt.config.ts` sets `worker-src 'self' blob:` for confetti.
+
+**Development & Environment**
+- Commands: `npm run dev`, `npm run build`, `npm run preview`; Tailwind v4 via `@tailwindcss/vite`.
+- Runtime config: `NUXT_N8N_WEBHOOK_URL`, `NUXT_N8N_WEBHOOK_SECRET` (used by `server/api/contact.post.ts`).
+- Dark mode: inline head script in `nuxt.config.ts` prevents white flash; `@nuxtjs/color-mode` configured.
+
+**Examples**
+- Use shadcn: `<Button size="lg">Get Started</Button>`; inputs bound with `v-bind="componentField"` and `<FormMessage />`.
+- Container: `<section class="py-16"><Container><!-- content --></Container></section>`.
+- `cn()` usage: `const cls = computed(() => cn('px-4', isGhost && 'bg-transparent', props.class))`.
+
+**Do / Don't**
+- Do: keep single-page structure, use auto-imported components/composables, include dark mode classes.
+- Don't: nest containers, concatenate class strings, introduce PostCSS, or bypass the server API for n8n.
+
+**Troubleshooting**
+- Contact failures: verify `runtimeConfig` envs and that n8n webhook is reachable; test locally:
+  `curl -X POST http://localhost:3000/api/contact -H "Content-Type: application/json" -d '{"name":"Test","email":"t@e.com","message":"Hi"}'`
+
+— The detailed reference below remains authoritative for edge cases and component specifics.
+
 **Tech Stack:** Nuxt 4 + Tailwind CSS v4 + Vue shadcn/ui + n8n Integration
 
 ---
@@ -586,10 +631,7 @@ const response = await $fetch('/api/contact', {...})
 **Recommended `.vscode/settings.json`:**
 ```
 {
-  "css.validate": false,
-  "tailwindCSS.experimental.classRegex": [
-    ["cn\\(([^)]*)\\)", "[\\"'`]([^\\"'`]*).*?[\\"'`]"]
-  ]
+  "css.validate": false, 
 }
 ```
 - [ ] Tested in light and dark modes?

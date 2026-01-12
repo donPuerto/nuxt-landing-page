@@ -38,8 +38,8 @@ export default defineEventHandler(async (event) => {
 
     // Get n8n webhook URL from environment
     const config = useRuntimeConfig();
-    const webhookUrl = config.n8nWebhookUrl || config.public?.n8nWebhookUrl;
-    const webhookSecret = config.n8nWebhookSecret || config.public?.n8nWebhookSecret;
+    const webhookUrl = config.n8nWebhookUrl || config.public?.n8nWebhookUrl || '';
+    const webhookSecret = config.n8nWebhookSecret || config.public?.n8nWebhookSecret || '';
 
     // Debug: ensure server sees runtime config (only logs on server)
     console.info('[contact] received payload for', email);
@@ -56,12 +56,16 @@ export default defineEventHandler(async (event) => {
     }
 
     // Forward to n8n webhook and capture its response
-    const n8nResponse: any = await $fetch(webhookUrl, {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+    if (webhookSecret && typeof webhookSecret === 'string') {
+      headers['x-webhook-secret'] = webhookSecret;
+    }
+
+    const n8nResponse: any = await $fetch(webhookUrl as string, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(webhookSecret && { 'x-webhook-secret': webhookSecret })
-      },
+      headers,
       body: {
         name: name.trim(),
         email: email.trim(),
