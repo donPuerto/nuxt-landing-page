@@ -2,25 +2,25 @@ export const THEME_COLORS = [
 	{
 		id: 'default',
 		label: 'Porphyra',
-		description: 'Imperial violet gradient',
+		description: 'Prismatic cobalt gradient',
 		preview: '#6366f1',
 	},
 	{
 		id: 'red',
 		label: 'Erythros',
-		description: 'Martial crimson blaze',
+		description: 'Warborn scarlet energy',
 		preview: '#ef4444',
 	},
 	{
 		id: 'rose',
 		label: 'Rhodon',
-		description: 'Blooming rose radiance',
+		description: 'Rosy magenta allure',
 		preview: '#f43f5e',
 	},
 	{
 		id: 'orange',
 		label: 'Pyrros',
-		description: 'Fiery sunlit ember',
+		description: 'Solar chariot ember',
 		preview: '#fb923c',
 	},
 	{
@@ -32,19 +32,19 @@ export const THEME_COLORS = [
 	{
 		id: 'blue',
 		label: 'Kyanos',
-		description: 'Aegean depth current',
+		description: 'Azure tidal command',
 		preview: '#3b82f6',
 	},
 	{
 		id: 'yellow',
 		label: 'Xanthos',
-		description: 'Golden dawn spark',
+		description: 'Sunlit golden spark',
 		preview: '#facc15',
 	},
 	{
 		id: 'violet',
 		label: 'Ianthe',
-		description: 'Twilight orchid glow',
+		description: 'Violet midnight aura',
 		preview: '#a855f7',
 	},
 ] as const
