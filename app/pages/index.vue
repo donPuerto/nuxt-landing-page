@@ -1,13 +1,70 @@
 <!-- app/pages/index.vue -->
 <script setup lang="ts">
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+const testimonials = [
+  {
+    quote:
+      'The automation solutions provided have saved us over 30 hours per week. Our team can now focus on strategic initiatives instead of repetitive tasks.',
+    name: 'Sarah Mitchell',
+    role: 'Operations Director',
+    company: 'TechFlow Solutions',
+  },
+  {
+    quote:
+      'Working with Don was a game-changer for our business. The AI integration reduced our processing time by 65% and improved accuracy significantly.',
+    name: 'Michael Chen',
+    role: 'CEO',
+    company: 'DataStream Analytics',
+  },
+  {
+    quote:
+      'Exceptional work on our n8n workflows. The custom automation seamlessly connects all our tools and has dramatically improved our efficiency.',
+    name: 'Jessica Rodriguez',
+    role: 'Product Manager',
+    company: 'CloudBridge Inc',
+  },
+  {
+    quote:
+      'Professional, knowledgeable, and results-driven. The automation platform built for us has become essential to our daily operations.',
+    name: 'David Thompson',
+    role: 'CTO',
+    company: 'InnovateLab',
+  },
+  {
+    quote:
+      'The business intelligence dashboards created for us provide real-time insights that have transformed our decision-making process.',
+    name: 'Emily Watson',
+    role: 'Marketing Director',
+    company: 'GrowthMetrics',
+  },
+  {
+    quote:
+      'Outstanding integration work. Our disparate systems now work together seamlessly, saving time and eliminating errors.',
+    name: 'Robert Martinez',
+    role: 'IT Manager',
+    company: 'GlobalConnect',
+  },
+]
+
+const clients = [
+  'TechFlow Solutions',
+  'DataStream Analytics',
+  'CloudBridge Inc',
+  'InnovateLab',
+  'GrowthMetrics',
+  'GlobalConnect',
+  'SmartOps',
+  'AutoScale Pro',
+]
 
 useHead({
   title: 'DP Don Puerto - AI Automation & Marketing Solutions',
   meta: [
-    { name: 'description', content: 'Transform your business with AI-powered automation solutions and cutting-edge marketing strategies.' }
-  ]
-});
+    {
+      name: 'description',
+      content: 'Transform your business with AI-powered automation solutions and cutting-edge marketing strategies.',
+    },
+  ],
+})
 </script>
 
 <template>
@@ -16,40 +73,7 @@ useHead({
     <Hero />
 
     <!-- Services Section -->
-    <Section id="services" class="bg-background/60 backdrop-blur-sm">
-      <Container>
-        <FadeIn direction="up">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Our Services
-            </h2>
-            <p class="text-sm md:text-base text-muted-foreground">
-              Comprehensive AI and automation solutions tailored to your business needs
-            </p>
-          </div>
-        </FadeIn>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <FadeIn v-for="(service, index) in services" :key="index" direction="up" :delay="index * 100">
-            <Card class="h-full transition-colors duration-200 hover:border-primary/60">
-              <CardContent class="py-4 px-6">
-                <div class="flex items-start gap-4">
-                  <div class="shrink-0 w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="service.icon" />
-                    </svg>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-foreground mb-2">{{ service.title }}</h3>
-                    <p class="text-sm text-muted-foreground">{{ service.description }}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
-        </div>
-      </Container>
-    </Section>
+    <Services />
 
     <!-- Testimonials Section -->
     <Section id="testimonials" class="bg-background/60 backdrop-blur-sm">
@@ -136,90 +160,3 @@ useHead({
   </div>
 </template>
 
-<script lang="ts">
-// Services data
-const services = [
-  {
-    title: 'AI Automation',
-    description: 'Streamline your workflows with intelligent automation powered by cutting-edge AI technology.',
-    icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'
-  },
-  {
-    title: 'n8n Workflow Design',
-    description: 'Custom workflow automation that connects your tools and eliminates repetitive tasks.',
-    icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 17a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1v-2zM14 17a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1v-2z'
-  },
-  {
-    title: 'Business Intelligence',
-    description: 'Transform data into actionable insights with AI-powered analytics and reporting.',
-    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-  },
-  {
-    title: 'Integration Solutions',
-    description: 'Seamlessly connect your existing tools and platforms for unified operations.',
-    icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
-  },
-  {
-    title: 'Process Optimization',
-    description: 'Analyze and optimize your business processes for maximum efficiency and ROI.',
-    icon: 'M13 10V3L4 14h7v7l9-11h-7z'
-  },
-  {
-    title: 'Consulting & Strategy',
-    description: 'Expert guidance on implementing AI and automation to achieve your business goals.',
-    icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'
-  }
-];
-
-// Testimonials data
-const testimonials = [
-  {
-    quote: 'The automation solutions provided have saved us over 30 hours per week. Our team can now focus on strategic initiatives instead of repetitive tasks.',
-    name: 'Sarah Mitchell',
-    role: 'Operations Director',
-    company: 'TechFlow Solutions'
-  },
-  {
-    quote: 'Working with Don was a game-changer for our business. The AI integration reduced our processing time by 65% and improved accuracy significantly.',
-    name: 'Michael Chen',
-    role: 'CEO',
-    company: 'DataStream Analytics'
-  },
-  {
-    quote: 'Exceptional work on our n8n workflows. The custom automation seamlessly connects all our tools and has dramatically improved our efficiency.',
-    name: 'Jessica Rodriguez',
-    role: 'Product Manager',
-    company: 'CloudBridge Inc'
-  },
-  {
-    quote: 'Professional, knowledgeable, and results-driven. The automation platform built for us has become essential to our daily operations.',
-    name: 'David Thompson',
-    role: 'CTO',
-    company: 'InnovateLab'
-  },
-  {
-    quote: 'The business intelligence dashboards created for us provide real-time insights that have transformed our decision-making process.',
-    name: 'Emily Watson',
-    role: 'Marketing Director',
-    company: 'GrowthMetrics'
-  },
-  {
-    quote: 'Outstanding integration work. Our disparate systems now work together seamlessly, saving time and eliminating errors.',
-    name: 'Robert Martinez',
-    role: 'IT Manager',
-    company: 'GlobalConnect'
-  }
-];
-
-// Clients data
-const clients = [
-  'TechFlow Solutions',
-  'DataStream Analytics',
-  'CloudBridge Inc',
-  'InnovateLab',
-  'GrowthMetrics',
-  'GlobalConnect',
-  'SmartOps',
-  'AutoScale Pro'
-];
-</script>

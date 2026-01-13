@@ -21,7 +21,7 @@ const { scrollTo } = useSmoothScroll();
             Get Started
           </Button>
           <Button @click="scrollTo('services')" variant="outline" size="lg">
-            Our Services
+            Services
           </Button>
         </div>
       </FadeIn>
