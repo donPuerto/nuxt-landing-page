@@ -29,6 +29,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     n8nWebhookUrl: process.env.NUXT_N8N_WEBHOOK_URL || '',
     n8nWebhookSecret: process.env.NUXT_N8N_WEBHOOK_SECRET || '',
+    public: {
+      n8nChatWebhookUrl: process.env.NUXT_PUBLIC_N8N_CHAT_WEBHOOK_URL || '',
+    },
   },
   colorMode: {
     preference: 'dark', // Default to dark mode

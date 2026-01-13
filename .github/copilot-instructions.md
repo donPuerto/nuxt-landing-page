@@ -1,3 +1,19 @@
+**Usage Patterns**
+
+**Window Mode (Default):**
+**Fullscreen Mode:**
+
+**With Custom Metadata:**
+### Simulated Engine (AI Preview)
+
+- Set `engine="simulated"` to render the built-in textarea + send button experience. This is ideal for demos, local development, or when the n8n webhook URL is not configured yet.
+- The simulated mode wires up smooth scrolling via `ScrollArea` and keeps the composer anchored, so avoid adding extra wrappers.
+- When using the floating window card in `layouts/default.vue`, keep the title copy as:
+  - Heading: “Need a hand?”
+  - Subtitle: “Chat with Don Puerto’s AI assistant.”
+- Do not reintroduce the retired “Live chat preview” banner—the simulated UI should feel like the real product experience.
+
+### Theming
 # Copilot Instructions for Nuxt 4 Landing Page
 
 > Quick Guide for AI Agents (Jan 2026)
@@ -23,6 +39,7 @@
 - Toasts via `vue-sonner` (`Sonner` component) with theme-aware styling; placed in `app/layouts/default.vue`.
 - Confetti modes in `app/composables/useConfetti.ts`; trigger on successful form submission.
 - FluidCursor WebGL in `app/components/ui/fluid-cursor/FluidCursor.vue`; rendered in layout.
+- n8n Chat widget in `app/components/ui/chat/Chat.vue`; supports window or fullscreen modes, an `engine` prop (`'n8n'` or `'simulated'`), and theme auto-switches with dark mode via CSS vars in `app/assets/css/n8n-chat-theme.css`.
 - CSP note: `nuxt.config.ts` sets `worker-src 'self' blob:` for confetti.
 
 **Development & Environment**
@@ -34,6 +51,8 @@
 - Use shadcn: `<Button size="lg">Get Started</Button>`; inputs bound with `v-bind="componentField"` and `<FormMessage />`.
 - Container: `<section class="py-16"><Container><!-- content --></Container></section>`.
 - `cn()` usage: `const cls = computed(() => cn('px-4', isGhost && 'bg-transparent', props.class))`.
+- n8n Chat window mode: `<Chat :webhookUrl="chatUrl" mode="window" />`.
+- n8n Chat fullscreen: `<Chat :webhookUrl="chatUrl" mode="fullscreen" />` (auto-hides navbar, footer).
 
 **Do / Don't**
 - Do: keep single-page structure, use auto-imported components/composables, include dark mode classes.
@@ -1707,9 +1726,310 @@ This project includes enterprise-grade features:
 3. **Confetti Celebrations** - 4 modes of canvas-confetti animations for form success
 4. **Toast Notifications** - vue-sonner with proper light/dark theme support
 5. **Form Validation** - vee-validate + zod for type-safe forms
-6. **n8n Webhook Integration** - Server-side proxy to n8n automation
-7. **Dark/Light Theme** - Full theme support with zero white flash
-8. **Responsive Design** - Mobile-first approach with Tailwind CSS v4
-9. **Smooth Scroll** - Custom composable for anchor navigation
-10. **CSP Configuration** - Proper security headers with blob: worker support
+6. **n8n Webhook Integration** - Server-side proxy to n8n automation + Chat widget
+7. **n8n Chat Widget** - Window/fullscreen chat modes with auto-theming (dark/light)
+8. **Dark/Light Theme** - Full theme support with zero white flash
+9. **Responsive Design** - Mobile-first approach with Tailwind CSS v4
+10. **Smooth Scroll** - Custom composable for anchor navigation
+11. **CSP Configuration** - Proper security headers with blob: worker support
 
+---
+
+## n8n Chat Integration
+
+**Component Location:** `app/components/ui/chat/Chat.vue`
+
+The project includes a production-ready n8n Chat widget component that wraps the `@n8n/chat` library with shadcn styling and Nuxt integration.
+
+### Installation & Setup
+
+Package is already installed via `npm install @n8n/chat`.
+
+**CSS Imports (Component-Scoped - RECOMMENDED):**
+The Chat component automatically imports both `@n8n/chat/style.css` and `~/assets/css/n8n-chat-theme.css` at the top of [app/components/ui/chat/Chat.vue](app/components/ui/chat/Chat.vue):
+```ts
+import '@n8n/chat/style.css'
+import '~/assets/css/n8n-chat-theme.css'
+```
+
+This approach loads CSS only when the Chat component is used (lazy-loaded with the component).
+
+**Alternative: Global CSS** (if you need Chat available everywhere):
+Add to `app/assets/css/tailwind.css` after existing imports:
+```css
+@import '@n8n/chat/style.css';
+@import './n8n-chat-theme.css';
+```
+
+Or in `nuxt.config.ts` css array:
+```ts
+css: [
+  '~/assets/css/tailwind.css',
+  '@n8n/chat/style.css',
+  '~/assets/css/n8n-chat-theme.css',
+],
+```
+
+**To use the Chat component:**
+
+1. Set up environment variable:
+```bash
+NUXT_PUBLIC_N8N_CHAT_WEBHOOK_URL=https://your-n8n-instance.com/webhook/your-workflow
+```
+
+2. Import and use the Chat component in your page or layout:
+```vue
+<script setup lang="ts">
+const chatUrl = useRuntimeConfig().public.n8nChatWebhookUrl
+</script>
+
+<template>
+  <!-- Window mode (bottom-right floating chat) -->
+  <Chat :webhookUrl="chatUrl" mode="window" />
+
+  <!-- Fullscreen mode (full-page chat interface) -->
+  <Chat :webhookUrl="chatUrl" mode="fullscreen" />
+</template>
+```
+
+### Chat Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `webhookUrl` | `string` | (required) | n8n webhook URL for chat backend |
+| `mode` | `'window' \| 'fullscreen'` | `'window'` | Window (floating) or fullscreen mode |
+| `engine` | `'n8n' \| 'simulated'` | `'n8n'` | `'n8n'` renders the real widget, `'simulated'` shows the local text-area experience |
+| `chatInputKey` | `string` | `'chatInput'` | Key for user input messages |
+| `chatSessionKey` | `string` | `'sessionId'` | Key for session persistence |
+| `loadPreviousSession` | `boolean` | `true` | Load chat history from localStorage |
+| `showWelcomeScreen` | `boolean` | `false` | Show welcome screen on first load |
+| `defaultLanguage` | `string` | `'en'` | Language for UI text |
+| `initialMessages` | `string[]` | `['Hi there! 👋', '...']` | Bot greeting messages |
+| `metadata` | `object` | `{}` | Custom metadata to send with requests |
+| `enableStreaming` | `boolean` | `false` | Enable streaming responses |
+| `title` | `string` | `'Hi there! 👋'` | Header/welcome title |
+| `subtitle` | `string` | `'Start a chat...'` | Header/welcome subtitle |
+| `inputPlaceholder` | `string` | `'Type your question..'` | Input field placeholder |
+| `class` | `string` | `''` | Additional Tailwind classes |
+
+### Usage Patterns
+
+**Window Mode (Default):**
+```vue
+<template>
+  <!-- Floating chat in bottom-right corner -->
+  <Chat 
+    :webhookUrl="chatUrl" 
+    mode="window"
+    title="Ask us anything"
+    subtitle="We typically respond within 2 hours"
+    :initialMessages="['Welcome!', 'How can we help?']"
+  />
+</template>
+```
+
+**Fullscreen Mode:**
+```vue
+<template>
+  <!-- Full-page chat (typically replaces navbar/footer) -->
+  <Chat 
+    :webhookUrl="chatUrl" 
+    mode="fullscreen"
+    :loadPreviousSession="true"
+  />
+</template>
+```
+
+**With Custom Metadata:**
+```vue
+<template>
+  <Chat 
+    :webhookUrl="chatUrl" 
+    mode="window"
+    :metadata="{ userId: userProfile.id, source: 'landing-page' }"
+  />
+</template>
+```
+
+### Theming
+
+The Chat widget automatically respects the project's dark/light mode via CSS variables defined in `app/assets/css/n8n-chat-theme.css`.
+
+**Color Scheme:**
+- **Primary**: Blue-600 (#2563eb) — matches project brand
+- **Secondary**: Teal-500 (#14b8a6) — accent color
+- **Light Mode**: Slate-100 background, Slate-800 text
+- **Dark Mode**: Gray-900 background, Gray-100 text
+
+**Customizing Colors:**
+
+Override CSS variables in your component or global styles:
+```css
+:root {
+  --chat--color--primary: #your-color;
+  --chat--color--secondary: #your-accent;
+}
+
+:root.dark {
+  --chat--color-light: #your-dark-bg;
+  --chat--color-dark: #your-light-text;
+}
+```
+
+**Window Size (Window Mode Only):**
+```css
+:root {
+  --chat--window--width: 420px;  /* Default */
+  --chat--window--height: 600px; /* Default */
+}
+```
+
+### Dark Mode Support
+
+The Chat component automatically switches colors when `class="dark"` is applied to the root HTML element. The theming uses CSS variables that are pre-configured in `app/assets/css/n8n-chat-theme.css` to match your design system.
+
+**No manual theme prop needed** — the component detects the parent's dark mode class.
+
+### Placement in Layout
+
+**Current Layout Setup (Default):**
+In `app/layouts/default.vue`, the BackToTop and chat toggle live inside a single floating action row in the bottom-right corner:
+- Both buttons share the same `48px` footprint and sit side-by-side for quick access.
+- The row itself has `pointer-events: none` so inner buttons can manage focus/hover states cleanly.
+- The floating chat card uses `engine="simulated"` for the marketing preview, while the fullscreen overlay reuses the same component.
+
+```vue
+<div class="fixed bottom-8 right-8 z-50 pointer-events-none flex items-center gap-4">
+  <div class="pointer-events-auto">
+    <BackToTop />
+  </div>
+
+  <div class="pointer-events-auto">
+    <Button
+      class="w-12 h-12 rounded-full shadow-lg bg-blue-600 text-white"
+      size="icon"
+      variant="ghost"
+      @click="toggleChat"
+    >
+      <MessageCircle class="w-5 h-5" />
+    </Button>
+  </div>
+</div>
+
+<!-- Chat window + fullscreen (both pass engine="simulated") -->
+<ClientOnly>
+  <Transition>
+    <Chat v-if="shouldShowWindow" :webhookUrl="chatUrl" mode="window" engine="simulated" />
+  </Transition>
+</ClientOnly>
+
+<ClientOnly>
+  <Transition>
+    <Chat v-if="shouldShowFullscreen" :webhookUrl="chatUrl" mode="fullscreen" engine="simulated" />
+  </Transition>
+</ClientOnly>
+```
+
+**Option 1: In `app/layouts/default.vue` (Global Chat)**
+```vue
+<template>
+  <div>
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    
+    <!-- Global chat available on all pages -->
+    <ClientOnly>
+      <Chat :webhookUrl="chatUrl" mode="window" />
+    </ClientOnly>
+  </div>
+</template>
+```
+
+**Option 2: In Page Section (Dedicated Chat Page)**
+```vue
+<template>
+  <Section id="chat" class="py-16">
+    <Container>
+      <Chat :webhookUrl="chatUrl" mode="fullscreen" />
+    </Container>
+  </Section>
+</template>
+```
+
+**Option 3: As Floating Chat Triggered by Button**
+```vue
+<script setup lang="ts">
+const showChat = ref(false)
+</script>
+
+<template>
+  <Button @click="showChat = !showChat">Open Chat</Button>
+  
+  <Transition>
+    <Chat v-if="showChat" :webhookUrl="chatUrl" mode="window" />
+  </Transition>
+</template>
+```
+
+### n8n Webhook Configuration
+
+Your n8n workflow should:
+
+1. **Receive chat messages** via the webhook's `chatInput` key (configurable)
+2. **Extract user message** and format for LLM
+3. **Call AI model** (GPT, Claude, etc.) with context
+4. **Return response** with `{ reply: "Your AI-generated message" }` structure
+5. **Optionally persist** session data using `sessionId` key
+
+**Minimal n8n Workflow Structure:**
+```
+Webhook (receive chatInput) 
+  → Extract Message 
+  → Call OpenAI/LLM 
+  → Format Response 
+  → Return { reply: "..." }
+```
+
+### Common Issues
+
+**Q: Chat doesn't appear?**
+- Verify `webhookUrl` is set and valid
+- Check browser console for errors
+- Ensure n8n workflow is active and listening
+
+**Q: Messages not persisting?**
+- Set `loadPreviousSession={true}` (default)
+- Check that `chatSessionKey` matches n8n workflow session handling
+- Verify localStorage is enabled
+
+**Q: Styling doesn't match?**
+- The component imports `app/assets/css/n8n-chat-theme.css` automatically
+- If custom colors needed, override CSS variables in your component
+- Dark mode switches automatically via `:root.dark` selector
+
+### Integration with ContactForm
+
+Combine the Chat widget with the existing `ContactForm` for a complete customer engagement solution:
+
+```vue
+<!-- Offer chat for quick answers, contact form for detailed inquiries -->
+<Section id="support">
+  <Container>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <div>
+        <h3>Quick Support</h3>
+        <Chat :webhookUrl="chatUrl" mode="window" />
+      </div>
+      <div>
+        <h3>Send us a Message</h3>
+        <ContactForm />
+      </div>
+    </div>
+  </Container>
+</Section>
+```
+
+---
