@@ -2,15 +2,15 @@
 import 'vue-sonner/style.css'
 import { Toaster } from 'vue-sonner'
 import { type LayoutMode, isLayoutMode } from '~/constants/theme'
-import { useThemeAccent } from '~/composables/useThemeAccent'
+import { useThemeColor } from '~/composables/useThemeColor'
 
 const colorMode = useColorMode()
-const { accentTheme } = useThemeAccent()
+const { themeColor } = useThemeColor()
 const layoutMode = useState<LayoutMode>('layout-mode', () => 'fixed')
 
 useHead(() => ({
   htmlAttrs: {
-    'data-theme': accentTheme.value,
+    'data-theme': themeColor.value,
     'data-layout': layoutMode.value,
     class: layoutMode.value === 'full' ? 'layout-full' : 'layout-fixed',
   },

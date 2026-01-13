@@ -75,10 +75,10 @@ const layoutToggleLabel = computed(() => layoutMode.value === 'full' ? 'Switch t
             <div class="hidden lg:flex items-center gap-3 text-muted-foreground">
               <Tooltip>
                 <TooltipTrigger as-child>
-                  <ThemeAccentPicker compact class="text-muted-foreground hover:text-foreground" />
+                  <ThemeColorPicker compact class="text-muted-foreground hover:text-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p class="text-xs font-semibold">Switch accent palette</p>
+                  <p class="text-xs font-semibold">Switch theme color</p>
                 </TooltipContent>
               </Tooltip>
               <span class="text-border/70 text-sm" aria-hidden="true">|</span>
@@ -120,7 +120,7 @@ const layoutToggleLabel = computed(() => layoutMode.value === 'full' ? 'Switch t
 
         <!-- Mobile Menu Button & Theme Toggle -->
         <div class="md:hidden flex items-center gap-2">
-          <ThemeAccentPicker compact />
+          <ThemeColorPicker compact />
           <ThemeToggle />
           <Button
             variant="ghost"
@@ -188,9 +188,9 @@ const layoutToggleLabel = computed(() => layoutMode.value === 'full' ? 'Switch t
               <div class="flex items-center justify-between rounded-xl border border-border/70 px-3 py-2">
                 <div>
                   <p class="text-sm font-semibold text-foreground">Theme color</p>
-                  <p class="text-xs text-muted-foreground">Tap to switch palette</p>
+                  <p class="text-xs text-muted-foreground">Tap to switch hue</p>
                 </div>
-                <ThemeAccentPicker compact />
+                <ThemeColorPicker compact />
               </div>
             </div>
           </div>

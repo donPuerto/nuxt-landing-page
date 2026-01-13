@@ -11,8 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ACCENT_THEMES } from '~/constants/theme'
-import { useThemeAccent } from '~/composables/useThemeAccent'
+import { THEME_COLORS } from '~/constants/theme'
+import { useThemeColor } from '~/composables/useThemeColor'
 import { cn } from '~/lib/utils'
 
 interface Props {
@@ -25,9 +25,9 @@ const props = withDefaults(defineProps<Props>(), {
   class: '',
 })
 
-const { accentTheme } = useThemeAccent()
+const { themeColor } = useThemeColor()
 
-const activeTheme = computed(() => ACCENT_THEMES.find((theme) => theme.id === accentTheme.value) ?? ACCENT_THEMES[0])
+const activeTheme = computed(() => THEME_COLORS.find((theme) => theme.id === themeColor.value) ?? THEME_COLORS[0])
 </script>
 
 <template>
@@ -52,9 +52,9 @@ const activeTheme = computed(() => ACCENT_THEMES.find((theme) => theme.id === ac
     <DropdownMenuContent align="end" class="w-64 border border-border/60 bg-card text-card-foreground shadow-xl">
       <DropdownMenuLabel class="text-xs uppercase tracking-wide text-muted-foreground">Theme color</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuRadioGroup v-model="accentTheme" class="space-y-1">
+      <DropdownMenuRadioGroup v-model="themeColor" class="space-y-1">
         <DropdownMenuRadioItem
-          v-for="theme in ACCENT_THEMES"
+          v-for="theme in THEME_COLORS"
           :key="theme.id"
           :value="theme.id"
           class="flex items-start gap-3 rounded-lg px-3 py-2 text-foreground"
