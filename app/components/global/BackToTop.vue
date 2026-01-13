@@ -39,7 +39,7 @@ onMounted(() => {
       variant="ghost"
       size="icon"
       @click="scrollToTop"
-      class="w-12 h-12 bg-blue-600 dark:bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 pointer-events-auto"
+      class="w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:bg-primary/90 pointer-events-auto"
       aria-label="Back to top"
     >
       <ArrowUp class="w-5 h-5" />

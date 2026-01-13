@@ -1,5 +1,11 @@
 <!-- app/components/global/ThemeToggle.vue -->
 <script setup lang="ts">
+import { cn } from '~/lib/utils'
+
+const props = withDefaults(defineProps<{ class?: string }>(), {
+  class: '',
+})
+
 const colorMode = useColorMode();
 const { rippleStore } = useRipple();
 const mounted = ref(false);
@@ -73,7 +79,7 @@ onMounted(() => {
     variant="ghost"
     size="icon"
     @click="toggleTheme"
-    class="relative w-10 h-10 text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 overflow-hidden"
+    :class="cn('relative w-10 h-10 text-primary hover:bg-primary/10 overflow-hidden transition-colors', props.class)"
     :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
   >
     <!-- Sun icon (show when dark mode is on - to switch to light) -->

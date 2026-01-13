@@ -1,16 +1,18 @@
 <!-- app/components/global/Navbar.vue -->
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { GalleryHorizontal } from 'lucide-vue-next'
 import { cn } from '~/lib/utils';
 import { computed } from 'vue';
-import { useColorMode } from '@vueuse/core';
+import { type LayoutMode, LAYOUT_MODES } from '~/constants/theme'
 
 const { activeSection } = useScrollSpy();
 const { scrollTo } = useSmoothScroll();
 const mobileMenuOpen = ref(false);
 
-const colorMode = useColorMode();
-const isDark = computed(() => colorMode.value === 'dark');
+const layoutMode = useState<LayoutMode>('layout-mode', () => 'fixed')
+const layoutLabel = computed(() => layoutMode.value === 'full' ? 'layout-full' : 'layout-fixed')
 
 const navLinks = [
   { id: 'home', label: 'Home' },
@@ -30,16 +32,26 @@ const isLinkActive = (id: string) => activeSection.value === id;
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
 };
+
+const setLayoutMode = (mode: LayoutMode) => {
+  layoutMode.value = mode
+}
+
+const toggleLayoutMode = () => {
+  layoutMode.value = layoutMode.value === 'full' ? 'fixed' : 'full'
+}
+
+const layoutToggleLabel = computed(() => layoutMode.value === 'full' ? 'Switch to fixed layout' : 'Switch to full layout')
 </script>
 
 <template>
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/80">
     <Container class="py-4">
       <div class="flex items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center space-x-3 cursor-pointer" @click="handleNavClick('home')" role="button">
-          <Logo size="sm" variant="square" :name="'Don Puerto'" :animated="true" class="text-blue-600 dark:text-blue-400" />
-          <span class="font-bold text-base md:text-lg text-gray-900 dark:text-white">Don Puerto</span>
+          <Logo size="sm" variant="square" :name="'Don Puerto'" :animated="true" class="text-primary" />
+          <span class="font-bold text-base md:text-lg text-foreground">Don Puerto</span>
         </div>
 
         <!-- Desktop Navigation -->
@@ -50,16 +62,57 @@ const toggleMobileMenu = () => {
             :key="link.id"
             @click="handleNavClick(link.id)"
             :class="cn(
-              isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400' : ''
+              isLinkActive(link.id) ? 'text-primary' : ''
             )"
           >
             {{ link.label }}
           </Button>
         </div>
 
-        <!-- CTA Button & Theme Toggle (Desktop) -->
-        <div class="hidden md:flex items-center gap-3">
-          <ThemeToggle />
+        <!-- CTA Button, Theme + Layout Controls (Desktop) -->
+        <div class="hidden md:flex items-center gap-4">
+          <TooltipProvider :delay-duration="200">
+            <div class="hidden lg:flex items-center gap-3 text-muted-foreground">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <ThemeAccentPicker compact class="text-muted-foreground hover:text-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p class="text-xs font-semibold">Switch accent palette</p>
+                </TooltipContent>
+              </Tooltip>
+              <span class="text-border/70 text-sm" aria-hidden="true">|</span>
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <ThemeToggle class="text-muted-foreground hover:text-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p class="text-xs font-semibold">Toggle color mode</p>
+                </TooltipContent>
+              </Tooltip>
+              <span class="text-border/70 text-sm" aria-hidden="true">|</span>
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="text-muted-foreground hover:text-foreground"
+                    type="button"
+                    :aria-label="layoutToggleLabel"
+                    @click="toggleLayoutMode"
+                  >
+                    <GalleryHorizontal class="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div class="flex flex-col">
+                    <span class="text-xs font-semibold capitalize">{{ layoutLabel.replace('-', ' ') }}</span>
+                    <span class="text-[11px] opacity-80">{{ layoutToggleLabel }}</span>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
           <Button @click="handleNavClick('contact')">
             Let's Talk
           </Button>
@@ -67,6 +120,7 @@ const toggleMobileMenu = () => {
 
         <!-- Mobile Menu Button & Theme Toggle -->
         <div class="md:hidden flex items-center gap-2">
+          <ThemeAccentPicker compact />
           <ThemeToggle />
           <Button
             variant="ghost"
@@ -94,7 +148,7 @@ const toggleMobileMenu = () => {
         leave-from-class="opacity-100 translate-y-0"
         leave-to-class="opacity-0 -translate-y-4"
       >
-        <div v-if="mobileMenuOpen" class="md:hidden pt-4 pb-2 border-t border-gray-200 dark:border-gray-800 mt-4">
+        <div v-if="mobileMenuOpen" class="md:hidden pt-4 pb-2 border-t border-border/80 mt-4">
           <div class="flex flex-col gap-2">
             <Button
               variant="outline"
@@ -103,7 +157,7 @@ const toggleMobileMenu = () => {
               @click="handleNavClick(link.id)"
               :class="cn(
                 'justify-start',
-                isLinkActive(link.id) ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : ''
+                isLinkActive(link.id) ? 'text-primary bg-primary/10' : ''
               )"
             >
               {{ link.label }}
@@ -111,6 +165,34 @@ const toggleMobileMenu = () => {
             <Button @click="handleNavClick('contact')" class="mt-2">
               Let's Talk
             </Button>
+            <div class="mt-4 space-y-3 rounded-2xl border border-border/70 p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-foreground">Layout</p>
+                  <p class="text-xs text-muted-foreground">{{ layoutLabel }}</p>
+                </div>
+                <div class="flex gap-1">
+                  <Button
+                    v-for="option in LAYOUT_MODES"
+                    :key="option.id"
+                    variant="ghost"
+                    size="sm"
+                    class="rounded-full px-3"
+                    :class="option.id === layoutMode ? 'bg-primary/10 text-primary' : 'text-muted-foreground'"
+                    @click="setLayoutMode(option.id as LayoutMode)"
+                  >
+                    {{ option.label }}
+                  </Button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between rounded-xl border border-border/70 px-3 py-2">
+                <div>
+                  <p class="text-sm font-semibold text-foreground">Theme color</p>
+                  <p class="text-xs text-muted-foreground">Tap to switch palette</p>
+                </div>
+                <ThemeAccentPicker compact />
+              </div>
+            </div>
           </div>
         </div>
       </Transition>

@@ -95,7 +95,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
       class="w-full h-full rounded-lg p-0.5"
     >
       <!-- Inner content -->
-      <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+      <div class="w-full h-full rounded-md bg-background flex items-center justify-center font-bold text-primary">
         {{ initials }}
       </div>
     </div>
@@ -105,7 +105,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
     <div 
       v-else-if="props.logoOnly && props.borderless"
       :class="cn(
-        'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
+        'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-primary',
         squareSizeClasses[size],
         props.class
       )"
@@ -122,7 +122,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
         class="w-full h-full rounded-lg p-0.5"
       >
         <!-- Inner content -->
-        <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+        <div class="w-full h-full rounded-md bg-background flex items-center justify-center font-bold text-primary">
           {{ initials }}
         </div>
       </div>
@@ -132,7 +132,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
     <div 
       v-else-if="variant === 'square' && props.borderless"
       :class="cn(
-        'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
+        'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-primary',
         squareSizeClasses[size],
         props.class
       )"
@@ -144,7 +144,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
     <div 
       v-else
       :class="cn(
-        'flex items-center gap-2 font-bold text-gray-900 dark:text-white',
+        'flex items-center gap-2 font-bold text-foreground',
         sizeClasses[size],
         props.class
       )"
@@ -158,7 +158,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
           class="w-full h-full rounded-lg p-0.5"
         >
           <!-- Inner content -->
-          <div class="w-full h-full rounded-md bg-white dark:bg-gray-900 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
+          <div class="w-full h-full rounded-md bg-background flex items-center justify-center font-bold text-primary">
             {{ initials }}
           </div>
         </div>
@@ -168,7 +168,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
       <div 
         v-else
         :class="cn(
-          'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-blue-600 dark:text-blue-400',
+          'inline-flex items-center justify-center rounded-lg font-bold bg-transparent text-primary',
           squareSizeClasses[size]
         )"
       >
@@ -176,7 +176,7 @@ const staticGradient = 'linear-gradient(135deg, #A07CFE, #FE8FB5, #FFBE7B)';
       </div>
       
       <!-- Name description (no gradient border) -->
-      <span class="text-gray-900 dark:text-white">{{ props.name }}</span>
+      <span class="text-foreground">{{ props.name }}</span>
     </div>
 </template>
 

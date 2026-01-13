@@ -1,5 +1,9 @@
-@import "./font.css";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "./themes.css";
 @import "vue-sonner/style.css";
 
 /* Prevent white flash on dark mode reload */
@@ -14,10 +18,12 @@
 html.light {
   color-scheme: light;
   background-color: #ffffff;
-  color: #111827;
+  color: #0f172a;
 }
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant fixed (&:is(.layout-fixed *));
+@custom-variant full (&:is(.layout-full *));
 
 @theme {
   --font-jakarta: 'Plus Jakarta Sans', sans-serif;
@@ -48,12 +54,15 @@ html.light {
 }
 
 :root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
@@ -61,24 +70,42 @@ html.light {
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.705 0.015 286.067);
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
+  --chart-1: #c7d2fe;
+  --chart-2: #a5b4fc;
+  --chart-3: #818cf8;
+  --chart-4: #6366f1;
+  --chart-5: #4c1d95;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #4338ca;
+  --sidebar-accent-foreground: #ede9fe;
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  --surface: #f8f9ff;
+  --surface-foreground: #0f172a;
+  --code: var(--surface);
+  --code-foreground: var(--surface-foreground);
+  --code-highlight: #e0e7ff;
+  --code-number: #818cf8;
+  --selection: #6366f1;
+  --selection-foreground: #ffffff;
 }
 
 .dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.141 0.005 285.823);
+  --card: oklch(0.16 0.01 285.823);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.141 0.005 285.823);
+  --popover: oklch(0.16 0.01 285.823);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.21 0.006 285.885);
+  --primary: #a5b4fc;
+  --primary-foreground: #0b0f1a;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -86,10 +113,31 @@ html.light {
   --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.274 0.006 286.033);
   --input: oklch(0.274 0.006 286.033);
   --ring: oklch(0.442 0.017 285.786);
+  --chart-1: #312e81;
+  --chart-2: #3730a3;
+  --chart-3: #4338ca;
+  --chart-4: #4f46e5;
+  --chart-5: #818cf8;
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: #818cf8;
+  --sidebar-primary-foreground: #0b0f1a;
+  --sidebar-accent: #3730a3;
+  --sidebar-accent-foreground: #ede9fe;
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.439 0 0);
+  --surface: #0f172a;
+  --surface-foreground: #e0e7ff;
+  --code: var(--surface);
+  --code-foreground: var(--surface-foreground);
+  --code-highlight: #1e1b4b;
+  --code-number: #c4b5fd;
+  --selection: #a5b4fc;
+  --selection-foreground: #0b0f1a;
 }
 
 @theme inline {
@@ -112,6 +160,27 @@ html.light {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+  --color-code-highlight: var(--code-highlight);
+  --color-code-number: var(--code-number);
+  --color-selection: var(--selection);
+  --color-selection-foreground: var(--selection-foreground);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -123,8 +192,51 @@ html.light {
   * {
     @apply border-border outline-ring/50;
   }
+  ::selection {
+    @apply bg-[var(--selection)] text-[var(--selection-foreground)];
+  }
+  html {
+    @apply scroll-smooth overscroll-y-none;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-medium antialiased;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility theme-container {
+  @apply font-sans;
+}
+
+@utility container-wrapper {
+  @apply mx-auto w-full px-2;
+}
+
+@utility container {
+  @apply mx-auto max-w-7xl px-6;
+}
+
+@utility border-grid {
+  @apply border-border/50;
+}
+
+@utility border-ghost {
+  @apply relative after:absolute after:inset-0 after:border after:border-border/60 after:mix-blend-darken;
+}
+
+@utility extend-touch-target {
+  @media (pointer: coarse) {
+    @apply relative after:absolute after:-inset-2;
   }
 }
 

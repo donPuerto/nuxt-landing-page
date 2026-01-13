@@ -100,7 +100,7 @@ const containerClass = computed(() => {
 
 const simulatedPanelClass = computed(() =>
   cn(
-    'flex min-h-0 h-full flex-col overflow-hidden border border-gray-200/80 bg-white/95 shadow-xl dark:border-gray-800/80 dark:bg-gray-900/90',
+    'flex min-h-0 h-full flex-col overflow-hidden border border-border/80 bg-card/95 shadow-xl',
     props.mode === 'fullscreen' ? 'rounded-none' : 'rounded-2xl rounded-t-none'
   )
 )
@@ -252,8 +252,8 @@ watch(
               :class="[
                 'max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm',
                 message.role === 'user'
-                  ? 'ml-auto bg-blue-600 text-white'
-                  : 'mr-auto bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
+                  ? 'ml-auto bg-primary text-primary-foreground'
+                  : 'mr-auto bg-muted text-muted-foreground',
               ]"
             >
               <p>{{ message.content }}</p>
@@ -264,11 +264,11 @@ watch(
           </div>
         </ScrollArea>
       </div>
-      <div class="border-t border-gray-200/80 bg-white/85 p-4 dark:border-gray-800/80 dark:bg-gray-900/85">
-        <div class="rounded-2xl border border-gray-200/80 bg-gray-50/80 p-3 dark:border-gray-800/80 dark:bg-gray-800/70">
+      <div class="border-t border-border/80 bg-background/85 p-4">
+        <div class="rounded-2xl border border-border/80 bg-card/80 p-3">
           <Textarea
             v-model="userInput"
-            class="min-h-[64px] resize-none border-0 bg-transparent text-sm text-gray-900 placeholder:text-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-white dark:placeholder:text-gray-400"
+            class="min-h-[64px] resize-none border-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
             placeholder="Type your message and press Enter"
             @keydown="handleKeydown"
           />

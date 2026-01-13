@@ -10,10 +10,13 @@ const props = withDefaults(defineProps<ContainerProps>(), {
   class: ''
 });
 
+const layoutMode = useState<'full' | 'fixed'>('layout-mode', () => 'fixed')
+
 const containerClass = computed(() =>
   cn(
-    'max-w-7xl mx-auto px-6',
-    props.class
+    'mx-auto w-full px-6 transition-[max-width] duration-200',
+    layoutMode.value === 'full' ? 'max-w-none' : 'max-w-7xl',
+    props.class,
   )
 );
 </script>

@@ -1,5 +1,6 @@
 <!-- app/layouts/default.vue -->
 <script setup lang="ts">
+import { onMounted, onBeforeUnmount } from 'vue'
 import { Button } from '@/components/ui/button'
 import { MessageCircle, X, Maximize2, Minimize2 } from 'lucide-vue-next'
 
@@ -7,12 +8,10 @@ const { rippleStore } = useRipple()
 const chatUrl = useRuntimeConfig().public.n8nChatWebhookUrl
 const isChatOpen = ref(false)
 const isChatFullscreen = ref(false)
-const hasChat = computed(() => Boolean(chatUrl))
-const shouldShowWindow = computed(() => hasChat.value && isChatOpen.value && !isChatFullscreen.value)
-const shouldShowFullscreen = computed(() => hasChat.value && isChatOpen.value && isChatFullscreen.value)
+const shouldShowWindow = computed(() => isChatOpen.value && !isChatFullscreen.value)
+const shouldShowFullscreen = computed(() => isChatOpen.value && isChatFullscreen.value)
 
 const toggleChat = () => {
-  if (!chatUrl) return
   if (isChatOpen.value && !isChatFullscreen.value) {
     isChatOpen.value = false
     return
@@ -22,7 +21,6 @@ const toggleChat = () => {
 }
 
 const expandChat = () => {
-  if (!chatUrl) return
   isChatOpen.value = true
   isChatFullscreen.value = true
 }
@@ -36,6 +34,20 @@ const closeChat = () => {
   isChatOpen.value = false
   isChatFullscreen.value = false
 }
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && isChatOpen.value) {
+    closeChat()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
@@ -45,9 +57,9 @@ const closeChat = () => {
       <NeuralBg class="fixed inset-0 z-0" />
       <template #fallback>
         <div class="fixed inset-0 z-0 w-screen h-screen pointer-events-none overflow-hidden">
-          <div class="absolute top-0 left-0 w-96 h-96 bg-blue-200 dark:bg-blue-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-          <div class="absolute top-0 right-0 w-96 h-96 bg-purple-200 dark:bg-purple-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-          <div class="absolute -bottom-8 left-20 w-96 h-96 bg-pink-200 dark:bg-pink-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+          <div class="absolute top-0 left-0 w-96 h-96 rounded-full bg-primary/30 mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-secondary/30 mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div class="absolute -bottom-8 left-20 w-96 h-96 rounded-full bg-accent/30 mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
       </template>
     </ClientOnly>
@@ -72,7 +84,7 @@ const closeChat = () => {
       <div class="pointer-events-auto">
         <Button
           aria-label="Open chat"
-          class="w-12 h-12 rounded-full shadow-lg bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
+          class="w-12 h-12 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
           size="icon"
           variant="ghost"
           @click="toggleChat"
@@ -114,18 +126,18 @@ const closeChat = () => {
           v-if="shouldShowWindow"
           class="fixed bottom-28 right-8 z-40 pointer-events-auto"
         >
-          <div class="w-[360px] h-[520px] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col overflow-hidden">
-            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+          <div class="w-[360px] h-[520px] rounded-2xl shadow-2xl border border-border bg-card flex flex-col overflow-hidden">
+            <div class="px-4 py-3 border-b border-border flex items-center justify-between">
               <div>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">Need a hand?</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Chat with Don Puerto’s AI assistant.</p>
+                <p class="text-sm font-semibold text-foreground">Need a hand?</p>
+                <p class="text-xs text-muted-foreground">Chat with Don Puerto’s AI assistant.</p>
               </div>
               <div class="flex items-center gap-1">
                 <Button
                   aria-label="Expand chat"
                   size="icon"
                   variant="ghost"
-                  class="text-gray-600 dark:text-gray-300"
+                  class="text-muted-foreground"
                   @click="expandChat"
                 >
                   <Maximize2 class="w-4 h-4" />
@@ -134,7 +146,7 @@ const closeChat = () => {
                   aria-label="Close chat"
                   size="icon"
                   variant="ghost"
-                  class="text-gray-600 dark:text-gray-300"
+                  class="text-muted-foreground"
                   @click="closeChat"
                 >
                   <X class="w-4 h-4" />
@@ -161,15 +173,15 @@ const closeChat = () => {
       >
         <div
           v-if="shouldShowFullscreen"
-          class="fixed inset-0 z-100 bg-black/80 backdrop-blur-md p-[2px]"
+          class="fixed inset-0 z-100 bg-black/80 backdrop-blur-md p-1"
         >
-          <div class="relative w-full h-full rounded-3xl bg-white dark:bg-gray-900 shadow-2xl overflow-hidden">
-            <div class="absolute top-4 right-4 flex items-center gap-2">
+          <div class="relative w-full h-full rounded-none bg-card shadow-2xl overflow-hidden">
+            <div class="pointer-events-auto absolute top-4 right-4 flex items-center gap-2 z-20">
               <Button
                 aria-label="Exit fullscreen"
                 size="icon"
                 variant="ghost"
-                class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+                class="w-10 h-10 rounded-full bg-muted text-foreground hover:bg-muted/80"
                 @click="collapseChat"
               >
                 <Minimize2 class="w-4 h-4" />
@@ -178,7 +190,7 @@ const closeChat = () => {
                 aria-label="Close chat"
                 size="icon"
                 variant="ghost"
-                class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+                class="w-10 h-10 rounded-full bg-muted text-foreground hover:bg-muted/80"
                 @click="closeChat"
               >
                 <X class="w-4 h-4" />

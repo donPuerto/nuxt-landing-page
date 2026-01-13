@@ -29,6 +29,7 @@
 - Container alignment: Wrap all sections with `app/components/ui/Container.vue`; never hardcode `max-w-*` or nest containers.
 - Class merging: Always use `cn()` from `app/lib/utils.ts` for conditional classes; accept `class?: string` and merge.
 - Typography: Section headings `text-4xl md:text-5xl`; descriptions `text-sm md:text-base`; include dark mode pairs (`text-gray-900 dark:text-white`).
+- Iconography: Import icons from `lucide-vue-next` (official icon library) and prefer Lucide names (e.g., `GalleryHorizontal`).
 
 **Forms & Data Flow**
 - Validate with vee-validate + zod; use `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`.
@@ -119,6 +120,7 @@ server/api/
 | **vee-validate + zod** | Type-safe forms | Form validation |
 | **vue-sonner** | Toast notifications | User feedback |
 | **@nuxtjs/color-mode** | Dark/light theme | Theme toggle |
+| **lucide-vue-next** | Icon set for UI + system controls | Import icons where needed |
 
 ---
 

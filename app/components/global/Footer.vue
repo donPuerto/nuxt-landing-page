@@ -14,14 +14,14 @@ const bgColor = computed(() => 'transparent');
 </script>
 
 <template>
-  <footer class="bg-white/40 dark:bg-gray-900/40 text-gray-800 border-t border-gray-200 dark:border-gray-900 dark:text-gray-300 transition-colors duration-200 backdrop-blur-sm">
+  <footer class="bg-background/70 text-foreground border-t border-border/80 transition-colors duration-200 backdrop-blur-sm">
     <!-- Main Footer Content -->
     <Container class="py-16">
       <div class="space-y-12">
         <!-- Top Section: Connect with me -->
         <div class="text-center">
-          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Connect with me</h2>
-          <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-8">Get in touch with me for any inquiries</p>
+          <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">Connect with me</h2>
+          <p class="text-sm md:text-base text-muted-foreground mb-8">Get in touch with me for any inquiries</p>
           <div class="flex justify-center gap-6">
             <Button
               variant="outline"
@@ -57,27 +57,27 @@ const bgColor = computed(() => 'transparent');
         </div>
 
         <!-- Divider -->
-        <div class="border-t border-gray-300 dark:border-gray-800 shadow-sm"></div>
+        <div class="border-t border-border shadow-sm"></div>
 
         <!-- Bottom Section: Copyright & Contact -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center text-center md:text-left">
           <!-- Left: Copyright -->
-          <div class="text-sm md:text-base font-medium text-gray-700 dark:text-gray-200 flex items-center justify-center md:justify-start gap-3">
+          <div class="text-sm md:text-base font-medium text-foreground flex items-center justify-center md:justify-start gap-3">
             <Logo size="sm" logoOnly :name="'DP'" :animated="true" />
             <span>&copy; {{ currentYear }} DP. All rights reserved.</span>
           </div>
 
           <!-- Right: Contact Details -->
-          <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">
+          <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium text-foreground">
             <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <a href="mailto:don.puerto.1003@gmail.com" class="hover:text-blue-500 dark:hover:text-blue-300 transition-colors">don.puerto.1003@gmail.com</a>
+              <a href="mailto:don.puerto.1003@gmail.com" class="transition-colors hover:text-primary">don.puerto.1003@gmail.com</a>
             </div>
-            <span class="text-gray-400 dark:text-gray-600">|</span>
+            <span class="text-muted-foreground/70">|</span>
             <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
               <span>0976 093 8376</span>

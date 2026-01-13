@@ -6,14 +6,14 @@ const { scrollTo } = useSmoothScroll();
 </script>
 
 <template>
-  <Section id="home" class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+  <Section id="home" class="pt-32 pb-16 md:pt-40 md:pb-24 bg-background/60 backdrop-blur-sm">
     <Container>
       <FadeIn direction="up" class="text-center max-w-4xl mx-auto">
-        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
           Transform Your Business with
-          <span class="text-blue-600 dark:text-blue-400"> AI-Powered Automation</span>
+          <span class="text-primary"> AI-Powered Automation</span>
         </h1>
-        <p class="text-lg md:text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-lg md:text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
           We help businesses streamline operations, reduce costs, and scale faster through intelligent automation solutions and cutting-edge AI integration.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">

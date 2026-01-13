@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import 'vue-sonner/style.css'
 import { Toaster } from 'vue-sonner'
+import { type LayoutMode, isLayoutMode } from '~/constants/theme'
+import { useThemeAccent } from '~/composables/useThemeAccent'
 
 const colorMode = useColorMode()
+const { accentTheme } = useThemeAccent()
+const layoutMode = useState<LayoutMode>('layout-mode', () => 'fixed')
 
-// Sync class to document
+useHead(() => ({
+  htmlAttrs: {
+    'data-theme': accentTheme.value,
+    'data-layout': layoutMode.value,
+    class: layoutMode.value === 'full' ? 'layout-full' : 'layout-fixed',
+  },
+}))
+
+// Sync dark mode class
 watch(() => colorMode.value, (newVal) => {
   if (import.meta.client) {
     if (newVal === 'dark') {
@@ -14,6 +26,17 @@ watch(() => colorMode.value, (newVal) => {
     }
   }
 }, { immediate: true })
+
+if (import.meta.client) {
+  const savedLayout = window.localStorage.getItem('layout-mode')
+  if (isLayoutMode(savedLayout)) {
+    layoutMode.value = savedLayout
+  }
+
+  watch(layoutMode, (value) => {
+    window.localStorage.setItem('layout-mode', value)
+  }, { immediate: true })
+}
 </script>
 
 <template>
