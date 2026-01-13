@@ -11,6 +11,14 @@
       "strings": true
   },
   "tailwindCSS.experimental.classRegex": ["tw`(.*?)`", "tw\\('(.*?)'\\)", "tw\\(\\s*('(.*?)'|\"(.*?)\")\\s*\\)"],
+  "tailwindCSS.experimental.suggestions": {
+    "canonical": false
+  },
+   "tailwindCSS.validate": false,
+   "problems.autoReveal": false,
+    "files.exclude": {
+      "**/app/components/ui/dropdown-menu/*.vue": true
+    }
   
 
   

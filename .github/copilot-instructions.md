@@ -1748,7 +1748,7 @@ The project includes a production-ready n8n Chat widget component that wraps the
 Package is already installed via `npm install @n8n/chat`.
 
 **CSS Imports (Component-Scoped - RECOMMENDED):**
-The Chat component automatically imports both `@n8n/chat/style.css` and `~/assets/css/n8n-chat-theme.css` at the top of [app/components/ui/chat/Chat.vue](app/components/ui/chat/Chat.vue):
+The Chat component automatically imports both `@n8n/chat/style.css` and `~/assets/css/n8n-chat-theme.css` at the top of [app/components/ui/chat/Chat.vue](../app/components/ui/chat/Chat.vue):
 ```ts
 import '@n8n/chat/style.css'
 import '~/assets/css/n8n-chat-theme.css'
