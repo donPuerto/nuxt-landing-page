@@ -20,6 +20,8 @@ export function useThemeColor() {
       }
     }
 
+    document.documentElement.dataset.theme = themeColor.value
+
     isHydrated.value = true
   }
 

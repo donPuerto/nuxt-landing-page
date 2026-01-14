@@ -25,7 +25,7 @@ const title = computed(() => {
 })
 
 const detailMessage = computed(() => {
-	if (typeof props.error.data === 'object' && props.error.data?.message) {
+	if (typeof props.error.data === 'object' && props.error.data && 'message' in props.error.data) {
 		return String(props.error.data.message)
 	}
 
@@ -36,7 +36,7 @@ const detailMessage = computed(() => {
 	return 'Please try again or contact us if the problem continues.'
 })
 
-const currentPath = computed(() => props.error.url ?? route.fullPath)
+const currentPath = computed(() => route.fullPath)
 const timestamp = computed(() => formatDateTime(new Date()))
 
 const handleGoHome = () => {

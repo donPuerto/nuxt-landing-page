@@ -20,12 +20,36 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      style: [
+        {
+          key: 'initial-theme-colors',
+          innerHTML: 'html{background-color:#f8f9ff;color:#0f172a;}html.dark{background-color:#0f172a;color:#e0e7ff;}',
+        },
+      ],
       script: [
         {
-          innerHTML: `if(localStorage.getItem('nuxt-color-mode')==='dark'||!localStorage.getItem('nuxt-color-mode'))document.documentElement.classList.add('dark')`,
-          async: false,
-          defer: false,
-        }
+          key: 'initial-theme-script',
+          innerHTML: `(() => {
+            try {
+              const doc = document.documentElement
+              const storedTheme = localStorage.getItem('theme-color') || localStorage.getItem('accent-theme')
+              if (storedTheme) doc.dataset.theme = storedTheme
+
+              const saved = localStorage.getItem('nuxt-color-mode')
+              const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+              const isDark = saved ? saved === 'dark' : systemDark
+
+              if (isDark) {
+                doc.classList.add('dark')
+              } else {
+                doc.classList.remove('dark')
+              }
+            } catch (error) {
+              console.warn('Theme bootstrap failed', error)
+            }
+          })()`,
+          tagPriority: 'critical',
+        },
       ]
     }
   },
@@ -42,8 +66,8 @@ export default defineNuxtConfig({
     globalName: '__NUXT_COLOR_MODE__',
     componentName: 'ColorScheme',
     classPrefix: '',
-    classSuffix: '-mode',
-    dataValue: 'theme',
+    classSuffix: '',
+    dataValue: 'color-mode',
     storage: 'localStorage',
     storageKey: 'nuxt-color-mode'
   },
