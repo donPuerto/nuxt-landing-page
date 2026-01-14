@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { GalleryHorizontal } from 'lucide-vue-next'
-import { cn } from '~/lib/utils';
+import { cn } from '~/utils';
 import { computed } from 'vue';
 import { type LayoutMode, LAYOUT_MODES } from '~/constants/theme'
 

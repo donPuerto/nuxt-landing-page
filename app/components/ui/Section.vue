@@ -1,6 +1,6 @@
 <!-- app/components/ui/Section.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils';
+import { cn } from '~/utils';
 
 interface SectionProps {
   id?: string;

@@ -4,7 +4,7 @@ import { createChat } from '@n8n/chat'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { cn } from '~/lib/utils'
+import { cn, formatReadableDateTime } from '~/utils'
 import '@n8n/chat/style.css'
 import '~/assets/css/n8n-chat-theme.css'
 
@@ -68,16 +68,6 @@ const fallbackReplies = [
   'Sounds exciting! Let me digest that and share a few automation ideas in a bit.',
   'Got it! I will loop in Don so we can respond with a tailored solution.',
 ]
-
-const timestampFormatter = computed(
-  () =>
-    new Intl.DateTimeFormat(undefined, {
-      dateStyle: 'long',
-      timeStyle: 'short',
-    })
-)
-
-const formatTimestamp = (date: Date) => timestampFormatter.value.format(date)
 
 // Theme-aware i18n config
 const i18nConfig = computed(() => ({
@@ -258,7 +248,7 @@ watch(
             >
               <p>{{ message.content }}</p>
               <span class="mt-2 block text-[11px] uppercase tracking-wide opacity-70">
-                {{ formatTimestamp(message.timestamp) }}
+                {{ formatReadableDateTime(message.timestamp) }}
               </span>
             </div>
           </div>

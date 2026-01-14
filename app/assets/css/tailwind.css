@@ -53,6 +53,41 @@ html.light {
   }
 }
 
+@keyframes heartbeat-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in srgb, var(--glow-color, #6366f1) 35%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--glow-color, #6366f1) 55%, transparent);
+  }
+  40% {
+    box-shadow:
+      0 0 22px 6px color-mix(in srgb, var(--glow-color, #6366f1) 55%, transparent),
+      0 0 0 4px color-mix(in srgb, var(--glow-color, #6366f1) 65%, transparent);
+  }
+  65% {
+    box-shadow:
+      0 0 12px 2px color-mix(in srgb, var(--glow-color, #6366f1) 45%, transparent),
+      0 0 0 2px color-mix(in srgb, var(--glow-color, #6366f1) 60%, transparent);
+  }
+}
+
+@keyframes heartbeat-border {
+  0%,
+  100% {
+    opacity: 0.08;
+    filter: blur(0px);
+  }
+  45% {
+    opacity: 0.95;
+    filter: blur(2px) brightness(1.1);
+  }
+  70% {
+    opacity: 0.35;
+    filter: blur(1px) brightness(1.03);
+  }
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -202,6 +237,99 @@ html.light {
     @apply bg-background text-foreground font-medium antialiased;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+  .glow-card {
+    position: relative;
+    border-radius: 1.2rem;
+    border: 1px solid transparent;
+    background-color: color-mix(in srgb, var(--surface, #0b1120) 96%, rgba(15, 23, 42, 0.035));
+    overflow: visible;
+    isolation: isolate;
+    --glow-color: var(--primary, #6366f1);
+    --glow-origin-x: 50%;
+    --glow-origin-y: 50%;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, filter 0.3s ease;
+    animation: heartbeat-glow var(--glow-beat-duration, 2.8s) ease-in-out infinite;
+  }
+
+  .glow-card::before,
+  .glow-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    z-index: -1;
+  }
+
+  .glow-card::before {
+    padding: 1px;
+    inset: -0.5px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--glow-color) 85%, transparent) 0%, transparent 75%);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
+    animation: heartbeat-border var(--glow-beat-duration, 2.8s) ease-in-out infinite;
+  }
+
+  .glow-card::after {
+    inset: -2px;
+    background: radial-gradient(
+      circle at var(--glow-origin-x) var(--glow-origin-y),
+      color-mix(in srgb, var(--glow-color) 55%, transparent) 0%,
+      color-mix(in srgb, var(--glow-color) 25%, transparent) 35%,
+      transparent 60%
+    );
+    opacity: 0.25;
+    filter: blur(8px);
+  }
+
+  .glow-card:hover {
+    border-color: transparent;
+    animation-duration: var(--glow-beat-hover, 1.6s);
+  }
+
+  .glow-card:hover::before {
+    opacity: 0.95;
+  }
+
+  .glow-card:hover::after {
+    opacity: 0.75;
+    transform: scale3d(1.05, 1.05, 1);
+  }
+
+  .glow-card.glow-card--cta {
+    border-radius: 999px;
+    padding: 0;
+    border-color: transparent;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--glow-color, #6366f1) 35%, transparent);
+    background-color: color-mix(in srgb, var(--primary, #6366f1) 16%, var(--background));
+    --glow-beat-duration: 2.4s;
+  }
+
+  .glow-card.glow-card--cta::before {
+    inset: -0.2rem;
+    opacity: 0.9;
+  }
+
+  .glow-card.glow-card--cta::after {
+    inset: -0.25rem;
+    filter: blur(10px);
+    opacity: 0.5;
+  }
+
+  .glow-card.glow-card--pointer {
+    cursor: pointer;
+  }
+
+  .glow-card.glow-card--pointer::after {
+    transition-duration: 0.2s;
   }
 }
 

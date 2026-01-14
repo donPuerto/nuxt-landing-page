@@ -1,6 +1,6 @@
 <!-- app/components/ui/Container.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils';
+import { cn } from '~/utils';
 
 interface ContainerProps {
   class?: string;

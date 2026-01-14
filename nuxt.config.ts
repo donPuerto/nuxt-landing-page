@@ -15,6 +15,9 @@ export default defineNuxtConfig({
     { path: '~/components', pathPrefix: false, extensions: ['.vue'] },
   ],
   plugins: [],
+  imports: {
+    dirs: ['~/composables', '~/composables/**'],
+  },
   app: {
     head: {
       script: [

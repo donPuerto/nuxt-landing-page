@@ -1,16 +1,9 @@
 <!-- app/components/global/Footer.vue -->
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { computed } from 'vue';
-import { useColorMode } from '@vueuse/core';
+import { getCurrentYear } from '~/utils'
 
-const { scrollTo } = useSmoothScroll();
-
-const currentYear = 2025;
-
-const colorMode = useColorMode();
-const isDark = computed(() => colorMode.value === 'dark');
-const bgColor = computed(() => 'transparent');
+const currentYear = getCurrentYear();
 </script>
 
 <template>

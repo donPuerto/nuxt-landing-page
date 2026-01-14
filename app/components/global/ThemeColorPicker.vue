@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { THEME_COLORS } from '~/constants/theme'
 import { useThemeColor } from '~/composables/useThemeColor'
-import { cn } from '~/lib/utils'
+import { cn } from '~/utils'
 
 interface Props {
   compact?: boolean

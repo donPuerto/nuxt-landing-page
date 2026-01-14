@@ -1,6 +1,6 @@
 <!-- app/components/global/ThemeToggle.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils'
+import { cn } from '~/utils'
 
 const props = withDefaults(defineProps<{ class?: string }>(), {
   class: '',

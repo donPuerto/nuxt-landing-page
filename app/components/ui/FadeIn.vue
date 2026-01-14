@@ -1,6 +1,6 @@
 <!-- app/components/ui/FadeIn.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils';
+import { cn } from '~/utils';
 
 interface FadeInProps {
   direction?: 'up' | 'down' | 'left' | 'right';

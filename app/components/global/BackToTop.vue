@@ -2,14 +2,12 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { ArrowUp } from 'lucide-vue-next'
+import { scrollToPageTop } from '~/utils'
 
 const showButton = ref(false);
 
-const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
+const handleScrollToTop = () => {
+  scrollToPageTop();
 };
 
 onMounted(() => {
@@ -38,7 +36,7 @@ onMounted(() => {
       v-if="showButton"
       variant="ghost"
       size="icon"
-      @click="scrollToTop"
+      @click="handleScrollToTop"
       class="w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:bg-primary/90 pointer-events-auto"
       aria-label="Back to top"
     >

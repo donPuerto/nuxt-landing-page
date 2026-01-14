@@ -1,6 +1,6 @@
 <!-- app/components/global/Logo.vue -->
 <script setup lang="ts">
-import { cn } from '~/lib/utils';
+import { cn } from '~/utils';
 import { computed } from 'vue';
 
 interface LogoProps {

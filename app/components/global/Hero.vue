@@ -17,7 +17,7 @@ const { scrollTo } = useSmoothScroll();
           We help businesses streamline operations, reduce costs, and scale faster through intelligent automation solutions and cutting-edge AI integration.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button @click="scrollTo('contact')" size="lg">
+          <Button @click="scrollTo('contact')" size="lg" class="glow-card glow-card--cta">
             Get Started
           </Button>
           <Button @click="scrollTo('services')" variant="outline" size="lg">
