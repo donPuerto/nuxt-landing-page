@@ -27,6 +27,7 @@ Production-ready, single-page landing site built with Nuxt 4 + TypeScript, Tailw
 - ✅ **Toast Notifications** - vue-sonner with reactive theme switching (dark: #111827, light: #ffffff)
 - ✅ **Form Validation** - vee-validate + zod for type-safe contact form with real-time validation
 - ✅ **n8n Integration** - Server-side webhook proxy with CSP configuration for security
+- ✅ **n8n Automations** - Real-time chat assistant + contact pipeline that fan-outs to Sheets/email/CRM via n8n
 - ✅ **Smooth Scroll** - Custom composable for anchor navigation with offset support
 - ✅ **CSP Headers** - Proper Content Security Policy with `worker-src blob:` for canvas-confetti
 
@@ -224,17 +225,19 @@ A professional, production-ready one-page marketing agency website built with Nu
 
 ### Automation Workflow
 
-The integrated n8n workflow provides:
-1. **Form Data Reception** – Captures and validates user submissions
-2. **Data Normalization** – Formats information for downstream processing
-3. **AI Agent Trigger** – Generates intelligent, contextual responses
-4. **Automated Communication** – Sends professional follow-up via email/messaging
+Two coordinated n8n workflows power customer interactions:
 
-**AI Response Features:**
-- Acknowledges inquiry receipt
-- Thanks users for reaching out
-- Confirms team follow-up
-- Maintains friendly, professional tone
+1. **Chat Assistant (n8n Chat)**
+  - The floating chat widget pipes every customer question to an n8n conversation workflow
+  - n8n can answer with LLM nodes, knowledge-base lookups, or human handoff
+  - Supports session metadata and streaming so visitors get AI-backed replies instantly
+
+2. **Contact Pipeline (n8n Contact Form)**
+  - Server endpoint validates form data, forwards it (with timestamp + metadata) to n8n
+  - Workflow can fan-out to Google Sheets, email, Slack, CRM, etc., then send an acknowledgement back to the user
+  - Recommended steps: store submission → notify team → trigger AI acknowledgement → archive conversation context
+
+Both flows keep the tone professional, thank the user, confirm follow-up, and stay configurable entirely inside n8n.
 
 ## 📦 Setup
 

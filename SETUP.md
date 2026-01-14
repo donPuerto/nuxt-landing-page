@@ -98,6 +98,15 @@ In n8n, create a workflow that starts with a Webhook node:
 
 Copy the *Production* webhook URL into your `.env` as `N8N_WEBHOOK_URL`.
 
+### Chatbot vs. Contact Pipelines
+
+The project expects two complementary n8n flows:
+
+- **Chat Assistant:** The floating chat component posts customer questions to an n8n webhook. Build a workflow that enriches the payload (session/user metadata), calls an LLM or knowledge base, and streams replies back. Use additional nodes to log the full transcript to Google Sheets/DB for later training.
+- **Contact Form Pipeline:** The `/api/contact` endpoint forwards `{ name, email, message, timestamp }` plus any layout metadata. Inside n8n, store the submission (Google Sheets/Airtable), fan out notifications (email, Slack, Teams), and optionally trigger follow-up automations (CRM lead, marketing drip, etc.).
+
+Keep the chat + contact flows separate so you can iterate on each without breaking the other, but share common resources (e.g., Sheets, email templates) where it makes sense.
+
 ## 6) Verify the Contact Endpoint
 
 With the dev server running and `.env` configured, test the server endpoint:
