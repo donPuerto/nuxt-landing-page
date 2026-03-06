@@ -44,11 +44,11 @@ export default defineEventHandler(async (event) => {
     // Debug: ensure server sees runtime config (only logs on server)
     console.info('[contact] received payload for', email);
     if (!webhookUrl) {
-      console.error('[contact] missing N8N_WEBHOOK_URL (runtimeConfig)');
+      console.error('[contact] missing NUXT_N8N_WEBHOOK_URL (runtimeConfig)');
     }
 
     if (!webhookUrl) {
-      console.error('N8N_WEBHOOK_URL is not configured');
+      console.error('NUXT_N8N_WEBHOOK_URL is not configured');
       return {
         ok: false,
         message: 'Contact form is not properly configured. Please try again later.'
@@ -78,11 +78,21 @@ export default defineEventHandler(async (event) => {
     const ok = typeof n8nResponse?.ok === 'boolean' ? n8nResponse.ok : true;
     const responseMessage = n8nResponse?.message || 'Message sent successfully';
     return { ok, message: responseMessage };
-  } catch (error) {
+  } catch (error: any) {
+    const upstreamStatus = error?.statusCode || error?.response?.status;
+    const upstreamMessage = error?.data?.message || error?.response?._data?.message;
     console.error('Error forwarding contact form to n8n:', error);
+
+    if (upstreamStatus === 404) {
+      return {
+        ok: false,
+        message: upstreamMessage || 'n8n webhook is not registered. Use /webhook-test with "Listen for test event", or activate the workflow for /webhook.'
+      };
+    }
+
     return {
       ok: false,
-      message: 'Failed to send message. Please try again later.'
+      message: upstreamMessage || 'Failed to send message. Please try again later.'
     };
   }
 });
