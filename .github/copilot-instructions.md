@@ -1,4 +1,4 @@
-# Copilot Instructions for Nuxt 4 Landing Page
+z# Copilot Instructions for Nuxt 4 Landing Page
 > Quick guide for AI agents (Jan 2026)
 
 ## 0. Fast Facts

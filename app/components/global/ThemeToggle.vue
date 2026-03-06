@@ -6,16 +6,38 @@ const props = withDefaults(defineProps<{ class?: string }>(), {
   class: '',
 })
 
-const colorMode = useColorMode();
 const { rippleStore } = useRipple();
 const mounted = ref(false);
+const isDark = ref(true);
+const STORAGE_KEY = 'nuxt-color-mode'
 
-const isDark = computed(() => colorMode.value === 'dark');
+const applyTheme = (theme: 'dark' | 'light') => {
+  if (!import.meta.client) return;
+  
+  const html = document.documentElement;
+  if (theme === 'dark') {
+    html.classList.add('dark');
+    html.classList.remove('light');
+    html.style.backgroundColor = '#050713';
+    html.style.color = '#e0e7ff';
+    document.body.style.backgroundColor = '#050713';
+    document.body.style.color = '#e0e7ff';
+  } else {
+    html.classList.remove('dark');
+    html.classList.add('light');
+    html.style.backgroundColor = '#f8f9ff';
+    html.style.color = '#0f172a';
+    document.body.style.backgroundColor = '#f8f9ff';
+    document.body.style.color = '#0f172a';
+  }
+  localStorage.setItem(STORAGE_KEY, theme);
+  isDark.value = theme === 'dark';
+};
 
 const toggleTheme = (event: MouseEvent) => {
   if (!import.meta.client) return;
 
-  const prevTheme = colorMode.value === 'dark' ? 'dark' : 'light';
+  const prevTheme = isDark.value ? 'dark' : 'light';
   const newTheme = prevTheme === 'dark' ? 'light' : 'dark';
 
   // Prefer native View Transitions API for a true wave reveal
@@ -26,7 +48,7 @@ const toggleTheme = (event: MouseEvent) => {
     document.documentElement.style.setProperty('--vt-y', '0%');
 
     doc.startViewTransition(() => {
-      colorMode.preference = newTheme;
+      applyTheme(newTheme);
     });
     return;
   }
@@ -51,26 +73,22 @@ const toggleTheme = (event: MouseEvent) => {
     duration,
   });
 
-  colorMode.preference = newTheme;
+  applyTheme(newTheme);
 
   setTimeout(() => {
     rippleStore.value = rippleStore.value.filter((r) => r.id !== id);
   }, duration + 50);
 };
 
-// Watch color mode changes
-watch(() => colorMode.value, (newVal) => {
-  if (import.meta.client) {
-    if (newVal === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }
-}, { immediate: true });
-
 onMounted(() => {
   mounted.value = true;
+  // Check localStorage for saved theme
+  const saved = localStorage.getItem(STORAGE_KEY) as 'dark' | 'light' | null;
+  if (saved) {
+    isDark.value = saved === 'dark';
+  } else {
+    isDark.value = document.documentElement.classList.contains('dark');
+  }
 });
 </script>
 

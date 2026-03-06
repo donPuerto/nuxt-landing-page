@@ -1,7 +1,7 @@
 <template>
   <canvas
     ref="canvasRef"
-    :class="cn('fixed inset-0 size-full pointer-events-none opacity-10', props.class)"
+    :class="cn('fixed inset-0 size-full pointer-events-none opacity-10 bg-[#050713] dark:bg-[#050713]', props.class)"
   />
 </template>
 
@@ -142,6 +142,8 @@ function initOGL() {
       height: canvas.clientHeight,
       dpr: Math.min(window.devicePixelRatio, 2),
     });
+
+    renderer.gl.clearColor(0.02, 0.03, 0.08, 1);
 
     const camera = new Camera(renderer.gl);
     const scene = new Transform();

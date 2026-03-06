@@ -6,19 +6,29 @@
 @import "./themes.css";
 @import "vue-sonner/style.css";
 
-/* Prevent white flash on dark mode reload */
-@supports (color-scheme: dark) {
-  html {
-    color-scheme: dark;
-    background-color: rgb(17, 24, 39);
-    color: rgb(255, 255, 255);
-  }
+/* CRITICAL: Prevent flash */
+html {
+  background-color: #050713 !important;
+  color: #e0e7ff !important;
+  min-height: 100%;
+}
+
+body {
+  background-color: #050713 !important;
+  color: #e0e7ff !important;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 html.light {
-  color-scheme: light;
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: #f8f9ff !important;
+  color: #0f172a !important;
+}
+
+html.light body {
+  background-color: #f8f9ff !important;
+  color: #0f172a !important;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -128,6 +138,10 @@ html.light {
   --sidebar-ring: oklch(0.708 0 0);
   --surface: #f8f9ff;
   --surface-foreground: #0f172a;
+  --surface-gradient: radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.25) 0%, transparent 55%),
+    radial-gradient(circle at 80% 5%, rgba(165, 180, 252, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 65% 85%, rgba(244, 114, 182, 0.2) 0%, transparent 60%),
+    linear-gradient(180deg, #f8f9ff 0%, #e4e7ff 100%);
   --code: var(--surface);
   --code-foreground: var(--surface-foreground);
   --code-highlight: #e0e7ff;
@@ -171,6 +185,10 @@ html.light {
   --sidebar-ring: oklch(0.439 0 0);
   --surface: #0f172a;
   --surface-foreground: #e0e7ff;
+  --surface-gradient: radial-gradient(circle at 18% 22%, rgba(99, 102, 241, 0.38) 0%, transparent 55%),
+    radial-gradient(circle at 78% 8%, rgba(165, 180, 252, 0.32) 0%, transparent 48%),
+    radial-gradient(circle at 62% 88%, rgba(244, 114, 182, 0.25) 0%, transparent 58%),
+    linear-gradient(180deg, #11192f 0%, #050713 100%);
   --code: var(--surface);
   --code-foreground: var(--surface-foreground);
   --code-highlight: #1e1b4b;
@@ -238,9 +256,18 @@ html.light {
     @apply scroll-smooth overscroll-y-none;
   }
   body {
-    @apply bg-background text-foreground font-medium antialiased;
+    @apply text-foreground font-medium antialiased;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+    background-color: #050713 !important;
+    background-image: var(--surface-gradient-inline, var(--surface-gradient)) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll;
+  }
+
+  html.light body {
+    background-color: #f8f9ff !important;
   }
 }
 

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html {{ HTML_ATTRS }} style="background-color:#050713;color:#e0e7ff;min-height:100%;color-scheme:dark">
+  <head {{ HEAD_ATTRS }}>
+    <meta name="theme-color" content="#050713">
+    <meta name="color-scheme" content="dark">
+    <script>
+      (function () {
+        try {
+          var start = performance.now();
+          var mode = localStorage.getItem('nuxt-color-mode') || 'dark';
+          var theme = localStorage.getItem('theme-color') || localStorage.getItem('accent-theme') || 'default';
+          var html = document.documentElement;
+          var dark = mode === 'dark';
+          html.classList.toggle('dark', dark);
+          html.classList.toggle('light', !dark);
+          html.dataset.theme = theme;
+          html.style.backgroundColor = dark ? '#050713' : '#f8f9ff';
+          html.style.color = dark ? '#e0e7ff' : '#0f172a';
+          html.style.backgroundImage = dark
+            ? 'linear-gradient(180deg,#11192f 0%,#050713 100%)'
+            : 'linear-gradient(180deg,#f8f9ff 0%,#e4e7ff 100%)';
+          html.style.backgroundRepeat = 'no-repeat';
+          html.style.backgroundSize = 'cover';
+          html.style.colorScheme = dark ? 'dark' : 'light';
+          console.log('[theme-prehead] mode=%s theme=%s dark=%s %sms', mode, theme, dark, Math.round(performance.now() - start));
+        } catch (e) {
+          console.warn('[theme-prehead] failed', e);
+        }
+      })();
+    </script>
+    <style>
+      html, body {
+        background-color: #050713;
+        color: #e0e7ff;
+        min-height: 100%;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #boot-bg {
+        position: fixed;
+        inset: 0;
+        background-color: #050713;
+        background-image: linear-gradient(180deg, #11192f 0%, #050713 100%);
+        background-repeat: no-repeat;
+        background-size: cover;
+        z-index: 0;
+        pointer-events: none;
+      }
+      #__nuxt {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+      }
+    </style>
+    {{ HEAD }}
+  </head>
+  <body {{ BODY_ATTRS }} style="background-color:#050713;color:#e0e7ff;margin:0;padding:0;min-height:100%;background-image:linear-gradient(180deg,#11192f 0%,#050713 100%);background-repeat:no-repeat;background-size:cover">
+    <div id="boot-bg"></div>
+    {{ APP }}
+  </body>
+</html>

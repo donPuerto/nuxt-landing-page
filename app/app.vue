@@ -4,7 +4,6 @@ import { Toaster } from 'vue-sonner'
 import { type LayoutMode, isLayoutMode } from '~/constants/theme'
 import { useThemeColor } from '~/composables/useThemeColor'
 
-const colorMode = useColorMode()
 const { themeColor } = useThemeColor()
 const layoutMode = useState<LayoutMode>('layout-mode', () => 'fixed')
 
@@ -12,22 +11,18 @@ useHead(() => ({
   htmlAttrs: {
     'data-theme': themeColor.value,
     'data-layout': layoutMode.value,
-    class: layoutMode.value === 'full' ? 'layout-full' : 'layout-fixed',
   },
 }))
 
-// Sync dark mode class
-watch(() => colorMode.value, (newVal) => {
-  if (import.meta.client) {
-    if (newVal === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
-}, { immediate: true })
-
 if (import.meta.client) {
+  const html = document.documentElement
+
+  const applyLayout = (value: LayoutMode) => {
+    html.classList.toggle('layout-full', value === 'full')
+    html.classList.toggle('layout-fixed', value === 'fixed')
+    html.dataset.layout = value
+  }
+
   const savedLayout = window.localStorage.getItem('layout-mode')
   if (isLayoutMode(savedLayout)) {
     layoutMode.value = savedLayout
@@ -35,6 +30,7 @@ if (import.meta.client) {
 
   watch(layoutMode, (value) => {
     window.localStorage.setItem('layout-mode', value)
+    applyLayout(value)
   }, { immediate: true })
 }
 </script>
@@ -47,7 +43,7 @@ if (import.meta.client) {
   <ClientOnly>
     <Toaster 
       class="pointer-events-auto"
-      :theme="(colorMode.preference as any) || 'system'"
+      theme="dark"
       position="top-right"
     />
   </ClientOnly>

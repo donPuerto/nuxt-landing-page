@@ -14,7 +14,8 @@
   "tailwindCSS.experimental.suggestions": {
     "canonical": false
   },
-   "tailwindCSS.validate": false,
+  "tailwindCSS.validate": false,
+  "chatgpt.openOnStartup": true,
 
   
 
